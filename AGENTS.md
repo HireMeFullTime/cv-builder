@@ -76,6 +76,11 @@ As an AI assistant, you must strictly adhere to the following rules when generat
 - Do not hallucinate data structures. The single source of truth for the JSON shape of a candidate's profile is the Zod schemas located in `src/lib/validations.ts`.
 - **Do not implement internationalization (i18n).** Build the MVP assuming a single language layout to reduce unnecessary complexity.
 
+13. **Git Workflow & Branching:**
+    - NEVER write implementation code or make changes directly on the `main` branch.
+    - Before starting any new feature, database schema update, or bug fix, you MUST analyze the request and propose a proper git branch creation command (e.g., `git checkout -b feature/user-auth` or `git checkout -b database/prisma-schema`).
+    - Wait for the user to confirm that they have created and switched to the new branch before generating any code.
+
 ---
 
 # CV Agent Instructions (AI Logic)
