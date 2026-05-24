@@ -8,6 +8,7 @@ The primary goal is not just creating a static file, but collecting structured d
 
 # Tech Stack & Conventions
 
+Primary language is english!
 As an AI assistant, you must strictly adhere to the following rules when generating code:
 
 1. **Framework & Paradigms:**
