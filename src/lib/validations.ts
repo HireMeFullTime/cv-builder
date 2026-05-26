@@ -35,7 +35,7 @@ export const projectSchema = z.object({
     ).optional(),
     linkUrl: z.url("Invalid URL").optional().or(z.literal("")),
     githubUrl: z.url("Invalid URL").optional().or(z.literal("")),
-    isCurrent: z.boolean().default(false),
+    isCurrent: z.boolean(),
 });
 
 // --- EXPERIENCE SCHEMA ---
@@ -44,9 +44,9 @@ export const experienceSchema = z.object({
     jobTitle: z.string().min(2, "Job title is required"),
     company: z.string().min(2, "Company name is required"),
     location: z.string().optional(),
-    startDate: z.coerce.date(),
-    endDate: z.coerce.date().optional(),
-    isCurrent: z.boolean().default(false),
+    startDate: z.date({ message: "Start Date is required" }),
+    endDate: z.date().optional(),
+    isCurrent: z.boolean(),
     description: z.string().optional(),
     accomplishments: z.array(
         z.object({
@@ -61,10 +61,10 @@ export const educationSchema = z.object({
     fieldOfStudy: z.string().min(2, "Field of study is required"),
     startDate: z.string().or(z.date()),
     endDate: z.string().or(z.date()).optional(),
-    isCurrent: z.boolean().default(false),
+    isCurrent: z.boolean(),
 });
 
 export const languageSchema = z.object({
     name: z.string().min(2, "Language name is required"),
     proficiency: z.string().min(2, "Proficiency level is required"),
-});
+});
