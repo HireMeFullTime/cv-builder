@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
@@ -40,12 +41,11 @@ export function ProfileForm({ initialData }: { initialData?: any }) {
     setIsSaving(true);
     try {
       await upsertProfile(data);
+      toast.success("Profile saved successfully!");
       router.refresh();
-      // Normally we would show a toast here
-      alert("Profile saved successfully!");
     } catch (error) {
       console.error(error);
-      alert("Failed to save profile.");
+      toast.error("Failed to save profile. Please try again.");
     } finally {
       setIsSaving(false);
     }
