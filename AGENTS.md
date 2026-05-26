@@ -31,6 +31,7 @@ As an AI assistant, you must strictly adhere to the following rules when generat
    - Use **Tailwind CSS** and **shadcn/ui**.
    - Prefer implementing standard `shadcn/ui` components over building custom UI elements from scratch.
    - Do not use inline styles (`style={{ ... }}`).
+   - **Always use Mobile First approach.** Design and style UI for mobile devices first, then use responsive Tailwind prefixes (e.g., `sm:`, `md:`, `lg:`) to adjust layouts for larger screens.
 
 5. **Data Architecture (JSON):**
    - The project object must contain flexible yet strictly defined fields.
