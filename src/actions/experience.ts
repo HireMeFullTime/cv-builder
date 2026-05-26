@@ -12,7 +12,11 @@ export async function getExperiences() {
 
   return prisma.experience.findMany({
     where: { userId: session.user.id },
-    orderBy: { startDate: "desc" },
+    orderBy: [
+      { isCurrent: "desc" },
+      { endDate: "desc" },
+      { startDate: "desc" },
+    ],
   });
 }
 
