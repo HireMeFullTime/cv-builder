@@ -5,11 +5,11 @@ export const profileSchema = z.object({
     firstName: z.string().min(2, "First name must be at least 2 characters long"),
     lastName: z.string().min(2, "Last name must be at least 2 characters long"),
     title: z.string().optional(),
-    email: z.string().email("Invalid email address"),
+    email: z.email("Invalid email address"),
     phone: z.string().optional(),
     location: z.string().optional(),
-    githubUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
-    linkedinUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
+    githubUrl: z.url("Invalid URL").optional().or(z.literal("")),
+    linkedinUrl: z.url("Invalid URL").optional().or(z.literal("")),
     bio: z.string().optional(),
     gdprClause: z.string().optional(),
 });
@@ -56,12 +56,15 @@ export const experienceSchema = z.object({
 });
 
 export const educationSchema = z.object({
-    institution: z.string().min(2, "Institution name is required"),
-    degree: z.string().min(2, "Degree is required"),
-    fieldOfStudy: z.string().min(2, "Field of study is required"),
-    startDate: z.string().or(z.date()),
-    endDate: z.string().or(z.date()).optional(),
+    id: z.string().optional(),
+    institution: z.string().min(2, "Institution / Provider name is required"),
+    degree: z.string().min(2, "Degree or Course name is required"),
+    fieldOfStudy: z.string().optional(),
+    startDate: z.date({ message: "Start Date is required" }),
+    endDate: z.date().optional(),
     isCurrent: z.boolean(),
+    description: z.string().optional(),
+    url: z.url("Invalid URL").optional().or(z.literal("")),
 });
 
 export const languageSchema = z.object({

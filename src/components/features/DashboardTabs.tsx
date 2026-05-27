@@ -4,11 +4,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileSection } from "./ProfileSection";
 import { ExperienceSection } from "./ExperienceSection";
 import { ProjectSection } from "./ProjectSection";
+import { EducationSection } from "./EducationSection";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type ProfileData, type ExperienceData } from "@/types";
-import { type Project } from "@prisma/client";
+import { type Project, type Education } from "@prisma/client";
 
-export function DashboardTabs({ profile, experiences, projects }: { profile: Partial<ProfileData> | null; experiences: ExperienceData[]; projects: Project[] }) {
+export function DashboardTabs({ profile, experiences, projects, educations }: { profile: Partial<ProfileData> | null; experiences: ExperienceData[]; projects: Project[]; educations: Education[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") || "profile";
@@ -41,9 +42,7 @@ export function DashboardTabs({ profile, experiences, projects }: { profile: Par
       </TabsContent>
       
       <TabsContent value="education" className="mt-6">
-        <div className="p-8 border border-dashed rounded-md text-center text-muted-foreground">
-          Education form coming soon
-        </div>
+        <EducationSection initialEducations={educations} />
       </TabsContent>
       
       <TabsContent value="skills" className="mt-6">
