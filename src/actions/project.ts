@@ -30,12 +30,12 @@ export async function upsertProject(data: z.infer<typeof projectSchema>) {
       data: {
         title: parsedData.title,
         shortDescription: parsedData.shortDescription,
-        role: parsedData.role ? parsedData.role : undefined,
-        linkUrl: parsedData.linkUrl ? parsedData.linkUrl : undefined,
-        githubUrl: parsedData.githubUrl ? parsedData.githubUrl : undefined,
+        role: parsedData.role || null,
+        linkUrl: parsedData.linkUrl || null,
+        githubUrl: parsedData.githubUrl || null,
         isCurrent: parsedData.isCurrent,
         techStack: parsedData.techStack,
-        accomplishments: parsedData.accomplishments ? parsedData.accomplishments : undefined,
+        accomplishments: parsedData.accomplishments ?? undefined,
       },
     });
     revalidatePath("/dashboard");
@@ -45,12 +45,12 @@ export async function upsertProject(data: z.infer<typeof projectSchema>) {
       data: {
         title: parsedData.title,
         shortDescription: parsedData.shortDescription,
-        role: parsedData.role ? parsedData.role : undefined,
-        linkUrl: parsedData.linkUrl ? parsedData.linkUrl : undefined,
-        githubUrl: parsedData.githubUrl ? parsedData.githubUrl : undefined,
+        role: parsedData.role || null,
+        linkUrl: parsedData.linkUrl || null,
+        githubUrl: parsedData.githubUrl || null,
         isCurrent: parsedData.isCurrent,
         techStack: parsedData.techStack,
-        accomplishments: parsedData.accomplishments ? parsedData.accomplishments : undefined,
+        accomplishments: parsedData.accomplishments ?? undefined,
         userId: session.user.id,
       },
     });

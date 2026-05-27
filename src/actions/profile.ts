@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { profileSchema } from "@/lib/validations";
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 
 export async function upsertProfile(data: z.infer<typeof profileSchema>) {
   const session = await auth();
@@ -14,15 +15,29 @@ export async function upsertProfile(data: z.infer<typeof profileSchema>) {
 
   const parsedData = profileSchema.parse(data);
 
+  const safeUpdateData = {
+    firstName: parsedData.firstName,
+    lastName: parsedData.lastName,
+    title: parsedData.title || null,
+    email: parsedData.email,
+    phone: parsedData.phone || null,
+    location: parsedData.location || null,
+    githubUrl: parsedData.githubUrl || null,
+    linkedinUrl: parsedData.linkedinUrl || null,
+    bio: parsedData.bio || null,
+    gdprClause: parsedData.gdprClause || null,
+  };
+
   const profile = await prisma.profile.upsert({
     where: { userId: session.user.id },
-    update: parsedData,
+    update: safeUpdateData,
     create: {
-      ...parsedData,
+      ...safeUpdateData,
       userId: session.user.id,
     },
   });
 
+  revalidatePath("/dashboard");
   return profile;
 }
 

@@ -155,10 +155,12 @@ model Education {
   id           String    @id @default(cuid())
   institution  String
   degree       String
-  fieldOfStudy String
+  fieldOfStudy String?
   startDate    DateTime
   endDate      DateTime?
   isCurrent    Boolean   @default(false)
+  description  String?   @db.Text
+  url          String?
   
   userId       String
   user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)

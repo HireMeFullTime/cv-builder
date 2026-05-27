@@ -2,15 +2,15 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { experienceSchema } from "@/lib/validations";
+import { educationSchema } from "@/lib/validations";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
-export async function getExperiences() {
+export async function getEducations() {
   const session = await auth();
   if (!session?.user?.id) return [];
 
-  return prisma.experience.findMany({
+  return prisma.education.findMany({
     where: { userId: session.user.id },
     orderBy: [
       { isCurrent: "desc" },
@@ -20,56 +20,54 @@ export async function getExperiences() {
   });
 }
 
-export async function upsertExperience(data: z.infer<typeof experienceSchema>) {
+export async function upsertEducation(data: z.infer<typeof educationSchema>) {
   const session = await auth();
   if (!session?.user?.id) {
     throw new Error("Unauthorized");
   }
 
-  const parsedData = experienceSchema.parse(data);
+  const parsedData = educationSchema.parse(data);
 
   if (parsedData.id) {
-
-    const exp = await prisma.experience.update({
+    const education = await prisma.education.update({
       where: { id: parsedData.id, userId: session.user.id },
       data: {
-        jobTitle: parsedData.jobTitle,
-        company: parsedData.company,
-        location: parsedData.location || null,
+        institution: parsedData.institution,
+        degree: parsedData.degree,
+        fieldOfStudy: parsedData.fieldOfStudy || null,
         startDate: parsedData.startDate,
         endDate: parsedData.endDate || null,
         isCurrent: parsedData.isCurrent,
         description: parsedData.description || null,
-        accomplishments: parsedData.accomplishments ?? undefined,
+        url: parsedData.url || null,
       },
     });
     revalidatePath("/dashboard");
-    return exp;
+    return education;
   } else {
-
-    const exp = await prisma.experience.create({
+    const education = await prisma.education.create({
       data: {
-        jobTitle: parsedData.jobTitle,
-        company: parsedData.company,
-        location: parsedData.location || null,
+        institution: parsedData.institution,
+        degree: parsedData.degree,
+        fieldOfStudy: parsedData.fieldOfStudy || null,
         startDate: parsedData.startDate,
         endDate: parsedData.endDate || null,
         isCurrent: parsedData.isCurrent,
         description: parsedData.description || null,
-        accomplishments: parsedData.accomplishments ?? undefined,
+        url: parsedData.url || null,
         userId: session.user.id,
       },
     });
     revalidatePath("/dashboard");
-    return exp;
+    return education;
   }
 }
 
-export async function deleteExperience(id: string) {
+export async function deleteEducation(id: string) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");
 
-  await prisma.experience.delete({
+  await prisma.education.delete({
     where: { id, userId: session.user.id },
   });
 
