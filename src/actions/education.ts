@@ -28,35 +28,27 @@ export async function upsertEducation(data: z.infer<typeof educationSchema>) {
 
   const parsedData = educationSchema.parse(data);
 
+  const payload = {
+    institution: parsedData.institution,
+    degree: parsedData.degree,
+    fieldOfStudy: parsedData.fieldOfStudy || null,
+    startDate: parsedData.startDate,
+    endDate: parsedData.endDate || null,
+    isCurrent: parsedData.isCurrent,
+    description: parsedData.description || null,
+    url: parsedData.url || null,
+  };
+
   if (parsedData.id) {
     const education = await prisma.education.update({
       where: { id: parsedData.id, userId: session.user.id },
-      data: {
-        institution: parsedData.institution,
-        degree: parsedData.degree,
-        fieldOfStudy: parsedData.fieldOfStudy || null,
-        startDate: parsedData.startDate,
-        endDate: parsedData.endDate || null,
-        isCurrent: parsedData.isCurrent,
-        description: parsedData.description || null,
-        url: parsedData.url || null,
-      },
+      data: payload,
     });
     revalidatePath("/dashboard");
     return education;
   } else {
     const education = await prisma.education.create({
-      data: {
-        institution: parsedData.institution,
-        degree: parsedData.degree,
-        fieldOfStudy: parsedData.fieldOfStudy || null,
-        startDate: parsedData.startDate,
-        endDate: parsedData.endDate || null,
-        isCurrent: parsedData.isCurrent,
-        description: parsedData.description || null,
-        url: parsedData.url || null,
-        userId: session.user.id,
-      },
+      data: { ...payload, userId: session.user.id },
     });
     revalidatePath("/dashboard");
     return education;
