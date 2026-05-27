@@ -24,35 +24,27 @@ export async function upsertProject(data: z.infer<typeof projectSchema>) {
 
   const parsedData = projectSchema.parse(data);
 
+  const payload = {
+    title: parsedData.title,
+    shortDescription: parsedData.shortDescription,
+    role: parsedData.role || null,
+    linkUrl: parsedData.linkUrl || null,
+    githubUrl: parsedData.githubUrl || null,
+    isCurrent: parsedData.isCurrent,
+    techStack: parsedData.techStack,
+    accomplishments: parsedData.accomplishments ?? undefined,
+  };
+
   if (parsedData.id) {
     const project = await prisma.project.update({
       where: { id: parsedData.id, userId: session.user.id },
-      data: {
-        title: parsedData.title,
-        shortDescription: parsedData.shortDescription,
-        role: parsedData.role || null,
-        linkUrl: parsedData.linkUrl || null,
-        githubUrl: parsedData.githubUrl || null,
-        isCurrent: parsedData.isCurrent,
-        techStack: parsedData.techStack,
-        accomplishments: parsedData.accomplishments ?? undefined,
-      },
+      data: payload,
     });
     revalidatePath("/dashboard");
     return project;
   } else {
     const project = await prisma.project.create({
-      data: {
-        title: parsedData.title,
-        shortDescription: parsedData.shortDescription,
-        role: parsedData.role || null,
-        linkUrl: parsedData.linkUrl || null,
-        githubUrl: parsedData.githubUrl || null,
-        isCurrent: parsedData.isCurrent,
-        techStack: parsedData.techStack,
-        accomplishments: parsedData.accomplishments ?? undefined,
-        userId: session.user.id,
-      },
+      data: { ...payload, userId: session.user.id },
     });
     revalidatePath("/dashboard");
     return project;

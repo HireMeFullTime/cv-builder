@@ -12,7 +12,6 @@ import {Textarea} from '@/components/ui/textarea';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/components/ui/form';
 import {Checkbox} from '@/components/ui/checkbox';
-import {useRouter} from 'next/navigation';
 import {toast} from 'sonner';
 import {Trash2, PlusCircle, CheckCircle} from 'lucide-react';
 import {MonthYearPicker} from './MonthYearPicker';
@@ -20,14 +19,11 @@ import {MonthYearPicker} from './MonthYearPicker';
 export function ExperienceForm({
 	initialData,
 	onClose,
-	onSuccess
 }: {
 	initialData?: Partial<ExperienceData>;
 	onClose?: () => void;
-	onSuccess?: () => void;
 }) {
 	const [isSaving, setIsSaving] = useState(false);
-	const router = useRouter();
 
 	const form = useForm<ExperienceData>({
 		resolver: zodResolver(experienceSchema),
@@ -56,20 +52,16 @@ export function ExperienceForm({
 		try {
 			await upsertExperience(data);
 			toast.success('Experience saved successfully!');
+			if (onClose) {
+				form.reset();
+				onClose();
+			}
 		} catch (error) {
 			console.error('Error saving experience:', error);
 			toast.error('Failed to save experience.');
+		} finally {
 			setIsSaving(false);
-			return;
 		}
-
-		router.refresh();
-		if (onSuccess) onSuccess();
-		if (onClose) {
-			form.reset();
-			onClose();
-		}
-		setIsSaving(false);
 	}
 
 	return (

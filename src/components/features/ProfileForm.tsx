@@ -11,21 +11,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 
 export function ProfileForm({ 
   initialData,
   onClose,
-  onSuccess
 }: { 
   initialData?: Partial<ProfileData>;
   onClose?: () => void;
-  onSuccess?: () => void;
 }) {
   const [isSaving, setIsSaving] = useState(false);
-  const router = useRouter();
 
   const form = useForm<ProfileData>({
     resolver: zodResolver(profileSchema),
@@ -48,8 +44,6 @@ export function ProfileForm({
     try {
       await upsertProfile(data);
       toast.success("Profile saved successfully!");
-      router.refresh();
-      if (onSuccess) onSuccess();
       if (onClose) onClose();
     } catch (error) {
       console.error(error);

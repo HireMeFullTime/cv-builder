@@ -4,7 +4,6 @@ import { PrismaPg } from "@prisma/adapter-pg";
 const globalForPrisma = globalThis as unknown as { prismaNew: PrismaClient };
 
 const createPrismaClient = () => {
-  console.log("Initializing Prisma Client... Cache busted!");
   const adapter = new PrismaPg({
     connectionString: process.env.PRISMA_DATABASE_URL!
   });
