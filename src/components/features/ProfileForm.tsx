@@ -2,8 +2,8 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { profileSchema } from "@/lib/validations";
+import { type ProfileData } from "@/types";
 import { upsertProfile } from "@/actions/profile";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -14,13 +14,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDes
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-type ProfileFormData = z.infer<typeof profileSchema>;
 
 export function ProfileForm({ initialData }: { initialData?: any }) {
   const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
 
-  const form = useForm<ProfileFormData>({
+  const form = useForm<ProfileData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       firstName: initialData?.firstName || "",
@@ -36,7 +35,7 @@ export function ProfileForm({ initialData }: { initialData?: any }) {
     },
   });
 
-  async function onSubmit(data: ProfileFormData) {
+  async function onSubmit(data: ProfileData) {
     setIsSaving(true);
     try {
       await upsertProfile(data);

@@ -2,8 +2,8 @@
 
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { experienceSchema } from "@/lib/validations";
+import { type ExperienceData } from "@/types";
 import { upsertExperience, deleteExperience } from "@/actions/experience";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,6 @@ import { toast } from "sonner";
 import { Trash2, PlusCircle, CheckCircle } from "lucide-react";
 import { MonthYearPicker } from "./MonthYearPicker";
 
-type ExperienceFormData = z.infer<typeof experienceSchema>;
 
 export function ExperienceForm({ 
   initialData, 
@@ -31,7 +30,7 @@ export function ExperienceForm({
   const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
   
-  const form = useForm<ExperienceFormData>({
+  const form = useForm<ExperienceData>({
     resolver: zodResolver(experienceSchema),
     defaultValues: {
       id: initialData?.id || undefined,
@@ -53,7 +52,7 @@ export function ExperienceForm({
 
   const isCurrent = form.watch("isCurrent");
 
-  async function onSubmit(data: ExperienceFormData) {
+  async function onSubmit(data: ExperienceData) {
     setIsSaving(true);
     try {
       await upsertExperience(data);

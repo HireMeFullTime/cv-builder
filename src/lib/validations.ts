@@ -68,3 +68,8 @@ export const languageSchema = z.object({
     name: z.string().min(2, "Language name is required"),
     proficiency: z.string().min(2, "Proficiency level is required"),
 });
+
+// --- AUTH SCHEMA ---
+export const loginSchema = z.object({
+    provider: z.enum(["github", "google"]),
+});
