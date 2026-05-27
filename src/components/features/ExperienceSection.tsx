@@ -13,15 +13,24 @@ export function ExperienceSection({ initialExperiences }: { initialExperiences: 
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this experience?")) return;
-    
-    try {
-      await deleteExperience(id);
-      toast.success("Experience deleted");
-    } catch (error) {
-      toast.error("Failed to delete experience");
-    }
+  const handleDelete = (id: string) => {
+    toast("Are you sure you want to delete this experience?", {
+      action: {
+        label: "Delete",
+        onClick: async () => {
+          try {
+            await deleteExperience(id);
+            toast.success("Experience deleted");
+          } catch (error) {
+            toast.error("Failed to delete experience");
+          }
+        },
+      },
+      cancel: {
+        label: "Cancel",
+        onClick: () => {},
+      },
+    });
   };
 
   const formatDate = (date: Date) => {
