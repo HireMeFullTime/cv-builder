@@ -15,7 +15,15 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 
-export function ProfileForm({ initialData }: { initialData?: any }) {
+export function ProfileForm({ 
+  initialData,
+  onClose,
+  onSuccess
+}: { 
+  initialData?: Partial<ProfileData>;
+  onClose?: () => void;
+  onSuccess?: () => void;
+}) {
   const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
 
@@ -41,6 +49,8 @@ export function ProfileForm({ initialData }: { initialData?: any }) {
       await upsertProfile(data);
       toast.success("Profile saved successfully!");
       router.refresh();
+      if (onSuccess) onSuccess();
+      if (onClose) onClose();
     } catch (error) {
       console.error(error);
       toast.error("Failed to save profile. Please try again.");
@@ -213,7 +223,14 @@ export function ProfileForm({ initialData }: { initialData?: any }) {
               )}
             />
 
-            <div className="flex justify-end">
+            <div className="flex justify-between items-center pt-4">
+              {onClose ? (
+                <Button type="button" variant="ghost" onClick={onClose}>
+                  Cancel
+                </Button>
+              ) : (
+                <div />
+              )}
               <Button type="submit" disabled={isSaving}>
                 {isSaving ? "Saving..." : "Save Profile"}
               </Button>

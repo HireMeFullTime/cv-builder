@@ -4,11 +4,12 @@ import { useState } from "react";
 import { ExperienceForm } from "./ExperienceForm";
 import { deleteExperience } from "@/actions/experience";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, Calendar, MapPin, Edit, Trash2, PlusCircle } from "lucide-react";
 import { toast } from "sonner";
+import { type ExperienceData } from "@/types";
 
-export function ExperienceSection({ initialExperiences }: { initialExperiences: any[] }) {
+export function ExperienceSection({ initialExperiences }: { initialExperiences: ExperienceData[] }) {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -73,10 +74,10 @@ export function ExperienceSection({ initialExperiences }: { initialExperiences: 
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="icon" onClick={() => setEditingId(exp.id)}>
+                    <Button variant="ghost" size="icon" onClick={() => setEditingId(exp.id!)}>
                       <Edit className="w-4 h-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(exp.id)}>
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(exp.id!)}>
                       <Trash2 className="w-4 h-4 text-destructive" />
                     </Button>
                   </div>
@@ -102,7 +103,7 @@ export function ExperienceSection({ initialExperiences }: { initialExperiences: 
 
                 {exp.accomplishments && exp.accomplishments.length > 0 && (
                   <ul className="list-disc list-inside text-sm space-y-1">
-                    {exp.accomplishments.map((acc: any, i: number) => (
+                    {exp.accomplishments.map((acc: { value: string }, i: number) => (
                       <li key={i} className="text-muted-foreground">
                         <span className="text-foreground">{acc.value}</span>
                       </li>

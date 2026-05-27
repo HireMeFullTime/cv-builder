@@ -1,11 +1,12 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ProfileForm } from "./ProfileForm";
+import { ProfileSection } from "./ProfileSection";
 import { ExperienceSection } from "./ExperienceSection";
 import { useRouter, useSearchParams } from "next/navigation";
+import { type ProfileData, type ExperienceData } from "@/types";
 
-export function DashboardTabs({ profile, experiences }: { profile: any; experiences: any[] }) {
+export function DashboardTabs({ profile, experiences }: { profile: Partial<ProfileData> | null; experiences: ExperienceData[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") || "profile";
@@ -26,7 +27,7 @@ export function DashboardTabs({ profile, experiences }: { profile: any; experien
       </TabsList>
       
       <TabsContent value="profile" className="mt-6">
-        <ProfileForm initialData={profile} />
+        <ProfileSection initialProfile={profile} />
       </TabsContent>
       
       <TabsContent value="experience" className="mt-6">

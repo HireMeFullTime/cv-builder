@@ -22,7 +22,7 @@ export function ExperienceForm({
 	onClose,
 	onSuccess
 }: {
-	initialData?: any;
+	initialData?: Partial<ExperienceData>;
 	onClose?: () => void;
 	onSuccess?: () => void;
 }) {
