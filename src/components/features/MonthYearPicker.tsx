@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const MONTHS = [
@@ -9,7 +8,7 @@ const MONTHS = [
 ];
 
 const currentYear = new Date().getFullYear();
-// Generate years from current year + 5 to 50 years ago
+
 const YEARS = Array.from({ length: 55 }, (_, i) => currentYear + 5 - i);
 
 export function MonthYearPicker({ 

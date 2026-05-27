@@ -22,7 +22,6 @@ export function LoginForm() {
   });
 
   const onSubmit = (data: LoginFormData) => {
-    // Calling signIn from next-auth/react directly on the client side
     signIn(data.provider);
   };
 

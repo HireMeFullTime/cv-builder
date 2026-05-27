@@ -74,7 +74,6 @@ export function ExperienceForm({
     setIsSaving(false);
   }
 
-  // Helper to format date for input type="month"
   const formatMonthForInput = (date: any) => {
     if (!date) return "";
     const d = new Date(date);

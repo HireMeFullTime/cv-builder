@@ -12,10 +12,8 @@ export async function upsertProfile(data: z.infer<typeof profileSchema>) {
     throw new Error("Unauthorized");
   }
 
-  // Ensure data conforms to the schema
   const parsedData = profileSchema.parse(data);
 
-  // Update or create profile linked to this user
   const profile = await prisma.profile.upsert({
     where: { userId: session.user.id },
     update: parsedData,

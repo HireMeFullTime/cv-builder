@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const session = await auth();
 
-  // Protect the dashboard - redirect to home if not logged in
   if (!session?.user) {
     redirect("/");
   }

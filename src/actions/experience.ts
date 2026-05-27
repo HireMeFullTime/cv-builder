@@ -29,7 +29,7 @@ export async function upsertExperience(data: z.infer<typeof experienceSchema>) {
   const parsedData = experienceSchema.parse(data);
 
   if (parsedData.id) {
-    // Update existing
+
     const exp = await prisma.experience.update({
       where: { id: parsedData.id, userId: session.user.id },
       data: {
@@ -46,7 +46,7 @@ export async function upsertExperience(data: z.infer<typeof experienceSchema>) {
     revalidatePath("/dashboard");
     return exp;
   } else {
-    // Create new
+
     const exp = await prisma.experience.create({
       data: {
         jobTitle: parsedData.jobTitle,
@@ -72,6 +72,6 @@ export async function deleteExperience(id: string) {
   await prisma.experience.delete({
     where: { id, userId: session.user.id },
   });
-  
+
   revalidatePath("/dashboard");
 }
