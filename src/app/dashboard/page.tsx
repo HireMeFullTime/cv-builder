@@ -2,13 +2,19 @@ import {getProfile} from '@/actions/profile';
 import {getExperiences} from '@/actions/experience';
 import {getProjects} from '@/actions/project';
 import {getEducations} from '@/actions/education';
+import {getSkills} from '@/actions/skill';
+import {getLanguages} from '@/actions/language';
 import {DashboardTabs} from '@/components/features/DashboardTabs';
 
 export default async function DashboardPage() {
-	const profile = await getProfile();
-	const experiences = await getExperiences();
-	const projects = await getProjects();
-	const educations = await getEducations();
+	const [profile, experiences, projects, educations, skills, languages] = await Promise.all([
+		getProfile(),
+		getExperiences(),
+		getProjects(),
+		getEducations(),
+		getSkills(),
+		getLanguages()
+	]);
 
 	const safeProfile = profile
 		? {
@@ -38,7 +44,7 @@ export default async function DashboardPage() {
 				<p className='text-muted-foreground'>Manage your professional profile and projects here.</p>
 			</div>
 
-			<DashboardTabs profile={safeProfile} experiences={safeExperiences} projects={projects} educations={educations} />
+			<DashboardTabs profile={safeProfile} experiences={safeExperiences} projects={projects} educations={educations} skills={skills} languages={languages} />
 		</div>
 	);
 }

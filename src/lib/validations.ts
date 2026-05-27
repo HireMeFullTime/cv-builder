@@ -21,6 +21,12 @@ export const skillSchema = z.object({
     category: z.string().optional(),
 });
 
+export const skillsFormSchema = z.object({
+    oldCategory: z.string().optional(),
+    category: z.string().optional(),
+    skills: z.array(z.string()).min(1, "Add at least one skill"),
+});
+
 // --- PROJECT SCHEMA ---
 export const projectSchema = z.object({
     id: z.string().optional(),
@@ -68,8 +74,11 @@ export const educationSchema = z.object({
 });
 
 export const languageSchema = z.object({
+    id: z.string().optional(),
     name: z.string().min(2, "Language name is required"),
-    proficiency: z.string().min(2, "Proficiency level is required"),
+    proficiency: z.enum(["A1", "A2", "B1", "B2", "C1", "C2", "Native"], {
+        message: "Please select a valid proficiency level"
+    }),
 });
 
 // --- AUTH SCHEMA ---

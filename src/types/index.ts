@@ -2,15 +2,19 @@ import { z } from "zod";
 import {
     profileSchema,
     skillSchema,
+    skillsFormSchema,
     projectSchema,
     experienceSchema,
     educationSchema,
+    languageSchema,
     loginSchema
 } from "../lib/validations";
 
 export type ProfileData = z.infer<typeof profileSchema>;
 export type SkillData = z.infer<typeof skillSchema>;
+export type SkillsFormData = z.infer<typeof skillsFormSchema>;
 export type ProjectData = z.infer<typeof projectSchema>;
 export type ExperienceData = z.infer<typeof experienceSchema>;
 export type EducationData = z.infer<typeof educationSchema>;
+export type LanguageData = z.infer<typeof languageSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
