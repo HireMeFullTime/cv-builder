@@ -3,10 +3,12 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProfileSection } from "./ProfileSection";
 import { ExperienceSection } from "./ExperienceSection";
+import { ProjectSection } from "./ProjectSection";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type ProfileData, type ExperienceData } from "@/types";
+import { type Project } from "@prisma/client";
 
-export function DashboardTabs({ profile, experiences }: { profile: Partial<ProfileData> | null; experiences: ExperienceData[] }) {
+export function DashboardTabs({ profile, experiences, projects }: { profile: Partial<ProfileData> | null; experiences: ExperienceData[]; projects: Project[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") || "profile";
@@ -35,9 +37,7 @@ export function DashboardTabs({ profile, experiences }: { profile: Partial<Profi
       </TabsContent>
       
       <TabsContent value="projects" className="mt-6">
-        <div className="p-8 border border-dashed rounded-md text-center text-muted-foreground">
-          Projects form coming soon
-        </div>
+        <ProjectSection initialProjects={projects} />
       </TabsContent>
       
       <TabsContent value="education" className="mt-6">

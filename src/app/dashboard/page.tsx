@@ -1,10 +1,12 @@
 import {getProfile} from '@/actions/profile';
 import {getExperiences} from '@/actions/experience';
+import {getProjects} from '@/actions/project';
 import {DashboardTabs} from '@/components/features/DashboardTabs';
 
 export default async function DashboardPage() {
 	const profile = await getProfile();
 	const experiences = await getExperiences();
+	const projects = await getProjects();
 
 	const safeProfile = profile
 		? {
@@ -34,7 +36,7 @@ export default async function DashboardPage() {
 				<p className='text-muted-foreground'>Manage your professional profile and projects here.</p>
 			</div>
 
-			<DashboardTabs profile={safeProfile} experiences={safeExperiences} />
+			<DashboardTabs profile={safeProfile} experiences={safeExperiences} projects={projects} />
 		</div>
 	);
 }
