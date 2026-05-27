@@ -2,27 +2,23 @@
 
 import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema } from "@/lib/validations";
+import { type LoginData } from "@/types";
 
 import { Button } from "@/components/ui/button";
 
-const loginSchema = z.object({
-  provider: z.enum(["github", "google"]),
-});
 
-type LoginFormData = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
-  const { handleSubmit, setValue } = useForm<LoginFormData>({
+  const { handleSubmit, setValue } = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       provider: "github",
     },
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    // Calling signIn from next-auth/react directly on the client side
+  const onSubmit = (data: LoginData) => {
     signIn(data.provider);
   };
 

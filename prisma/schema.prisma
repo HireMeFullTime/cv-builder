@@ -23,6 +23,8 @@ model User {
   skills       Skill[]
   projects     Project[]
   experiences  Experience[]
+  educations   Education[]
+  languages    Language[]
   tailoredCVs  TailoredCV[]
   
   createdAt DateTime @default(now())
@@ -77,6 +79,7 @@ model Profile {
   githubUrl   String?
   linkedinUrl String?
   bio         String?  @db.Text
+  gdprClause  String?  @db.Text
   
   userId      String   @unique
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -146,4 +149,32 @@ model TailoredCV {
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+}
+
+model Education {
+  id           String    @id @default(cuid())
+  institution  String
+  degree       String
+  fieldOfStudy String
+  startDate    DateTime
+  endDate      DateTime?
+  isCurrent    Boolean   @default(false)
+  
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Language {
+  id          String   @id @default(cuid())
+  name        String
+  proficiency String
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
