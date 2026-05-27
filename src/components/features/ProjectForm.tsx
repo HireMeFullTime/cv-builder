@@ -224,6 +224,11 @@ export function ProjectForm({
                   )}
                 />
               ))}
+              {accomplishmentFields.length === 0 && (
+                <p className="text-sm text-muted-foreground text-center py-4 border border-dashed rounded-md">
+                  No accomplishments added. Click "Add Bullet Point" to list your achievements.
+                </p>
+              )}
             </div>
 
             <div className="flex justify-end gap-3 pt-4 border-t">
