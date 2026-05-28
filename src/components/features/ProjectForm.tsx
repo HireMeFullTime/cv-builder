@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { projectSchema } from "@/lib/validations";
 import { upsertProject } from "@/actions/project";
@@ -12,8 +12,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
-import { PlusCircle, Trash2 } from "lucide-react";
+
 import { TechStackInput } from "@/components/features/TechStackInput";
+import { AccomplishmentsInput } from "@/components/features/AccomplishmentsInput";
 import { toast } from "sonner";
 import { type Project } from "@prisma/client";
 
@@ -44,11 +45,6 @@ export function ProjectForm({
   const form = useForm<ProjectData>({
     resolver: zodResolver(projectSchema),
     defaultValues,
-  });
-
-  const { fields: accomplishmentFields, append: appendAccomplishment, remove: removeAccomplishment } = useFieldArray({
-    name: "accomplishments",
-    control: form.control,
   });
 
   async function onSubmit(data: ProjectData) {
@@ -111,7 +107,7 @@ export function ProjectForm({
                   <FormControl>
                     <Textarea 
                       placeholder="Briefly describe what this project is and what problem it solves..." 
-                      className="min-h-[80px]"
+                      className="min-h-20"
                       {...field} 
                       value={field.value || ""}
                     />
@@ -185,51 +181,23 @@ export function ProjectForm({
               )}
             />
 
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <FormLabel className="text-base">Key Accomplishments / Features</FormLabel>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => appendAccomplishment({ value: "" })}
-                >
-                  <PlusCircle className="w-4 h-4 mr-2" /> Add Bullet Point
-                </Button>
-              </div>
-              
-              {accomplishmentFields.map((field, index) => (
-                <FormField
-                  key={field.id}
-                  control={form.control}
-                  name={`accomplishments.${index}.value`}
-                  render={({ field }) => (
-                    <FormItem className="flex items-start gap-2">
-                      <div className="flex-1">
-                        <FormControl>
-                          <Input placeholder="e.g. Implemented CI/CD pipeline reducing build time by 50%" {...field} value={field.value || ""} />
-                        </FormControl>
-                        <FormMessage />
-                      </div>
-                      <Button 
-                        type="button" 
-                        variant="ghost" 
-                        size="icon" 
-                        className="mt-0"
-                        onClick={() => removeAccomplishment(index)}
-                      >
-                        <Trash2 className="w-4 h-4 text-destructive" />
-                      </Button>
-                    </FormItem>
-                  )}
-                />
-              ))}
-              {accomplishmentFields.length === 0 && (
-                <p className="text-sm text-muted-foreground text-center py-4 border border-dashed rounded-md">
-                  No accomplishments added. Click "Add Bullet Point" to list your achievements.
-                </p>
+            <FormField
+              control={form.control}
+              name="accomplishments"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-base">Key Accomplishments / Features</FormLabel>
+                  <FormControl>
+                    <AccomplishmentsInput 
+                      value={field.value} 
+                      onChange={field.onChange} 
+                      placeholder="e.g. Implemented CI/CD pipeline reducing build time by 50% (press Enter)"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </div>
+            />
 
             <div className="flex justify-end gap-3 pt-4 border-t">
               {onClose && (

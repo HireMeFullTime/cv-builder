@@ -1,6 +1,6 @@
 'use client';
 
-import {useForm, useFieldArray} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {experienceSchema} from '@/lib/validations';
 import {type ExperienceData} from '@/types';
@@ -13,8 +13,9 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/compo
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/components/ui/form';
 import {Checkbox} from '@/components/ui/checkbox';
 import {toast} from 'sonner';
-import {Trash2, PlusCircle, CheckCircle} from 'lucide-react';
+import {CheckCircle} from 'lucide-react';
 import {MonthYearPicker} from '@/components/features/MonthYearPicker';
+import {AccomplishmentsInput} from '@/components/features/AccomplishmentsInput';
 
 export function ExperienceForm({
 	initialData,
@@ -38,11 +39,6 @@ export function ExperienceForm({
 			description: initialData?.description || '',
 			accomplishments: initialData?.accomplishments || []
 		}
-	});
-
-	const {fields, append, remove} = useFieldArray({
-		name: 'accomplishments',
-		control: form.control
 	});
 
 	const isCurrent = form.watch('isCurrent');
@@ -172,7 +168,7 @@ export function ExperienceForm({
 									<FormControl>
 										<Textarea
 											placeholder='Briefly describe your responsibilities...'
-											className='min-h-[100px]'
+											className='min-h-25'
 											{...field}
 										/>
 									</FormControl>
@@ -181,50 +177,23 @@ export function ExperienceForm({
 							)}
 						/>
 
-						<div className='space-y-4'>
-							<div className='flex items-center justify-between'>
-								<FormLabel>Key Accomplishments / Responsibilities</FormLabel>
-								<Button
-									type='button'
-									variant='outline'
-									size='sm'
-									onClick={() => append({value: ''})}
-									className='h-8 flex items-center gap-1'
-								>
-									<PlusCircle className='w-4 h-4' /> Add
-								</Button>
-							</div>
-
-							{fields.map((field, index) => (
-								<FormField
-									key={field.id}
-									control={form.control}
-									name={`accomplishments.${index}.value`}
-									render={({field: inputField}) => (
-										<FormItem className='flex items-center gap-2 space-y-0'>
-											<FormControl>
-												<Input placeholder='e.g. Increased page load speed by 30%...' {...inputField} />
-											</FormControl>
-											<Button
-												type='button'
-												variant='ghost'
-												size='icon'
-												onClick={() => remove(index)}
-												className='h-10 w-10 text-destructive shrink-0'
-											>
-												<Trash2 className='w-4 h-4' />
-											</Button>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-							))}
-							{fields.length === 0 && (
-								<p className='text-sm text-muted-foreground text-center py-4 border border-dashed rounded-md'>
-									No accomplishments added. Click "Add" to list your achievements.
-								</p>
+						<FormField
+							control={form.control}
+							name="accomplishments"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Key Accomplishments / Responsibilities</FormLabel>
+									<FormControl>
+										<AccomplishmentsInput 
+											value={field.value} 
+											onChange={field.onChange} 
+											placeholder="e.g. Increased page load speed by 30% (press Enter)"
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
 							)}
-						</div>
+						/>
 
 						<div className='flex justify-between items-center pt-4'>
 							{onClose ? (
