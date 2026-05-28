@@ -163,3 +163,20 @@ export async function deleteTailoredCV(id: string) {
 
   revalidatePath("/dashboard");
 }
+
+export async function updateTailoredCV(id: string, content: any) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  // Validate the content against the schema
+  const parsedContent = tailoredCVSchema.parse(content);
+
+  await prisma.tailoredCV.update({
+    where: { id, userId: session.user.id },
+    data: {
+      generatedContent: parsedContent as any,
+    },
+  });
+
+  revalidatePath("/dashboard");
+}

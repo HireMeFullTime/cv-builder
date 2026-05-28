@@ -1,10 +1,11 @@
 'use client';
 
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {TailoredCV, Profile, Education} from '@prisma/client';
 import {generateTailoredCV, deleteTailoredCV} from '@/actions/cv';
 import {CVPreview} from './CVPreview';
 import {CVLayoutControls} from './CVLayoutControls';
+import {EditTailoredCVForm} from './EditTailoredCVForm';
 import {CVBuilderFormData, TailoredCVData, ColumnLayout} from '@/types';
 import {cvBuilderFormSchema} from '@/lib/validations';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
@@ -29,13 +30,15 @@ export function CVBuilderSection({
 }) {
 	const [cvs, setCvs] = useState<TailoredCV[]>(initialCVs);
 	const [selectedCv, setSelectedCv] = useState<TailoredCV | null>(null);
+	const [previewData, setPreviewData] = useState<TailoredCVData | null>(null);
 	const [isGenerating, setIsGenerating] = useState(false);
 
 	const [layout, setLayout] = useState<ColumnLayout>({
 		mode: 'single',
 		leftColumn: ['summary', 'skills', 'experience', 'education', 'projects'],
 		rightColumn: [],
-		ratio: 'left-narrow'
+		ratio: 'left-narrow',
+		leftColumnWidth: 30
 	});
 
 	const router = useRouter();
@@ -47,6 +50,15 @@ export function CVBuilderSection({
 			jobDescription: ''
 		}
 	});
+
+	// Keep previewData in sync with selectedCv when selectedCv changes
+	useEffect(() => {
+		if (selectedCv) {
+			setPreviewData(selectedCv.generatedContent as unknown as TailoredCVData);
+		} else {
+			setPreviewData(null);
+		}
+	}, [selectedCv]);
 
 	async function onSubmit(data: CVBuilderFormData) {
 		setIsGenerating(true);
@@ -84,103 +96,117 @@ export function CVBuilderSection({
 		}
 	}
 
+	const handleSelectCv = (cv: TailoredCV) => {
+		setSelectedCv(cv);
+	};
+
+	const displayData = previewData || (selectedCv?.generatedContent as unknown as TailoredCVData);
+
 	return (
 		<div className='grid grid-cols-1 lg:grid-cols-12 gap-6 h-full'>
-			{/* LEFT PANEL: CONTROLS & FORM */}
+			{/* LEFT PANE: CONTROLS & FORM */}
 			<div className='lg:col-span-4 space-y-6 flex flex-col h-full print:hidden'>
-				<Card>
-					<CardHeader>
-						<CardTitle>Target Role</CardTitle>
-						<CardDescription>Paste the job details to generate a tailored CV.</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<Form {...form}>
-							<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-								<FormField
-									control={form.control}
-									name='jobTitle'
-									render={({field}) => (
-										<FormItem>
-											<FormLabel>Job Title</FormLabel>
-											<FormControl>
-												<Input placeholder='e.g. Senior Frontend Developer' disabled={isGenerating} {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+				{selectedCv ? (
+					<EditTailoredCVForm 
+						cv={selectedCv} 
+						onUpdatePreview={setPreviewData} 
+						onClose={() => setSelectedCv(null)} 
+					/>
+				) : (
+					<>
+						<Card>
+							<CardHeader>
+								<CardTitle>Target Role</CardTitle>
+								<CardDescription>Paste the job details to generate a tailored CV.</CardDescription>
+							</CardHeader>
+							<CardContent>
+								<Form {...form}>
+									<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+										<FormField
+											control={form.control}
+											name='jobTitle'
+											render={({field}) => (
+												<FormItem>
+													<FormLabel>Job Title</FormLabel>
+													<FormControl>
+														<Input placeholder='e.g. Senior Frontend Developer' disabled={isGenerating} {...field} />
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
 
-								<FormField
-									control={form.control}
-									name='jobDescription'
-									render={({field}) => (
-										<FormItem>
-											<FormLabel>Job Description</FormLabel>
-											<FormControl>
-												<Textarea
-													placeholder='Paste the full job description here...'
-													className='h-48 resize-none'
-													disabled={isGenerating}
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
+										<FormField
+											control={form.control}
+											name='jobDescription'
+											render={({field}) => (
+												<FormItem>
+													<FormLabel>Job Description</FormLabel>
+													<FormControl>
+														<Textarea
+															placeholder='Paste the full job description here...'
+															className='h-48 resize-none'
+															disabled={isGenerating}
+															{...field}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
 
-								<Button type='submit' className='w-full' disabled={isGenerating}>
-									{isGenerating ? (
-										<>
-											<Loader2 className='mr-2 h-4 w-4 animate-spin' />
-											Generating (Takes ~10-20s)
-										</>
-									) : (
-										'Generate Tailored CV'
-									)}
-								</Button>
-							</form>
-						</Form>
-					</CardContent>
-				</Card>
+										<Button type='submit' className='w-full' disabled={isGenerating}>
+											{isGenerating ? (
+												<>
+													<Loader2 className='mr-2 h-4 w-4 animate-spin' />
+													Generating (Takes ~10-20s)
+												</>
+											) : (
+												'Generate Tailored CV'
+											)}
+										</Button>
+									</form>
+								</Form>
+							</CardContent>
+						</Card>
 
-				<Card className='flex-1 overflow-auto'>
-					<CardHeader>
-						<CardTitle>History</CardTitle>
-						<CardDescription>Your previously generated CVs.</CardDescription>
-					</CardHeader>
-					<CardContent className='space-y-3'>
-						{cvs.length === 0 ? (
-							<p className='text-sm text-muted-foreground text-center py-4'>No CVs generated yet.</p>
-						) : (
-							cvs.map(cv => (
-								<div
-									key={cv.id}
-									className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer transition-colors ${
-										selectedCv?.id === cv.id ? 'bg-muted border-primary' : 'hover:bg-muted/50'
-									}`}
-									onClick={() => setSelectedCv(cv)}
-								>
-									<div className='overflow-hidden'>
-										<p className='font-medium truncate'>{cv.jobTitle}</p>
-										<p className='text-xs text-muted-foreground'>{new Date(cv.createdAt).toLocaleDateString()}</p>
-									</div>
-									<Button
-										variant='ghost'
-										size='icon'
-										className='text-destructive hover:bg-destructive/10 shrink-0 ml-2'
-										onClick={e => {
-											e.stopPropagation();
-											handleDelete(cv.id);
-										}}
-									>
-										<Trash2 className='h-4 w-4' />
-									</Button>
-								</div>
-							))
-						)}
-					</CardContent>
-				</Card>
+						<Card className='flex-1 overflow-auto'>
+							<CardHeader>
+								<CardTitle>History</CardTitle>
+								<CardDescription>Your previously generated CVs.</CardDescription>
+							</CardHeader>
+							<CardContent className='space-y-3'>
+								{cvs.length === 0 ? (
+									<p className='text-sm text-muted-foreground text-center py-4'>No CVs generated yet.</p>
+								) : (
+									cvs.map(cv => (
+										<div
+											key={cv.id}
+											className='flex items-center justify-between p-3 border rounded-lg cursor-pointer transition-colors hover:bg-muted/50'
+											onClick={() => handleSelectCv(cv)}
+										>
+											<div className='overflow-hidden'>
+												<p className='font-medium truncate'>{cv.jobTitle}</p>
+												<p className='text-xs text-muted-foreground'>{new Date(cv.createdAt).toLocaleDateString()}</p>
+											</div>
+											<Button
+												variant='ghost'
+												size='icon'
+												className='text-destructive hover:bg-destructive/10 shrink-0 ml-2'
+												onClick={e => {
+													e.stopPropagation();
+													handleDelete(cv.id);
+												}}
+											>
+												<Trash2 className='h-4 w-4' />
+											</Button>
+										</div>
+									))
+								)}
+							</CardContent>
+						</Card>
+					</>
+				)}
 			</div>
 
 			{/* RIGHT PANE: CV PREVIEW */}
@@ -202,10 +228,10 @@ export function CVBuilderSection({
 							<CVLayoutControls 
 								layout={layout} 
 								onChange={setLayout} 
-								projects={(selectedCv.generatedContent as unknown as TailoredCVData).selectedProjects || []}
+								projects={displayData?.selectedProjects || []}
 							/>
 							<CVPreview
-								data={selectedCv.generatedContent as unknown as TailoredCVData}
+								data={displayData}
 								profile={profile}
 								jobTitle={selectedCv.jobTitle}
 								educations={educations}
