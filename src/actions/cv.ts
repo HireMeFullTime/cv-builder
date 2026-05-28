@@ -17,8 +17,7 @@ export async function generateTailoredCV(jobTitle: string, jobDescription: strin
 
   const userId = session.user.id;
 
-  // 1. Fetch all user data
-  const [profile, experiences, projects, skills] = await Promise.all([
+   const [profile, experiences, projects, skills] = await Promise.all([
     prisma.profile.findUnique({ where: { userId } }),
     prisma.experience.findMany({ where: { userId }, orderBy: { startDate: "desc" } }),
     prisma.project.findMany({ where: { userId }, orderBy: { createdAt: "desc" } }),
@@ -29,8 +28,7 @@ export async function generateTailoredCV(jobTitle: string, jobDescription: strin
     throw new Error("Profile must be completed before generating a CV.");
   }
 
-  // 2. Prepare context for the AI
-  const candidateData = {
+   const candidateData = {
     profile: {
       firstName: profile.firstName,
       lastName: profile.lastName,
@@ -61,8 +59,7 @@ export async function generateTailoredCV(jobTitle: string, jobDescription: strin
     }))
   };
 
-  // 3. Call AI
-  const systemPrompt = `
+   const systemPrompt = `
 You are an expert IT Technical Recruiter and CV Writer. 
 Your task is to tailor a candidate's CV data to perfectly match a target Job Description.
 
@@ -118,8 +115,7 @@ INSTRUCTIONS:
     const jsonString = text.replace(/```json\n?|```/g, "").trim();
     const object = tailoredCVSchema.parse(JSON.parse(jsonString));
 
-    // 4. Save to database
-    const tailoredCV = await prisma.tailoredCV.create({
+      const tailoredCV = await prisma.tailoredCV.create({
       data: {
         jobTitle,
         jobDescription,
@@ -130,10 +126,9 @@ INSTRUCTIONS:
 
     revalidatePath("/dashboard");
     return tailoredCV.id;
-  } catch (error: any) {
+  } catch (error) {
     console.error("AI Generation Error:", error);
     
-    // Instead of hiding the error, throw the actual error message to help debugging
     const errorMessage = error instanceof Error ? error.message : "Unknown error occurred during AI generation";
     throw new Error(`Generation failed: ${errorMessage}`);
   }

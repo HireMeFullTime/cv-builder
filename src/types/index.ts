@@ -1,15 +1,15 @@
 import { z } from "zod";
 import {
-    profileSchema,
-    skillSchema,
-    skillsFormSchema,
-    projectSchema,
-    experienceSchema,
-    educationSchema,
-    languageSchema,
-    loginSchema,
-    tailoredCVSchema,
-    cvBuilderFormSchema
+  profileSchema,
+  skillSchema,
+  skillsFormSchema,
+  projectSchema,
+  experienceSchema,
+  educationSchema,
+  languageSchema,
+  loginSchema,
+  tailoredCVSchema,
+  cvBuilderFormSchema
 } from "../lib/validations";
 
 export type ProfileData = z.infer<typeof profileSchema>;
@@ -32,4 +32,5 @@ export interface ColumnLayout {
   leftColumn: CVSectionId[];
   rightColumn: CVSectionId[];
   ratio?: ColumnRatio;
+  hiddenProjectIds?: string[];
 }

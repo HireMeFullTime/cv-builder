@@ -81,12 +81,16 @@ function DroppableColumn({ id, items, children }: { id: string, items: string[],
   );
 }
 
+import { Checkbox } from "@/components/ui/checkbox";
+
 export function CVLayoutControls({
   layout,
   onChange,
+  projects,
 }: {
   layout: ColumnLayout;
   onChange: (newLayout: ColumnLayout) => void;
+  projects?: { id: string; title: string }[];
 }) {
   const [activeId, setActiveId] = useState<CVSectionId | null>(null);
 
@@ -164,6 +168,16 @@ export function CVLayoutControls({
     }
   };
 
+  const toggleProjectVisibility = (projectId: string, isChecked: boolean) => {
+    const currentHidden = layout.hiddenProjectIds || [];
+    onChange({
+      ...layout,
+      hiddenProjectIds: isChecked
+        ? currentHidden.filter(id => id !== projectId)
+        : [...currentHidden, projectId]
+    });
+  };
+
   return (
     <Card className="print:hidden border-dashed bg-muted/30 shadow-none mb-4">
       <CardHeader className="p-4 pb-2">
@@ -171,9 +185,9 @@ export function CVLayoutControls({
           <div>
             <CardTitle className="text-base flex items-center gap-2">
               <LayoutTemplate className="w-4 h-4" />
-              Layout Settings
+              Layout & Content Settings
             </CardTitle>
-            <CardDescription className="text-xs">Drag and drop sections to reorder</CardDescription>
+            <CardDescription className="text-xs">Drag and drop sections to reorder or hide projects</CardDescription>
           </div>
           <div className="flex gap-2 items-center">
             {layout.mode === "two-column" && (
@@ -271,6 +285,32 @@ export function CVLayoutControls({
             ) : null}
           </DragOverlay>
         </DndContext>
+
+        {projects && projects.length > 0 && (
+          <div className="mt-4 pt-4 border-t">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Included Projects</h4>
+            <div className="flex flex-wrap gap-4">
+              {projects.map((proj) => {
+                const isHidden = layout.hiddenProjectIds?.includes(proj.id) ?? false;
+                return (
+                  <div key={proj.id} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`proj-${proj.id}`} 
+                      checked={!isHidden} 
+                      onCheckedChange={(checked) => toggleProjectVisibility(proj.id, checked as boolean)} 
+                    />
+                    <label 
+                      htmlFor={`proj-${proj.id}`} 
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                    >
+                      {proj.title}
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
