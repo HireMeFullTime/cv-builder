@@ -7,7 +7,9 @@ import {
     experienceSchema,
     educationSchema,
     languageSchema,
-    loginSchema
+    loginSchema,
+    tailoredCVSchema,
+    cvBuilderFormSchema
 } from "../lib/validations";
 
 export type ProfileData = z.infer<typeof profileSchema>;
@@ -18,3 +20,5 @@ export type ExperienceData = z.infer<typeof experienceSchema>;
 export type EducationData = z.infer<typeof educationSchema>;
 export type LanguageData = z.infer<typeof languageSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
+export type TailoredCVData = z.infer<typeof tailoredCVSchema>;
+export type CVBuilderFormData = z.infer<typeof cvBuilderFormSchema>;

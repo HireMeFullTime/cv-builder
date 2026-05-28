@@ -85,3 +85,44 @@ export const languageSchema = z.object({
 export const loginSchema = z.object({
     provider: z.enum(["github", "google"]),
 });
+
+// --- CV BUILDER SCHEMAS ---
+export const cvBuilderFormSchema = z.object({
+    jobTitle: z.string().min(3, "Job title is required"),
+    jobDescription: z.string().min(20, "Please provide a detailed job description"),
+});
+
+export const generatedAccomplishmentSchema = z.object({
+    value: z.string().describe("A single, impactful bullet point describing an accomplishment or responsibility.")
+});
+
+export const generatedExperienceSchema = z.object({
+    id: z.string(),
+    jobTitle: z.string(),
+    company: z.string(),
+    location: z.string().nullable().optional(),
+    startDate: z.string(),
+    endDate: z.string().nullable().optional(),
+    isCurrent: z.boolean(),
+    accomplishments: z.array(generatedAccomplishmentSchema)
+        .describe("Tailored accomplishments that strictly match the target job description. Limit to the most relevant points."),
+});
+
+export const generatedProjectSchema = z.object({
+    id: z.string(),
+    title: z.string(),
+    role: z.string().nullable().optional(),
+    shortDescription: z.string(),
+    linkUrl: z.string().nullable().optional(),
+    githubUrl: z.string().nullable().optional(),
+    accomplishments: z.array(generatedAccomplishmentSchema)
+        .describe("Tailored project highlights relevant to the job."),
+    techStack: z.array(z.string())
+});
+
+export const tailoredCVSchema = z.object({
+    professionalSummary: z.string().describe("A 3-4 sentence professional summary tailored specifically to the job role, emphasizing relevant strengths from the user's background."),
+    relevantSkills: z.array(z.string()).describe("A list of the most relevant skills for this specific job, ordered by importance. Exclude completely irrelevant skills."),
+    selectedExperiences: z.array(generatedExperienceSchema).describe("The user's work experience, with accomplishments filtered or slightly adjusted to emphasize aspects most relevant to the target role."),
+    selectedProjects: z.array(generatedProjectSchema).describe("The user's projects, filtered and tailored to show relevance to the job description. Do NOT include projects that are completely irrelevant."),
+});
