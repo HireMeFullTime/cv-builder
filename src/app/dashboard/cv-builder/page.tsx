@@ -5,12 +5,14 @@ import { ArrowLeft } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getEducations } from "@/actions/education";
+import { getLanguages } from "@/actions/language";
 
 export default async function CVBuilderPage() {
   const pastCVs = await getTailoredCVs();
   const { getProfile } = await import("@/actions/profile");
   const profile = await getProfile();
   const educations = await getEducations();
+  const languages = await getLanguages();
 
   return (
     <div className="mx-auto w-full max-w-[1400px] space-y-6">
@@ -26,7 +28,7 @@ export default async function CVBuilderPage() {
         </div>
       </div>
 
-      <CVBuilderSection initialCVs={pastCVs} profile={profile} educations={educations} />
+      <CVBuilderSection initialCVs={pastCVs} profile={profile} educations={educations} languages={languages} />
     </div>
   );
 }

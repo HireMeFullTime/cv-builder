@@ -29,11 +29,12 @@ import {CSS} from '@dnd-kit/utilities';
 import {useState} from 'react';
 
 const SECTION_LABELS: Record<CVSectionId, string> = {
-	summary: 'Professional Summary',
+	summary: 'Summary',
 	skills: 'Key Skills',
 	experience: 'Experience',
 	education: 'Education',
-	projects: 'Selected Projects'
+	projects: 'Projects',
+	languages: 'Languages'
 };
 
 interface SortableItemProps {

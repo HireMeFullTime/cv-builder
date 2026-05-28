@@ -88,7 +88,7 @@ export function ProfileSection({ initialProfile }: { initialProfile: Partial<Pro
             
             {initialProfile.bio && (
               <div className="mb-6">
-                <h4 className="text-sm font-semibold mb-2">Professional Summary</h4>
+                <h4 className="text-sm font-semibold mb-2">Summary</h4>
                 <p className="text-sm leading-relaxed">{initialProfile.bio}</p>
               </div>
             )}

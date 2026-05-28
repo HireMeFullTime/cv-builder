@@ -132,8 +132,8 @@ export const tailoredCVSchema = z.object({
         githubUrl: z.string().optional(),
         linkedinUrl: z.string().optional(),
     }).optional(),
-    professionalSummary: z.string().describe("A 3-4 sentence professional summary tailored specifically to the job role, emphasizing relevant strengths from the user's background."),
+    summary: z.string().describe("A 3-4 sentence summary tailored specifically to the job role, emphasizing relevant strengths from the user's background."),
     relevantSkills: z.array(z.string()).describe("A list of the most relevant skills for this specific job, ordered by importance. Exclude completely irrelevant skills."),
     selectedExperiences: z.array(generatedExperienceSchema).describe("The user's work experience, with accomplishments filtered or slightly adjusted to emphasize aspects most relevant to the target role."),
-    selectedProjects: z.array(generatedProjectSchema).describe("The user's projects, filtered and tailored to show relevance to the job description. Do NOT include projects that are completely irrelevant."),
+    projects: z.array(generatedProjectSchema).describe("The user's projects, filtered and tailored to show relevance to the job description. Do NOT include projects that are completely irrelevant."),
 });

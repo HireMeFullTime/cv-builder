@@ -1,7 +1,7 @@
 'use client';
 
 import {TailoredCVData, ColumnLayout, CVSectionId} from '@/types';
-import {Profile, Education} from '@prisma/client';
+import {Profile, Education, Language} from '@prisma/client';
 import {MapPin, Mail, Phone, Link as LinkIcon, ExternalLink, Globe} from 'lucide-react';
 import Link from 'next/link';
 
@@ -10,30 +10,34 @@ export function CVPreview({
 	profile,
 	jobTitle,
 	educations,
+	languages,
 	layout
 }: {
 	data: TailoredCVData;
 	profile: Profile | null;
 	jobTitle: string;
 	educations?: Education[];
+	languages?: Language[];
 	layout?: ColumnLayout;
 }) {
 	const currentLayout = layout || {
 		mode: 'single',
-		leftColumn: ['summary', 'skills', 'experience', 'education', 'projects'],
+		leftColumn: ['summary', 'skills', 'experience', 'education', 'languages', 'projects'],
 		rightColumn: []
 	};
 
 	const renderSection = (id: CVSectionId) => {
 		switch (id) {
-			case 'summary':
-				if (!data.professionalSummary) return null;
+			case 'summary': {
+				const summaryContent = data.summary || (data as any).professionalSummary;
+				if (!summaryContent) return null;
 				return (
 					<section key='summary'>
-						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Professional Summary</h3>
-						<p className='text-black leading-relaxed text-sm whitespace-pre-wrap'>{data.professionalSummary}</p>
+						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Summary</h3>
+						<p className='text-black leading-relaxed text-sm whitespace-pre-wrap'>{summaryContent}</p>
 					</section>
 				);
+			}
 
 			case 'skills':
 				if (!data.relevantSkills || data.relevantSkills.length === 0) return null;
@@ -57,11 +61,11 @@ export function CVPreview({
 									<div className='flex justify-between items-baseline mb-1'>
 										<h4 className='font-bold text-black'>{exp.jobTitle}</h4>
 										<span className='text-xs font-bold text-black whitespace-nowrap'>
-											{new Date(exp.startDate).toLocaleDateString(undefined, {month: 'short', year: 'numeric'})} -
+											{new Date(exp.startDate).toLocaleDateString('en-US', {month: 'short', year: 'numeric'})} -
 											{exp.isCurrent
 												? ' Present'
 												: exp.endDate
-													? ` ${new Date(exp.endDate).toLocaleDateString(undefined, {month: 'short', year: 'numeric'})}`
+													? ` ${new Date(exp.endDate).toLocaleDateString('en-US', {month: 'short', year: 'numeric'})}`
 													: ''}
 										</span>
 									</div>
@@ -95,11 +99,11 @@ export function CVPreview({
 									<div className='flex justify-between items-baseline mb-1'>
 										<h4 className='font-bold text-black'>{edu.institution}</h4>
 										<span className='text-xs font-bold text-black whitespace-nowrap'>
-											{new Date(edu.startDate).toLocaleDateString(undefined, {month: 'short', year: 'numeric'})} -
+											{new Date(edu.startDate).toLocaleDateString('en-US', {month: 'short', year: 'numeric'})} -
 											{edu.isCurrent
 												? ' Present'
 												: edu.endDate
-													? ` ${new Date(edu.endDate).toLocaleDateString(undefined, {month: 'short', year: 'numeric'})}`
+													? ` ${new Date(edu.endDate).toLocaleDateString('en-US', {month: 'short', year: 'numeric'})}`
 													: ''}
 										</span>
 									</div>
@@ -116,14 +120,31 @@ export function CVPreview({
 					</section>
 				);
 
+			case 'languages':
+				if (!languages || languages.length === 0) return null;
+				return (
+					<section key='languages'>
+						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Languages</h3>
+						<div className='flex flex-col gap-1.5'>
+							{languages.map(lang => (
+								<div key={lang.id} className='text-sm text-black leading-snug break-words'>
+									<span className='font-bold'>{lang.name}</span>
+									{lang.proficiency && <span> – {lang.proficiency}</span>}
+								</div>
+							))}
+						</div>
+					</section>
+				);
+
 			case 'projects': {
+				const projectsContent = data.projects || (data as any).selectedProjects || [];
 				const visibleProjects =
-					data.selectedProjects?.filter(proj => !currentLayout.hiddenProjectIds?.includes(proj.id)) || [];
+					projectsContent.filter((proj: any) => !currentLayout.hiddenProjectIds?.includes(proj.id));
 				if (visibleProjects.length === 0) return null;
 
 				return (
 					<section key='projects'>
-						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Selected Projects</h3>
+						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Projects</h3>
 						<div className='grid grid-cols-1 gap-5'>
 							{visibleProjects.map(proj => (
 								<div key={proj.id} className='break-inside-avoid'>
@@ -243,7 +264,8 @@ export function CVPreview({
 
 			{/* Main Content */}
 			<div
-				className={`flex-1 ${
+				className={`
+					${
 					currentLayout.mode === 'two-column'
 						? 'grid gap-8 print:gap-8'
 						: 'space-y-8 print:space-y-6'

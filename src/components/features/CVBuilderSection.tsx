@@ -1,7 +1,7 @@
 'use client';
 
 import {useState, useEffect} from 'react';
-import {TailoredCV, Profile, Education} from '@prisma/client';
+import {TailoredCV, Profile, Education, Language} from '@prisma/client';
 import {generateTailoredCV, deleteTailoredCV} from '@/actions/cv';
 import {CVPreview} from './CVPreview';
 import {CVLayoutControls} from './CVLayoutControls';
@@ -22,11 +22,13 @@ import {useRouter} from 'next/navigation';
 export function CVBuilderSection({
 	initialCVs,
 	profile,
-	educations
+	educations,
+	languages
 }: {
 	initialCVs: TailoredCV[];
 	profile: Profile | null;
 	educations: Education[];
+	languages: Language[];
 }) {
 	const [cvs, setCvs] = useState<TailoredCV[]>(initialCVs);
 	const [selectedCv, setSelectedCv] = useState<TailoredCV | null>(null);
@@ -35,7 +37,7 @@ export function CVBuilderSection({
 
 	const [layout, setLayout] = useState<ColumnLayout>({
 		mode: 'single',
-		leftColumn: ['summary', 'skills', 'experience', 'education', 'projects'],
+		leftColumn: ['summary', 'skills', 'experience', 'education', 'languages', 'projects'],
 		rightColumn: [],
 		ratio: 'left-narrow',
 		leftColumnWidth: 30
@@ -191,7 +193,7 @@ export function CVBuilderSection({
 										>
 											<div className='overflow-hidden'>
 												<p className='font-medium truncate'>{cv.jobTitle}</p>
-												<p className='text-xs text-muted-foreground'>{new Date(cv.createdAt).toLocaleDateString()}</p>
+												<p className='text-xs text-muted-foreground'>{new Date(cv.createdAt).toLocaleDateString('en-US')}</p>
 											</div>
 											<Button
 												variant='ghost'
@@ -232,13 +234,14 @@ export function CVBuilderSection({
 							<CVLayoutControls 
 								layout={layout} 
 								onChange={setLayout} 
-								projects={displayData?.selectedProjects || []}
+								projects={displayData?.projects || []}
 							/>
 							<CVPreview
 								data={displayData}
 								profile={profile}
-								jobTitle={selectedCv.jobTitle}
+								jobTitle={form.watch('jobTitle')}
 								educations={educations}
+								languages={languages}
 								layout={layout}
 							/>
 						</div>

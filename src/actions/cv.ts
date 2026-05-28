@@ -73,13 +73,13 @@ CANDIDATE RAW DATA (JSON):
 ${JSON.stringify(candidateData, null, 2)}
 
 INSTRUCTIONS:
-1. Write a compelling 3-4 sentence professional summary tailored to this specific job.
+1. Write a compelling 3-4 sentence summary tailored to this specific job.
 2. Select and order the most relevant skills from the candidate's list. Exclude completely irrelevant ones.
 3. Select the most relevant work experiences. Filter or rewrite accomplishments to highlight overlap with the job description. Do NOT hallucinate entirely new experiences, only adjust descriptions of existing ones. Use the exact same IDs.
 4. Select the most relevant projects. Filter out projects that do not match the tech stack or domain of the job description. Use the exact same IDs.
 5. Return the result strictly in valid JSON format matching the following structure. Do not include markdown code blocks.
 {
-  "professionalSummary": "string",
+  "summary": "string",
   "relevantSkills": ["string"],
   "selectedExperiences": [
     {
@@ -93,7 +93,7 @@ INSTRUCTIONS:
       "accomplishments": [{ "value": "string" }]
     }
   ],
-  "selectedProjects": [
+  "projects": [
     {
       "id": "string",
       "title": "string",

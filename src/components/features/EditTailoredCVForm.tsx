@@ -41,10 +41,10 @@ export function EditTailoredCVForm({
         linkedinUrl: profile?.linkedinUrl || "",
         githubUrl: profile?.githubUrl || "",
       },
-      professionalSummary: generatedContent.professionalSummary || "",
+      summary: generatedContent.summary || (generatedContent as any).professionalSummary || "",
       relevantSkills: generatedContent.relevantSkills || [],
       selectedExperiences: generatedContent.selectedExperiences || [],
-      selectedProjects: generatedContent.selectedProjects || [],
+      projects: generatedContent.projects || (generatedContent as any).selectedProjects || [],
     },
   });
 
@@ -63,7 +63,7 @@ export function EditTailoredCVForm({
     move: moveProject,
   } = useFieldArray({
     control: form.control,
-    name: "selectedProjects",
+    name: "projects",
   });
 
   // Watch for real-time preview
@@ -73,10 +73,10 @@ export function EditTailoredCVForm({
       const safeValue = {
         jobTitleOverride: value.jobTitleOverride,
         personalInfo: value.personalInfo,
-        professionalSummary: value.professionalSummary || "",
+        summary: value.summary || "",
         relevantSkills: value.relevantSkills || [],
         selectedExperiences: value.selectedExperiences || [],
-        selectedProjects: value.selectedProjects || [],
+        projects: value.projects || [],
       };
       onUpdatePreview(safeValue as TailoredCVData);
     });
@@ -198,12 +198,12 @@ export function EditTailoredCVForm({
               </div>
             </div>
 
-            {/* Professional Summary */}
+            {/* Summary */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2">Professional Summary</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2">Summary</h3>
               <FormField
                 control={form.control}
-                name="professionalSummary"
+                name="summary"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -253,7 +253,7 @@ export function EditTailoredCVForm({
 
             {/* Projects */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2">Selected Projects</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2">Projects</h3>
               <div className="space-y-6">
                 {projectFields.map((projField, projIndex) => (
                   <div key={projField.id} className="p-4 rounded-lg border bg-muted/10 space-y-4">
@@ -261,7 +261,7 @@ export function EditTailoredCVForm({
                       <div className="flex-1 space-y-3 mr-4">
                         <FormField
                           control={form.control}
-                          name={`selectedProjects.${projIndex}.title`}
+                          name={`projects.${projIndex}.title`}
                           render={({ field }) => (
                             <FormItem className="space-y-1">
                               <FormLabel className="text-xs">Project Title</FormLabel>
@@ -273,7 +273,7 @@ export function EditTailoredCVForm({
                         />
                         <FormField
                           control={form.control}
-                          name={`selectedProjects.${projIndex}.shortDescription`}
+                          name={`projects.${projIndex}.shortDescription`}
                           render={({ field }) => (
                             <FormItem className="space-y-1">
                               <FormLabel className="text-xs">Short Description</FormLabel>
@@ -319,7 +319,7 @@ export function EditTailoredCVForm({
 function ProjectTechStack({ form, projIndex }: { form: UseFormReturn<TailoredCVData>, projIndex: number }) {
   const { fields, append, remove, move } = useFieldArray({
     control: form.control,
-    name: `selectedProjects.${projIndex}.techStack` as never,
+    name: `projects.${projIndex}.techStack` as never,
   });
 
   return (
@@ -330,7 +330,7 @@ function ProjectTechStack({ form, projIndex }: { form: UseFormReturn<TailoredCVD
           <div key={field.id} className="flex items-center gap-1">
             <FormField
               control={form.control}
-              name={`selectedProjects.${projIndex}.techStack.${idx}`}
+              name={`projects.${projIndex}.techStack.${idx}`}
               render={({ field: inputField }) => (
                 <FormItem className="flex-1 mb-0 space-y-0">
                   <FormControl>
