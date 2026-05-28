@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ProfileForm } from "./ProfileForm";
+import { ProfileForm } from "@/components/features/ProfileForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, MapPin, Mail, Phone, Edit, PlusCircle, Link as LinkIcon } from "lucide-react";

@@ -14,7 +14,7 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/
 import {Checkbox} from '@/components/ui/checkbox';
 import {toast} from 'sonner';
 import {Trash2, PlusCircle, CheckCircle} from 'lucide-react';
-import {MonthYearPicker} from './MonthYearPicker';
+import {MonthYearPicker} from '@/components/features/MonthYearPicker';
 
 export function ExperienceForm({
 	initialData,

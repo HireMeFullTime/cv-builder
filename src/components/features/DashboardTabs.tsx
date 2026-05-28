@@ -1,12 +1,12 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ProfileSection } from "./ProfileSection";
-import { ExperienceSection } from "./ExperienceSection";
-import { ProjectSection } from "./ProjectSection";
-import { EducationSection } from "./EducationSection";
-import { SkillSection } from "./SkillSection";
-import { LanguageSection } from "./LanguageSection";
+import { ProfileSection } from "@/components/features/ProfileSection";
+import { ExperienceSection } from "@/components/features/ExperienceSection";
+import { ProjectSection } from "@/components/features/ProjectSection";
+import { EducationSection } from "@/components/features/EducationSection";
+import { SkillSection } from "@/components/features/SkillSection";
+import { LanguageSection } from "@/components/features/LanguageSection";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type ProfileData, type ExperienceData } from "@/types";
 import { type Project, type Education, type Skill, type Language } from "@prisma/client";

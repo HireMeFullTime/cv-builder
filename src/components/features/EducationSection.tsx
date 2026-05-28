@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { EducationForm } from "./EducationForm";
+import { EducationForm } from "@/components/features/EducationForm";
 import { deleteEducation } from "@/actions/education";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

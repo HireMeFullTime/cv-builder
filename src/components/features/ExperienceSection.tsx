@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ExperienceForm } from "./ExperienceForm";
+import { ExperienceForm } from "@/components/features/ExperienceForm";
 import { deleteExperience } from "@/actions/experience";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

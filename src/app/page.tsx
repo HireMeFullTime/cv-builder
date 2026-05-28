@@ -1,5 +1,5 @@
-import { auth } from "../auth";
-import { LoginForm } from "../components/features/LoginForm";
+import { auth } from "@/auth";
+import { LoginForm } from "@/components/features/LoginForm";
 import { redirect } from "next/navigation";
 
 export default async function Home() {

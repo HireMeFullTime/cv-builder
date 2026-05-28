@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { LanguageForm } from "./LanguageForm";
+import { LanguageForm } from "@/components/features/LanguageForm";
 import { deleteLanguage } from "@/actions/language";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";

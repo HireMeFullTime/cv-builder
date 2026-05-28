@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { TechStackInput } from "./TechStackInput";
+import { TechStackInput } from "@/components/features/TechStackInput";
 import { toast } from "sonner";
 
 export function SkillForm({ 

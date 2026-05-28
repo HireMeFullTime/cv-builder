@@ -3,9 +3,9 @@
 import {useState, useEffect} from 'react';
 import {TailoredCV, Profile, Education, Language} from '@prisma/client';
 import {generateTailoredCV, deleteTailoredCV} from '@/actions/cv';
-import {CVPreview} from './CVPreview';
-import {CVLayoutControls} from './CVLayoutControls';
-import {EditTailoredCVForm} from './EditTailoredCVForm';
+import {CVPreview} from '@/components/features/CVPreview';
+import {CVLayoutControls} from '@/components/features/CVLayoutControls';
+import {EditTailoredCVForm} from '@/components/features/EditTailoredCVForm';
 import {CVBuilderFormData, TailoredCVData, ColumnLayout} from '@/types';
 import {cvBuilderFormSchema} from '@/lib/validations';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';

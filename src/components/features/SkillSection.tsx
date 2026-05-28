@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SkillForm } from "./SkillForm";
+import { SkillForm } from "@/components/features/SkillForm";
 import { deleteSkillCategory } from "@/actions/skill";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
