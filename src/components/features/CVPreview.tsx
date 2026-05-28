@@ -3,6 +3,7 @@
 import {TailoredCVData, ColumnLayout, CVSectionId} from '@/types';
 import {Profile, Education} from '@prisma/client';
 import {MapPin, Mail, Phone, Link as LinkIcon, ExternalLink, Globe} from 'lucide-react';
+import Link from 'next/link';
 
 export function CVPreview({
 	data,
@@ -130,14 +131,26 @@ export function CVPreview({
 										<h4 className='font-bold text-black flex items-center gap-2'>
 											{proj.title}
 											{proj.linkUrl && (
-												<a
+												<Link
 													href={proj.linkUrl}
 													target='_blank'
 													rel='noreferrer'
 													className='text-black hover:opacity-70 transition-opacity'
+													title='Project Website'
 												>
 													<Globe className='w-3.5 h-3.5' />
-												</a>
+												</Link>
+											)}
+											{proj.githubUrl && (
+												<Link
+													href={proj.githubUrl}
+													target='_blank'
+													rel='noreferrer'
+													className='text-black hover:opacity-70 transition-opacity'
+													title='GitHub Repository'
+												>
+													<ExternalLink className='w-3.5 h-3.5' />
+												</Link>
 											)}
 										</h4>
 										{proj.role && (
@@ -190,13 +203,17 @@ export function CVPreview({
 					{(data?.personalInfo?.email || profile?.email) && (
 						<div className='flex items-center gap-1.5'>
 							<Mail className='w-4 h-4' />
-							<span>{data?.personalInfo?.email || profile?.email}</span>
+							<Link href={`mailto:${data?.personalInfo?.email || profile?.email}`} className="hover:underline text-black">
+								{data?.personalInfo?.email || profile?.email}
+							</Link>
 						</div>
 					)}
 					{(data?.personalInfo?.phone || profile?.phone) && (
 						<div className='flex items-center gap-1.5'>
 							<Phone className='w-4 h-4' />
-							<span>{data?.personalInfo?.phone || profile?.phone}</span>
+							<Link href={`tel:${data?.personalInfo?.phone || profile?.phone}`} className="hover:underline text-black">
+								{data?.personalInfo?.phone || profile?.phone}
+							</Link>
 						</div>
 					)}
 					{(data?.personalInfo?.location || profile?.location) && (
@@ -208,13 +225,17 @@ export function CVPreview({
 					{(data?.personalInfo?.linkedinUrl || profile?.linkedinUrl) && (
 						<div className='flex items-center gap-1.5'>
 							<LinkIcon className='w-4 h-4' />
-							<span>{(data?.personalInfo?.linkedinUrl || profile?.linkedinUrl || '').replace('https://www.', '').replace('https://', '')}</span>
+							<Link href={data?.personalInfo?.linkedinUrl || profile?.linkedinUrl || '#'} target="_blank" rel="noreferrer" className="hover:underline text-black">
+								{(data?.personalInfo?.linkedinUrl || profile?.linkedinUrl || '').replace('https://www.', '').replace('https://', '')}
+							</Link>
 						</div>
 					)}
 					{(data?.personalInfo?.githubUrl || profile?.githubUrl) && (
 						<div className='flex items-center gap-1.5'>
 							<ExternalLink className='w-4 h-4' />
-							<span>{(data?.personalInfo?.githubUrl || profile?.githubUrl || '').replace('https://', '')}</span>
+							<Link href={data?.personalInfo?.githubUrl || profile?.githubUrl || '#'} target="_blank" rel="noreferrer" className="hover:underline text-black">
+								{(data?.personalInfo?.githubUrl || profile?.githubUrl || '').replace('https://', '')}
+							</Link>
 						</div>
 					)}
 				</div>
