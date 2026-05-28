@@ -225,7 +225,7 @@ export function CVBuilderSection({
 			</div>
 
 			{/* RIGHT PANE: CV PREVIEW */}
-			<div className='lg:col-span-8 bg-background border rounded-lg shadow-sm min-h-[800px] flex flex-col print:border-none print:shadow-none print:col-span-12'>
+			<div className='lg:col-span-8 bg-background border rounded-lg shadow-sm min-h-200 flex flex-col print:border-none print:shadow-none print:col-span-12'>
 				{selectedCv ? (
 					<>
 						<div className='border-b p-4 flex items-center justify-between bg-muted/20 print:hidden'>
@@ -248,7 +248,7 @@ export function CVBuilderSection({
 							<CVPreview
 								data={displayData}
 								profile={profile}
-								jobTitle={form.watch('jobTitle')}
+								jobTitle={displayData?.jobTitleOverride || selectedCv.jobTitle}
 								educations={educations}
 								languages={languages}
 								layout={layout}

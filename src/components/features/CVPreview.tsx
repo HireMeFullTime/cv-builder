@@ -127,7 +127,7 @@ export function CVPreview({
 						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Languages</h3>
 						<div className='flex flex-col gap-1.5'>
 							{languages.map(lang => (
-								<div key={lang.id} className='text-sm text-black leading-snug break-words'>
+								<div key={lang.id} className='text-sm text-black leading-snug wrap-break-word'>
 									<span className='font-bold'>{lang.name}</span>
 									{lang.proficiency && <span> – {lang.proficiency}</span>}
 								</div>
