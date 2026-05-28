@@ -222,13 +222,14 @@ export function CVPreview({
 			<div
 				className={`flex-1 ${
 					currentLayout.mode === 'two-column'
-						? currentLayout.ratio === 'equal'
-							? 'grid grid-cols-2 gap-8 print:grid-cols-2'
-							: currentLayout.ratio === 'right-narrow'
-								? 'grid grid-cols-[2.5fr_1fr] gap-8 print:grid-cols-[2.5fr_1fr]'
-								: 'grid grid-cols-[1fr_2.5fr] gap-8 print:grid-cols-[1fr_2.5fr]'
+						? 'grid gap-8 print:gap-8'
 						: 'space-y-8 print:space-y-6'
 				}`}
+				style={
+					currentLayout.mode === 'two-column'
+						? {gridTemplateColumns: `${currentLayout.leftColumnWidth ?? 50}fr ${100 - (currentLayout.leftColumnWidth ?? 50)}fr`}
+						: undefined
+				}
 			>
 				{currentLayout.mode === 'single' ? (
 					<>{currentLayout.leftColumn.map(renderSection)}</>

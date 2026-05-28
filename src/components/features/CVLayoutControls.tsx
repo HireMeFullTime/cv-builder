@@ -191,34 +191,20 @@ export function CVLayoutControls({
           </div>
           <div className="flex gap-2 items-center">
             {layout.mode === "two-column" && (
-              <div className="flex bg-muted p-0.5 rounded-md border mr-2">
-                <Button
-                  variant={layout.ratio === "left-narrow" ? "secondary" : "ghost"}
-                  size="sm"
-                  onClick={() => onChange({ ...layout, ratio: "left-narrow" })}
-                  className="h-6 text-[10px] px-2"
-                  title="Narrow Left Column (1:2.5)"
-                >
-                  1:2
-                </Button>
-                <Button
-                  variant={layout.ratio === "equal" ? "secondary" : "ghost"}
-                  size="sm"
-                  onClick={() => onChange({ ...layout, ratio: "equal" })}
-                  className="h-6 text-[10px] px-2"
-                  title="Equal Columns (1:1)"
-                >
-                  1:1
-                </Button>
-                <Button
-                  variant={layout.ratio === "right-narrow" ? "secondary" : "ghost"}
-                  size="sm"
-                  onClick={() => onChange({ ...layout, ratio: "right-narrow" })}
-                  className="h-6 text-[10px] px-2"
-                  title="Narrow Right Column (2.5:1)"
-                >
-                  2:1
-                </Button>
+              <div className="flex flex-col gap-1 mr-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Col Width: {layout.leftColumnWidth ?? 50}%</span>
+                </div>
+                <input 
+                  type="range" 
+                  min="20" 
+                  max="80" 
+                  step="5"
+                  value={layout.leftColumnWidth ?? 50}
+                  onChange={(e) => onChange({ ...layout, leftColumnWidth: Number(e.target.value) })}
+                  className="w-32 h-1.5 bg-muted rounded-lg appearance-none cursor-pointer accent-black"
+                  title="Adjust left column width"
+                />
               </div>
             )}
             <div className="flex gap-1">

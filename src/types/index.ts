@@ -32,5 +32,6 @@ export interface ColumnLayout {
   leftColumn: CVSectionId[];
   rightColumn: CVSectionId[];
   ratio?: ColumnRatio;
+  leftColumnWidth?: number;
   hiddenProjectIds?: string[];
 }
