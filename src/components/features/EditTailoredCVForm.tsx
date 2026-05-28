@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { tailoredCVSchema } from "@/lib/validations";
 import { TailoredCVData } from "@/types";
@@ -316,7 +316,7 @@ export function EditTailoredCVForm({
 }
 
 // Sub-component for nested field array
-function ProjectTechStack({ form, projIndex }: { form: any, projIndex: number }) {
+function ProjectTechStack({ form, projIndex }: { form: UseFormReturn<TailoredCVData>, projIndex: number }) {
   const { fields, append, remove, move } = useFieldArray({
     control: form.control,
     name: `selectedProjects.${projIndex}.techStack` as never,

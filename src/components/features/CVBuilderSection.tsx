@@ -60,6 +60,11 @@ export function CVBuilderSection({
 		}
 	}, [selectedCv]);
 
+	// Sync local cvs state when initialCVs prop changes from router.refresh()
+	useEffect(() => {
+		setCvs(initialCVs);
+	}, [initialCVs]);
+
 	async function onSubmit(data: CVBuilderFormData) {
 		setIsGenerating(true);
 		try {
@@ -68,8 +73,6 @@ export function CVBuilderSection({
 
 			form.reset();
 			router.refresh();
-
-			window.location.reload();
 		} catch (error) {
 			console.error(error);
 			const errorMessage =

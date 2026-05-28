@@ -6,6 +6,8 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { revalidatePath } from "next/cache";
 import { tailoredCVSchema } from "@/lib/validations";
 import { generateText } from "ai";
+import { Prisma } from "@prisma/client";
+import { TailoredCVData } from "@/types";
 
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY,
@@ -119,7 +121,7 @@ INSTRUCTIONS:
       data: {
         jobTitle,
         jobDescription,
-        generatedContent: object as any,
+        generatedContent: object as Prisma.InputJsonValue,
         userId,
       },
     });
@@ -164,7 +166,7 @@ export async function deleteTailoredCV(id: string) {
   revalidatePath("/dashboard");
 }
 
-export async function updateTailoredCV(id: string, content: any) {
+export async function updateTailoredCV(id: string, content: TailoredCVData) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");
 
@@ -174,7 +176,7 @@ export async function updateTailoredCV(id: string, content: any) {
   await prisma.tailoredCV.update({
     where: { id, userId: session.user.id },
     data: {
-      generatedContent: parsedContent as any,
+      generatedContent: parsedContent as Prisma.InputJsonValue,
     },
   });
 
