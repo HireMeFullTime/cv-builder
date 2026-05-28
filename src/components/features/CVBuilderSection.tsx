@@ -4,7 +4,8 @@ import { useState } from "react";
 import { TailoredCV, Profile, Education } from "@prisma/client";
 import { generateTailoredCV, deleteTailoredCV } from "@/actions/cv";
 import { CVPreview } from "./CVPreview";
-import { CVBuilderFormData, TailoredCVData } from "@/types";
+import { CVLayoutControls } from "./CVLayoutControls";
+import { CVBuilderFormData, TailoredCVData, ColumnLayout } from "@/types";
 import { cvBuilderFormSchema } from "@/lib/validations";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -21,6 +22,14 @@ export function CVBuilderSection({ initialCVs, profile, educations }: { initialC
   const [cvs, setCvs] = useState<TailoredCV[]>(initialCVs);
   const [selectedCv, setSelectedCv] = useState<TailoredCV | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  
+  const [layout, setLayout] = useState<ColumnLayout>({
+    mode: "single",
+    leftColumn: ["summary", "skills", "experience", "education", "projects"],
+    rightColumn: [],
+    ratio: "left-narrow",
+  });
+  
   const router = useRouter();
 
   const form = useForm<CVBuilderFormData>({
@@ -186,7 +195,14 @@ export function CVBuilderSection({ initialCVs, profile, educations }: { initialC
               </Button>
             </div>
             <div className="p-8 md:p-12 print:p-0 flex-1 overflow-y-auto print:overflow-visible bg-white text-black print:bg-transparent">
-              <CVPreview data={selectedCv.generatedContent as unknown as TailoredCVData} profile={profile} jobTitle={selectedCv.jobTitle} educations={educations} />
+              <CVLayoutControls layout={layout} onChange={setLayout} />
+              <CVPreview 
+                data={selectedCv.generatedContent as unknown as TailoredCVData} 
+                profile={profile} 
+                jobTitle={selectedCv.jobTitle} 
+                educations={educations} 
+                layout={layout}
+              />
             </div>
           </>
         ) : (

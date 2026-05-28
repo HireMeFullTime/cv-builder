@@ -22,3 +22,14 @@ export type LanguageData = z.infer<typeof languageSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
 export type TailoredCVData = z.infer<typeof tailoredCVSchema>;
 export type CVBuilderFormData = z.infer<typeof cvBuilderFormSchema>;
+
+export type LayoutMode = 'single' | 'two-column';
+export type CVSectionId = 'summary' | 'skills' | 'experience' | 'projects' | 'education';
+export type ColumnRatio = 'equal' | 'left-narrow' | 'right-narrow';
+
+export interface ColumnLayout {
+  mode: LayoutMode;
+  leftColumn: CVSectionId[];
+  rightColumn: CVSectionId[];
+  ratio?: ColumnRatio;
+}
