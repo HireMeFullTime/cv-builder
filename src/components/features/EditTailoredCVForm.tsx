@@ -41,10 +41,10 @@ export function EditTailoredCVForm({
         linkedinUrl: profile?.linkedinUrl || "",
         githubUrl: profile?.githubUrl || "",
       },
-      summary: generatedContent.summary || (generatedContent as any).professionalSummary || "",
+      summary: generatedContent.summary || generatedContent.professionalSummary || "",
       relevantSkills: generatedContent.relevantSkills || [],
       selectedExperiences: generatedContent.selectedExperiences || [],
-      projects: generatedContent.projects || (generatedContent as any).selectedProjects || [],
+      projects: generatedContent.projects || generatedContent.selectedProjects || [],
     },
   });
 

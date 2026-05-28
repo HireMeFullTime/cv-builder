@@ -136,4 +136,6 @@ export const tailoredCVSchema = z.object({
     relevantSkills: z.array(z.string()).describe("A list of the most relevant skills for this specific job, ordered by importance. Exclude completely irrelevant skills."),
     selectedExperiences: z.array(generatedExperienceSchema).describe("The user's work experience, with accomplishments filtered or slightly adjusted to emphasize aspects most relevant to the target role."),
     projects: z.array(generatedProjectSchema).describe("The user's projects, filtered and tailored to show relevance to the job description. Do NOT include projects that are completely irrelevant."),
+    professionalSummary: z.string().optional(),
+    selectedProjects: z.array(generatedProjectSchema).optional(),
 });
