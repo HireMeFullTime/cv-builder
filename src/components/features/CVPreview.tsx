@@ -180,39 +180,41 @@ export function CVPreview({
 			{/* Header section with Personal Info */}
 			<header className='mb-8 border-b-2 border-black pb-6'>
 				<h1 className='text-4xl font-bold text-black tracking-tight uppercase'>
-					{profile ? `${profile.firstName} ${profile.lastName}` : 'John Doe'}
+					{data?.personalInfo?.firstName || profile?.firstName} {data?.personalInfo?.lastName || profile?.lastName}
 				</h1>
-				<h2 className='text-xl font-medium text-black mt-2'>{jobTitle || profile?.title || 'Professional'}</h2>
+				<h2 className='text-xl font-medium text-black mt-2'>
+					{data?.jobTitleOverride || jobTitle || data?.personalInfo?.title || profile?.title || 'Professional'}
+				</h2>
 
 				<div className='flex flex-wrap gap-x-4 gap-y-2 mt-4 text-sm text-black'>
-					{profile?.email && (
+					{(data?.personalInfo?.email || profile?.email) && (
 						<div className='flex items-center gap-1.5'>
 							<Mail className='w-4 h-4' />
-							<span>{profile.email}</span>
+							<span>{data?.personalInfo?.email || profile?.email}</span>
 						</div>
 					)}
-					{profile?.phone && (
+					{(data?.personalInfo?.phone || profile?.phone) && (
 						<div className='flex items-center gap-1.5'>
 							<Phone className='w-4 h-4' />
-							<span>{profile.phone}</span>
+							<span>{data?.personalInfo?.phone || profile?.phone}</span>
 						</div>
 					)}
-					{profile?.location && (
+					{(data?.personalInfo?.location || profile?.location) && (
 						<div className='flex items-center gap-1.5'>
 							<MapPin className='w-4 h-4' />
-							<span>{profile.location}</span>
+							<span>{data?.personalInfo?.location || profile?.location}</span>
 						</div>
 					)}
-					{profile?.linkedinUrl && (
+					{(data?.personalInfo?.linkedinUrl || profile?.linkedinUrl) && (
 						<div className='flex items-center gap-1.5'>
 							<LinkIcon className='w-4 h-4' />
-							<span>{profile.linkedinUrl.replace('https://www.', '').replace('https://', '')}</span>
+							<span>{(data?.personalInfo?.linkedinUrl || profile?.linkedinUrl || '').replace('https://www.', '').replace('https://', '')}</span>
 						</div>
 					)}
-					{profile?.githubUrl && (
+					{(data?.personalInfo?.githubUrl || profile?.githubUrl) && (
 						<div className='flex items-center gap-1.5'>
 							<ExternalLink className='w-4 h-4' />
-							<span>{profile.githubUrl.replace('https://', '')}</span>
+							<span>{(data?.personalInfo?.githubUrl || profile?.githubUrl || '').replace('https://', '')}</span>
 						</div>
 					)}
 				</div>

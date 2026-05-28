@@ -109,6 +109,7 @@ export function CVBuilderSection({
 				{selectedCv ? (
 					<EditTailoredCVForm 
 						cv={selectedCv} 
+						profile={profile}
 						onUpdatePreview={setPreviewData} 
 						onClose={() => setSelectedCv(null)} 
 					/>

@@ -12,25 +12,39 @@ import { ArrowUp, ArrowDown, Trash2, Plus, Save, Undo2 } from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { updateTailoredCV } from "@/actions/cv";
-import { TailoredCV } from "@prisma/client";
+import { TailoredCV, Profile } from "@prisma/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function EditTailoredCVForm({
   cv,
+  profile,
   onUpdatePreview,
   onClose,
 }: {
   cv: TailoredCV;
+  profile: Profile | null;
   onUpdatePreview: (data: TailoredCVData) => void;
   onClose: () => void;
 }) {
+  const generatedContent = (cv.generatedContent as unknown as TailoredCVData) || {};
   const form = useForm<TailoredCVData>({
     resolver: zodResolver(tailoredCVSchema),
-    defaultValues: (cv.generatedContent as unknown as TailoredCVData) || {
-      professionalSummary: "",
-      relevantSkills: [],
-      selectedExperiences: [],
-      selectedProjects: [],
+    defaultValues: {
+      jobTitleOverride: generatedContent.jobTitleOverride || cv.jobTitle,
+      personalInfo: generatedContent.personalInfo || {
+        firstName: profile?.firstName || "",
+        lastName: profile?.lastName || "",
+        title: profile?.title || "",
+        email: profile?.email || "",
+        phone: profile?.phone || "",
+        location: profile?.location || "",
+        linkedinUrl: profile?.linkedinUrl || "",
+        githubUrl: profile?.githubUrl || "",
+      },
+      professionalSummary: generatedContent.professionalSummary || "",
+      relevantSkills: generatedContent.relevantSkills || [],
+      selectedExperiences: generatedContent.selectedExperiences || [],
+      selectedProjects: generatedContent.selectedProjects || [],
     },
   });
 
@@ -57,6 +71,8 @@ export function EditTailoredCVForm({
     const subscription = form.watch((value) => {
       // Provide fallback defaults to avoid undefined errors in preview during edit
       const safeValue = {
+        jobTitleOverride: value.jobTitleOverride,
+        personalInfo: value.personalInfo,
         professionalSummary: value.professionalSummary || "",
         relevantSkills: value.relevantSkills || [],
         selectedExperiences: value.selectedExperiences || [],
@@ -95,6 +111,93 @@ export function EditTailoredCVForm({
         <Form {...form}>
           <form id="edit-cv-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             
+            {/* CV Header */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2">Header / Contact Info</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="personalInfo.firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs">First Name</FormLabel>
+                      <FormControl><Input {...field} className="h-8 text-sm" /></FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="personalInfo.lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs">Last Name</FormLabel>
+                      <FormControl><Input {...field} className="h-8 text-sm" /></FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="jobTitleOverride"
+                  render={({ field }) => (
+                    <FormItem className="col-span-2">
+                      <FormLabel className="text-xs">Job Title (Displayed under name)</FormLabel>
+                      <FormControl><Input {...field} className="h-8 text-sm" /></FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="personalInfo.email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs">Email</FormLabel>
+                      <FormControl><Input {...field} className="h-8 text-sm" /></FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="personalInfo.phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs">Phone</FormLabel>
+                      <FormControl><Input {...field} className="h-8 text-sm" /></FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="personalInfo.location"
+                  render={({ field }) => (
+                    <FormItem className="col-span-2">
+                      <FormLabel className="text-xs">Location</FormLabel>
+                      <FormControl><Input {...field} className="h-8 text-sm" /></FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="personalInfo.linkedinUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs">LinkedIn URL</FormLabel>
+                      <FormControl><Input {...field} className="h-8 text-sm" /></FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="personalInfo.githubUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs">GitHub URL</FormLabel>
+                      <FormControl><Input {...field} className="h-8 text-sm" /></FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
             {/* Professional Summary */}
             <div className="space-y-4">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2">Professional Summary</h3>
