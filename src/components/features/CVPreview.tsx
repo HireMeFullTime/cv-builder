@@ -29,8 +29,8 @@ export function CVPreview({
 				if (!data.professionalSummary) return null;
 				return (
 					<section key='summary'>
-						<h3 className='text-lg font-bold uppercase tracking-wider text-slate-800 mb-3'>Professional Summary</h3>
-						<p className='text-slate-600 leading-relaxed text-sm whitespace-pre-wrap'>{data.professionalSummary}</p>
+						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Professional Summary</h3>
+						<p className='text-black leading-relaxed text-sm whitespace-pre-wrap'>{data.professionalSummary}</p>
 					</section>
 				);
 
@@ -38,8 +38,8 @@ export function CVPreview({
 				if (!data.relevantSkills || data.relevantSkills.length === 0) return null;
 				return (
 					<section key='skills'>
-						<h3 className='text-lg font-bold uppercase tracking-wider text-slate-800 mb-3'>Key Skills</h3>
-						<div className='text-sm font-semibold text-slate-800 leading-relaxed'>
+						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Key Skills</h3>
+						<div className='text-sm font-bold text-black leading-relaxed'>
 							{data.relevantSkills.join(' • ')}
 						</div>
 					</section>
@@ -49,13 +49,13 @@ export function CVPreview({
 				if (!data.selectedExperiences || data.selectedExperiences.length === 0) return null;
 				return (
 					<section key='experience'>
-						<h3 className='text-lg font-bold uppercase tracking-wider text-slate-800 mb-3'>Experience</h3>
+						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Experience</h3>
 						<div className='space-y-5'>
 							{data.selectedExperiences.map(exp => (
 								<div key={exp.id}>
 									<div className='flex justify-between items-baseline mb-1'>
-										<h4 className='font-semibold text-slate-900'>{exp.jobTitle}</h4>
-										<span className='text-xs font-medium text-slate-500 whitespace-nowrap bg-slate-50 px-2 py-0.5 rounded'>
+										<h4 className='font-bold text-black'>{exp.jobTitle}</h4>
+										<span className='text-xs font-bold text-black whitespace-nowrap'>
 											{new Date(exp.startDate).toLocaleDateString(undefined, {month: 'short', year: 'numeric'})} -
 											{exp.isCurrent
 												? ' Present'
@@ -64,12 +64,12 @@ export function CVPreview({
 													: ''}
 										</span>
 									</div>
-									<div className='text-sm font-medium text-slate-600 mb-2'>
+									<div className='text-sm font-medium text-black mb-2'>
 										{exp.company}
 										{exp.location ? ` | ${exp.location}` : ''}
 									</div>
 									{exp.accomplishments && exp.accomplishments.length > 0 && (
-										<ul className='list-disc list-outside ml-4 space-y-1.5 text-sm text-slate-600'>
+										<ul className='list-disc list-outside ml-4 space-y-1.5 text-sm text-black'>
 											{exp.accomplishments.map((acc, idx) => (
 												<li key={idx} className='pl-1'>
 													{acc.value}
@@ -87,13 +87,13 @@ export function CVPreview({
 				if (!educations || educations.length === 0) return null;
 				return (
 					<section key='education'>
-						<h3 className='text-lg font-bold uppercase tracking-wider text-slate-800 mb-3'>Education</h3>
+						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Education</h3>
 						<div className='space-y-4'>
 							{educations.map(edu => (
 								<div key={edu.id}>
 									<div className='flex justify-between items-baseline mb-1'>
-										<h4 className='font-semibold text-slate-900'>{edu.institution}</h4>
-										<span className='text-xs font-medium text-slate-500 whitespace-nowrap bg-slate-50 px-2 py-0.5 rounded'>
+										<h4 className='font-bold text-black'>{edu.institution}</h4>
+										<span className='text-xs font-bold text-black whitespace-nowrap'>
 											{new Date(edu.startDate).toLocaleDateString(undefined, {month: 'short', year: 'numeric'})} -
 											{edu.isCurrent
 												? ' Present'
@@ -102,12 +102,12 @@ export function CVPreview({
 													: ''}
 										</span>
 									</div>
-									<div className='text-sm font-medium text-slate-600'>
+									<div className='text-sm font-medium text-black'>
 										{edu.degree}
 										{edu.fieldOfStudy ? ` in ${edu.fieldOfStudy}` : ''}
 									</div>
 									{edu.description && (
-										<p className='text-sm text-slate-600 mt-1.5 leading-relaxed'>{edu.description}</p>
+										<p className='text-sm text-black mt-1.5 leading-relaxed'>{edu.description}</p>
 									)}
 								</div>
 							))}
@@ -122,34 +122,34 @@ export function CVPreview({
 
 				return (
 					<section key='projects'>
-						<h3 className='text-lg font-bold uppercase tracking-wider text-slate-800 mb-3'>Selected Projects</h3>
+						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Selected Projects</h3>
 						<div className='grid grid-cols-1 gap-5'>
 							{visibleProjects.map(proj => (
 								<div key={proj.id} className='break-inside-avoid'>
 									<div className='flex justify-between items-baseline mb-1'>
-										<h4 className='font-semibold text-slate-900 flex items-center gap-2'>
+										<h4 className='font-bold text-black flex items-center gap-2'>
 											{proj.title}
 											{proj.linkUrl && (
 												<a
 													href={proj.linkUrl}
 													target='_blank'
 													rel='noreferrer'
-													className='text-slate-400 hover:text-slate-800 transition-colors'
+													className='text-black hover:opacity-70 transition-opacity'
 												>
 													<Globe className='w-3.5 h-3.5' />
 												</a>
 											)}
 										</h4>
 										{proj.role && (
-											<span className='text-xs font-medium text-slate-500 bg-slate-50 px-2 py-0.5 rounded'>
+											<span className='text-xs font-bold text-black'>
 												{proj.role}
 											</span>
 										)}
 									</div>
-									<p className='text-sm text-slate-600 mb-2 leading-relaxed'>{proj.shortDescription}</p>
+									<p className='text-sm text-black mb-2 leading-relaxed'>{proj.shortDescription}</p>
 
 									{proj.accomplishments && proj.accomplishments.length > 0 && (
-										<ul className='list-disc list-outside ml-4 space-y-1 text-sm text-slate-600 mb-2'>
+										<ul className='list-disc list-outside ml-4 space-y-1 text-sm text-black mb-2'>
 											{proj.accomplishments.map((acc, idx) => (
 												<li key={idx} className='pl-1'>
 													{acc.value}
@@ -159,7 +159,7 @@ export function CVPreview({
 									)}
 
 									{proj.techStack && proj.techStack.length > 0 && (
-										<div className='text-xs font-semibold text-slate-800 mt-2 leading-relaxed'>
+										<div className='text-xs font-bold text-black mt-2 leading-relaxed'>
 											{proj.techStack.join(' • ')}
 										</div>
 									)}
@@ -176,15 +176,15 @@ export function CVPreview({
 	};
 
 	return (
-		<div className='flex flex-col min-h-full font-sans text-slate-800 bg-white'>
+		<div className='flex flex-col min-h-full font-sans text-black bg-white'>
 			{/* Header section with Personal Info */}
-			<header className='mb-8 border-b-2 border-slate-800 pb-6'>
-				<h1 className='text-4xl font-bold text-slate-900 tracking-tight uppercase'>
+			<header className='mb-8 border-b-2 border-black pb-6'>
+				<h1 className='text-4xl font-bold text-black tracking-tight uppercase'>
 					{profile ? `${profile.firstName} ${profile.lastName}` : 'John Doe'}
 				</h1>
-				<h2 className='text-xl font-medium text-slate-600 mt-2'>{jobTitle || profile?.title || 'Professional'}</h2>
+				<h2 className='text-xl font-medium text-black mt-2'>{jobTitle || profile?.title || 'Professional'}</h2>
 
-				<div className='flex flex-wrap gap-x-4 gap-y-2 mt-4 text-sm text-slate-500'>
+				<div className='flex flex-wrap gap-x-4 gap-y-2 mt-4 text-sm text-black'>
 					{profile?.email && (
 						<div className='flex items-center gap-1.5'>
 							<Mail className='w-4 h-4' />
@@ -242,7 +242,7 @@ export function CVPreview({
 
 			{/* Footer / GDPR Clause */}
 			{profile?.gdprClause && (
-				<footer className='mt-12 pt-6 border-t border-slate-200 text-[10px] text-slate-400 text-justify leading-tight'>
+				<footer className='mt-12 pt-6 border-t border-black text-[10px] text-black text-justify leading-tight'>
 					{profile.gdprClause}
 				</footer>
 			)}
