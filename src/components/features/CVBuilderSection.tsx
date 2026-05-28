@@ -85,21 +85,30 @@ export function CVBuilderSection({
 		}
 	}
 
-	async function handleDelete(id: string) {
-		if (!confirm('Are you sure you want to delete this CV?')) return;
-
-		try {
-			await deleteTailoredCV(id);
-			setCvs(prev => prev.filter(cv => cv.id !== id));
-			if (selectedCv?.id === id) {
-				setSelectedCv(null);
+	const handleDelete = (id: string) => {
+		toast('Are you sure you want to delete this CV?', {
+			action: {
+				label: 'Delete',
+				onClick: async () => {
+					try {
+						await deleteTailoredCV(id);
+						setCvs(prev => prev.filter(cv => cv.id !== id));
+						if (selectedCv?.id === id) {
+							setSelectedCv(null);
+						}
+						toast.success('CV Deleted');
+						router.refresh();
+					} catch (error) {
+						toast.error('Failed to delete CV');
+					}
+				}
+			},
+			cancel: {
+				label: 'Cancel',
+				onClick: () => {}
 			}
-			toast.success('CV Deleted');
-			router.refresh();
-		} catch (error) {
-			toast.error('Failed to delete CV');
-		}
-	}
+		});
+	};
 
 	const handleSelectCv = (cv: TailoredCV) => {
 		setSelectedCv(cv);
