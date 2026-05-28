@@ -13,7 +13,7 @@ export function ProfileSection({ initialProfile }: { initialProfile: Partial<Pro
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-4">
         <div>
           <h3 className="text-xl font-bold">Personal Profile</h3>
           <p className="text-sm text-muted-foreground">Manage your basic contact and professional information.</p>

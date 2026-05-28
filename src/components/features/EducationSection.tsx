@@ -42,7 +42,7 @@ export function EducationSection({ initialEducations }: { initialEducations: Edu
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-4">
         <div>
           <h3 className="text-xl font-bold">Education</h3>
           <p className="text-sm text-muted-foreground">Add your academic background and degrees.</p>
