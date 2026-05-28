@@ -183,7 +183,7 @@ export function ProfileForm({
               name="bio"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Professional Summary (Bio)</FormLabel>
+                  <FormLabel>Summary (Bio)</FormLabel>
                   <FormControl>
                     <Textarea 
                       placeholder="A short summary of your professional background..." 

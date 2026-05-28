@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, MapPin, Mail, Phone, Edit, PlusCircle, Link as LinkIcon } from "lucide-react";
 import { type ProfileData } from "@/types";
+import Link from "next/link";
 
 export function ProfileSection({ initialProfile }: { initialProfile: Partial<ProfileData> | null }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -70,24 +71,24 @@ export function ProfileSection({ initialProfile }: { initialProfile: Partial<Pro
               {initialProfile.githubUrl && (
                 <div className="flex items-center gap-2">
                   <LinkIcon className="w-4 h-4" />
-                  <a href={initialProfile.githubUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                  <Link href={initialProfile.githubUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
                     GitHub
-                  </a>
+                  </Link>
                 </div>
               )}
               {initialProfile.linkedinUrl && (
                 <div className="flex items-center gap-2">
                   <LinkIcon className="w-4 h-4" />
-                  <a href={initialProfile.linkedinUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                  <Link href={initialProfile.linkedinUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
                     LinkedIn
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
             
             {initialProfile.bio && (
               <div className="mb-6">
-                <h4 className="text-sm font-semibold mb-2">Professional Summary</h4>
+                <h4 className="text-sm font-semibold mb-2">Summary</h4>
                 <p className="text-sm leading-relaxed">{initialProfile.bio}</p>
               </div>
             )}
