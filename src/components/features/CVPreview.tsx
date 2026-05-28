@@ -29,7 +29,7 @@ export function CVPreview({
 	const renderSection = (id: CVSectionId) => {
 		switch (id) {
 			case 'summary': {
-				const summaryContent = data.summary || (data as any).professionalSummary;
+				const summaryContent = data.summary || data.professionalSummary;
 				if (!summaryContent) return null;
 				return (
 					<section key='summary'>
@@ -127,7 +127,7 @@ export function CVPreview({
 						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Languages</h3>
 						<div className='flex flex-col gap-1.5'>
 							{languages.map(lang => (
-								<div key={lang.id} className='text-sm text-black leading-snug break-words'>
+								<div key={lang.id} className='text-sm text-black leading-snug wrap-break-word'>
 									<span className='font-bold'>{lang.name}</span>
 									{lang.proficiency && <span> – {lang.proficiency}</span>}
 								</div>
@@ -137,7 +137,7 @@ export function CVPreview({
 				);
 
 			case 'projects': {
-				const projectsContent = data.projects || (data as any).selectedProjects || [];
+				const projectsContent = data.projects || data.selectedProjects || [];
 				const visibleProjects =
 					projectsContent.filter((proj: any) => !currentLayout.hiddenProjectIds?.includes(proj.id));
 				if (visibleProjects.length === 0) return null;

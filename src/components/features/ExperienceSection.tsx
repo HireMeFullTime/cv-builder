@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ExperienceForm } from "./ExperienceForm";
+import { ExperienceForm } from "@/components/features/ExperienceForm";
 import { deleteExperience } from "@/actions/experience";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,7 +39,7 @@ export function ExperienceSection({ initialExperiences }: { initialExperiences: 
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-4">
         <div>
           <h3 className="text-xl font-bold">Work Experience</h3>
           <p className="text-sm text-muted-foreground">Manage your work history.</p>

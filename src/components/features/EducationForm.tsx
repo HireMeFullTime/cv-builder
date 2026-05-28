@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { MonthYearPicker } from "./MonthYearPicker";
+import { MonthYearPicker } from "@/components/features/MonthYearPicker";
 import { toast } from "sonner";
 import { type Education } from "@prisma/client";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { LanguageForm } from "./LanguageForm";
+import { LanguageForm } from "@/components/features/LanguageForm";
 import { deleteLanguage } from "@/actions/language";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,7 +36,7 @@ export function LanguageSection({ initialLanguages }: { initialLanguages: Langua
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-4">
         <div>
           <h3 className="text-xl font-bold">Languages</h3>
           <p className="text-sm text-muted-foreground">List the languages you speak and your proficiency level.</p>

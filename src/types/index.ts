@@ -10,7 +10,7 @@ import {
   loginSchema,
   tailoredCVSchema,
   cvBuilderFormSchema
-} from "../lib/validations";
+} from "@/lib/validations";
 
 export type ProfileData = z.infer<typeof profileSchema>;
 export type SkillData = z.infer<typeof skillSchema>;

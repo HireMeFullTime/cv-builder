@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { PlusCircle, Trash2 } from "lucide-react";
-import { TechStackInput } from "./TechStackInput";
+import { TechStackInput } from "@/components/features/TechStackInput";
 import { toast } from "sonner";
 import { type Project } from "@prisma/client";
 

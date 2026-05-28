@@ -43,8 +43,8 @@ export default async function DashboardPage() {
 	}));
 
 	return (
-		<div className='mx-auto max-w-[1200px] w-full space-y-6'>
-			<div className="flex justify-between items-center">
+		<div className='mx-auto max-w-300 w-full space-y-6'>
+			<div className="flex flex-wrap justify-between items-center gap-4">
 				<div>
 					<h2 className='text-3xl font-bold tracking-tight'>Dashboard</h2>
 					<p className='text-muted-foreground'>Manage your professional profile and projects here.</p>
