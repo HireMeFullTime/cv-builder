@@ -1,4 +1,5 @@
-import { auth, signOut } from "@/auth";
+import { auth } from "@/auth";
+import { signOutAction } from "@/actions/auth";
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -20,10 +21,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
               {session.user.name || session.user.email}
             </span>
             <form
-              action={async () => {
-                "use server";
-                await signOut();
-              }}
+              action={signOutAction}
             >
               <Button type="submit" variant="outline" size="sm">
                 Sign Out
