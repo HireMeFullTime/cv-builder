@@ -7,9 +7,9 @@ import {getLanguages} from '@/actions/language';
 import {DashboardTabs} from '@/components/features/DashboardTabs';
 
 import Link from 'next/link';
-import { buttonVariants } from '@/components/ui/button';
-import { Sparkles } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import {buttonVariants} from '@/components/ui/button';
+import {Sparkles} from 'lucide-react';
+import {cn} from '@/lib/utils';
 
 export default async function DashboardPage() {
 	const [profile, experiences, projects, educations, skills, languages] = await Promise.all([
@@ -44,18 +44,25 @@ export default async function DashboardPage() {
 
 	return (
 		<div className='mx-auto max-w-300 w-full space-y-6'>
-			<div className="flex flex-wrap justify-between items-center gap-4">
+			<div className='flex flex-wrap justify-between items-center gap-4'>
 				<div>
 					<h2 className='text-3xl font-bold tracking-tight'>Dashboard</h2>
 					<p className='text-muted-foreground'>Manage your professional profile and projects here.</p>
 				</div>
-				<Link href="/dashboard/cv-builder" className={cn(buttonVariants({ variant: "default" }), "gap-2")}>
-					<Sparkles className="w-4 h-4" />
+				<Link href='/dashboard/cv-builder' className={cn(buttonVariants({variant: 'default'}), 'gap-2')}>
+					<Sparkles className='w-4 h-4' />
 					Build Tailored CV
 				</Link>
 			</div>
 
-			<DashboardTabs profile={safeProfile} experiences={safeExperiences} projects={projects} educations={educations} skills={skills} languages={languages} />
+			<DashboardTabs
+				profile={safeProfile}
+				experiences={safeExperiences}
+				projects={projects}
+				educations={educations}
+				skills={skills}
+				languages={languages}
+			/>
 		</div>
 	);
 }
