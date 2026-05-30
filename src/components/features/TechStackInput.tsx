@@ -57,6 +57,7 @@ export function TechStackInput({
         <Input
           type="text"
           placeholder="e.g. React, Node.js, TypeScript (press Enter to add)"
+          aria-label="New technology"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}

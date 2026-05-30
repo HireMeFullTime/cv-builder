@@ -162,6 +162,7 @@ export function CVPreview({
 													rel='noreferrer'
 													className='text-black hover:opacity-70 transition-opacity'
 													title='Project Website'
+													aria-label={`Visit project website for ${proj.title}`}
 												>
 													<Globe className='w-3.5 h-3.5' />
 												</Link>
@@ -173,6 +174,7 @@ export function CVPreview({
 													rel='noreferrer'
 													className='text-black hover:opacity-70 transition-opacity'
 													title='GitHub Repository'
+													aria-label={`View GitHub repository for ${proj.title}`}
 												>
 													<ExternalLink className='w-3.5 h-3.5' />
 												</Link>
