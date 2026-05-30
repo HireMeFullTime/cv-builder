@@ -43,8 +43,8 @@ This project was developed using an **AI-First methodology**. Instead of traditi
 
 ## Links
 
-- Live Demo: [Add your link here]
-- Repository: [Add your link here]
+- [Live Demo](https://cv-builder-alpha-dun.vercel.app/)
+
 
 ## Process
 
@@ -139,7 +139,7 @@ npm test
 ### PDF Generation Note
 
 > **Tip**
-> **Why CSS over heavy libraries?** For the MVP phase, I intentionally avoided heavy PDF generation libraries (like `@react-pdf/renderer` or `Puppeteer`). Instead, PDF exporting is implemented purely via CSS print media queries (`@media print`). This ensures the generated CV is optimized for A4 size, hides UI controls during printing, and correctly handles page breaks without bloating the application bundle.
+> **Why CSS over heavy libraries?** For the MVP phase, I intentionally avoided heavy PDF generation libraries. Instead, PDF exporting is implemented purely via CSS print media queries (`@media print`). This ensures the generated CV is optimized for A4 size, hides UI controls during printing, and correctly handles page breaks without bloating the application bundle.
 
 ## Screenshots
 
