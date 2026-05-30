@@ -68,3 +68,22 @@
 		margin: 0.5cm;
 	}
 }
+
+/* Elegant sonner toast styling (colored borders and icons, white background) */
+.toaster.group .toast[data-type="success"] {
+	background-color: var(--card);
+	color: var(--foreground);
+	border-color: var(--color-green-600, #16a34a);
+}
+.toaster.group .toast[data-type="success"] [data-icon] {
+	color: var(--color-green-600, #16a34a);
+}
+
+.toaster.group .toast[data-type="error"] {
+	background-color: var(--card);
+	color: var(--foreground);
+	border-color: var(--destructive);
+}
+.toaster.group .toast[data-type="error"] [data-icon] {
+	color: var(--destructive);
+}
