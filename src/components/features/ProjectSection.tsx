@@ -88,10 +88,10 @@ export function ProjectSection({ initialProjects }: { initialProjects: Project[]
                     )}
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="icon" onClick={() => setEditingId(project.id)}>
+                    <Button variant="ghost" size="icon" aria-label="Edit project" onClick={() => setEditingId(project.id)}>
                       <Edit className="w-4 h-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(project.id)}>
+                    <Button variant="ghost" size="icon" aria-label="Delete project" onClick={() => handleDelete(project.id)}>
                       <Trash2 className="w-4 h-4 text-destructive" />
                     </Button>
                   </div>

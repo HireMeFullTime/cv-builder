@@ -100,6 +100,7 @@ export function SkillSection({ initialSkills }: { initialSkills: Skill[] }) {
                       variant="ghost" 
                       size="icon" 
                       className="h-8 w-8" 
+                      aria-label={`Edit ${cat || 'Uncategorized'} skills`}
                       onClick={() => {
                         if (cat === "") setIsEditingUncategorized(true);
                         else setEditingCategory(cat);
@@ -107,7 +108,7 @@ export function SkillSection({ initialSkills }: { initialSkills: Skill[] }) {
                     >
                       <Edit className="w-4 h-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleDelete(cat)}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={`Delete ${cat || 'Uncategorized'} skills`} onClick={() => handleDelete(cat)}>
                       <Trash2 className="w-4 h-4 text-destructive" />
                     </Button>
                   </div>

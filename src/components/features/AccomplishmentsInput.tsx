@@ -73,6 +73,7 @@ export function AccomplishmentsInput({
         <Input
           type="text"
           placeholder={placeholder}
+          aria-label="New accomplishment"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}

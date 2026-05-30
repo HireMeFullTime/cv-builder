@@ -91,10 +91,10 @@ export function EducationSection({ initialEducations }: { initialEducations: Edu
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="icon" onClick={() => setEditingId(edu.id)}>
+                    <Button variant="ghost" size="icon" aria-label="Edit education" onClick={() => setEditingId(edu.id)}>
                       <Edit className="w-4 h-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(edu.id)}>
+                    <Button variant="ghost" size="icon" aria-label="Delete education" onClick={() => handleDelete(edu.id)}>
                       <Trash2 className="w-4 h-4 text-destructive" />
                     </Button>
                   </div>

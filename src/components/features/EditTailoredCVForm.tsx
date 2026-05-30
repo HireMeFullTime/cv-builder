@@ -274,6 +274,7 @@ export function EditTailoredCVForm({
 												variant='ghost'
 												size='icon'
 												className='h-8 w-8'
+												aria-label='Move skill up'
 												onClick={() => moveSkill(index, index - 1)}
 												disabled={index === 0}
 											>
@@ -284,6 +285,7 @@ export function EditTailoredCVForm({
 												variant='ghost'
 												size='icon'
 												className='h-8 w-8'
+												aria-label='Move skill down'
 												onClick={() => moveSkill(index, index + 1)}
 												disabled={index === skillFields.length - 1}
 											>
@@ -294,6 +296,7 @@ export function EditTailoredCVForm({
 												variant='ghost'
 												size='icon'
 												className='h-8 w-8 text-destructive'
+												aria-label='Remove skill'
 												onClick={() => removeSkill(index)}
 											>
 												<Trash2 className='w-4 h-4' />
@@ -440,6 +443,7 @@ export function EditTailoredCVForm({
 													variant='secondary'
 													size='icon'
 													className='h-8 w-8'
+													aria-label='Move experience up'
 													onClick={() => moveExperience(expIndex, expIndex - 1)}
 													disabled={expIndex === 0}
 												>
@@ -450,6 +454,7 @@ export function EditTailoredCVForm({
 													variant='secondary'
 													size='icon'
 													className='h-8 w-8'
+													aria-label='Move experience down'
 													onClick={() => moveExperience(expIndex, expIndex + 1)}
 													disabled={expIndex === experienceFields.length - 1}
 												>
@@ -460,6 +465,7 @@ export function EditTailoredCVForm({
 													variant='ghost'
 													size='icon'
 													className='h-8 w-8 text-destructive hover:bg-destructive/10'
+													aria-label='Remove experience'
 													onClick={() => removeExperience(expIndex)}
 												>
 													<Trash2 className='w-4 h-4' />
@@ -534,6 +540,7 @@ export function EditTailoredCVForm({
 													variant='secondary'
 													size='icon'
 													className='h-8 w-8'
+													aria-label='Move project up'
 													onClick={() => moveProject(projIndex, projIndex - 1)}
 													disabled={projIndex === 0}
 												>
@@ -544,6 +551,7 @@ export function EditTailoredCVForm({
 													variant='secondary'
 													size='icon'
 													className='h-8 w-8'
+													aria-label='Move project down'
 													onClick={() => moveProject(projIndex, projIndex + 1)}
 													disabled={projIndex === projectFields.length - 1}
 												>
@@ -554,6 +562,7 @@ export function EditTailoredCVForm({
 													variant='ghost'
 													size='icon'
 													className='h-8 w-8 text-destructive hover:bg-destructive/10'
+													aria-label='Remove project'
 													onClick={() => removeProject(projIndex)}
 												>
 													<Trash2 className='w-4 h-4' />
@@ -624,6 +633,7 @@ function ProjectTechStack({form, projIndex}: {form: UseFormReturn<TailoredCVData
 								variant='ghost'
 								size='icon'
 								className='h-7 w-7'
+								aria-label='Move tech up'
 								onClick={() => move(idx, idx - 1)}
 								disabled={idx === 0}
 							>
@@ -634,6 +644,7 @@ function ProjectTechStack({form, projIndex}: {form: UseFormReturn<TailoredCVData
 								variant='ghost'
 								size='icon'
 								className='h-7 w-7'
+								aria-label='Move tech down'
 								onClick={() => move(idx, idx + 1)}
 								disabled={idx === fields.length - 1}
 							>
@@ -644,6 +655,7 @@ function ProjectTechStack({form, projIndex}: {form: UseFormReturn<TailoredCVData
 								variant='ghost'
 								size='icon'
 								className='h-7 w-7 text-destructive'
+								aria-label='Remove tech'
 								onClick={() => remove(idx)}
 							>
 								<Trash2 className='w-3 h-3' />
@@ -695,6 +707,7 @@ function ExperienceAccomplishments({form, expIndex}: {form: UseFormReturn<Tailor
 								variant='ghost'
 								size='icon'
 								className='h-6 w-6'
+								aria-label='Move accomplishment up'
 								onClick={() => move(idx, idx - 1)}
 								disabled={idx === 0}
 							>
@@ -705,6 +718,7 @@ function ExperienceAccomplishments({form, expIndex}: {form: UseFormReturn<Tailor
 								variant='ghost'
 								size='icon'
 								className='h-6 w-6'
+								aria-label='Move accomplishment down'
 								onClick={() => move(idx, idx + 1)}
 								disabled={idx === fields.length - 1}
 							>
@@ -715,6 +729,7 @@ function ExperienceAccomplishments({form, expIndex}: {form: UseFormReturn<Tailor
 								variant='ghost'
 								size='icon'
 								className='h-6 w-6 text-destructive'
+								aria-label='Remove accomplishment'
 								onClick={() => remove(idx)}
 							>
 								<Trash2 className='w-3 h-3' />
