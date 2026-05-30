@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { revalidatePath } from "next/cache";
 import { tailoredCVSchema } from "@/lib/validations";
+import { ParsedTailoredCV } from "@/types";
 import { generateText } from "ai";
 import { Prisma } from "@prisma/client";
 import { TailoredCVData } from "@/types";
@@ -73,8 +74,8 @@ CANDIDATE RAW DATA (JSON):
 ${JSON.stringify(candidateData, null, 2)}
 
 INSTRUCTIONS:
-1. Write a compelling 3-4 sentence summary tailored to this specific job.
-2. Select and order the most relevant skills from the candidate's list. Exclude completely irrelevant ones.
+1. Write a compelling 3-4 sentence summary tailored to this specific job only in english.
+2. Select and order the most relevant skills from the candidate's list. Exclude completely irrelevant ones. Write the skills in english.
 3. Select the most relevant work experiences. Filter or rewrite accomplishments to highlight overlap with the job description. Do NOT hallucinate entirely new experiences, only adjust descriptions of existing ones. Use the exact same IDs.
 4. Select the most relevant projects. Filter out projects that do not match the tech stack or domain of the job description. Use the exact same IDs.
 5. Return the result strictly in valid JSON format matching the following structure. Do not include markdown code blocks.
@@ -136,23 +137,35 @@ INSTRUCTIONS:
   }
 }
 
-export async function getTailoredCVs() {
+export async function getTailoredCVs(): Promise<ParsedTailoredCV[]> {
   const session = await auth();
   if (!session?.user?.id) return [];
 
-  return prisma.tailoredCV.findMany({
+  const cvs = await prisma.tailoredCV.findMany({
     where: { userId: session.user.id },
     orderBy: { createdAt: "desc" },
   });
+
+  return cvs.map((cv) => ({
+    ...cv,
+    generatedContent: tailoredCVSchema.parse(cv.generatedContent),
+  }));
 }
 
-export async function getTailoredCVById(id: string) {
+export async function getTailoredCVById(id: string): Promise<ParsedTailoredCV | null> {
   const session = await auth();
   if (!session?.user?.id) return null;
 
-  return prisma.tailoredCV.findUnique({
+  const cv = await prisma.tailoredCV.findUnique({
     where: { id, userId: session.user.id },
   });
+
+  if (!cv) return null;
+
+  return {
+    ...cv,
+    generatedContent: tailoredCVSchema.parse(cv.generatedContent),
+  };
 }
 
 export async function deleteTailoredCV(id: string) {

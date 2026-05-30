@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TailoredCV } from "@prisma/client";
 import {
   profileSchema,
   skillSchema,
@@ -22,6 +23,10 @@ export type LanguageData = z.infer<typeof languageSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
 export type TailoredCVData = z.infer<typeof tailoredCVSchema>;
 export type CVBuilderFormData = z.infer<typeof cvBuilderFormSchema>;
+
+export type ParsedTailoredCV = Omit<TailoredCV, "generatedContent"> & {
+  generatedContent: TailoredCVData;
+};
 
 export type LayoutMode = 'single' | 'two-column';
 export type CVSectionId = 'summary' | 'skills' | 'experience' | 'projects' | 'education' | 'languages';

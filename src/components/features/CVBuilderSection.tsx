@@ -1,12 +1,12 @@
 'use client';
 
 import {useState, useEffect} from 'react';
-import {TailoredCV, Profile, Education, Language} from '@prisma/client';
+import {Profile, Education, Language} from '@prisma/client';
 import {generateTailoredCV, deleteTailoredCV} from '@/actions/cv';
 import {CVPreview} from '@/components/features/CVPreview';
 import {CVLayoutControls} from '@/components/features/CVLayoutControls';
 import {EditTailoredCVForm} from '@/components/features/EditTailoredCVForm';
-import {CVBuilderFormData, TailoredCVData, ColumnLayout} from '@/types';
+import {CVBuilderFormData, TailoredCVData, ColumnLayout, ParsedTailoredCV} from '@/types';
 import {cvBuilderFormSchema} from '@/lib/validations';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/components/ui/form';
@@ -25,13 +25,13 @@ export function CVBuilderSection({
 	educations,
 	languages
 }: {
-	initialCVs: TailoredCV[];
+	initialCVs: ParsedTailoredCV[];
 	profile: Profile | null;
 	educations: Education[];
 	languages: Language[];
 }) {
-	const [cvs, setCvs] = useState<TailoredCV[]>(initialCVs);
-	const [selectedCv, setSelectedCv] = useState<TailoredCV | null>(null);
+	const [cvs, setCvs] = useState<ParsedTailoredCV[]>(initialCVs);
+	const [selectedCv, setSelectedCv] = useState<ParsedTailoredCV | null>(null);
 	const [previewData, setPreviewData] = useState<TailoredCVData | null>(null);
 	const [isGenerating, setIsGenerating] = useState(false);
 
@@ -56,7 +56,7 @@ export function CVBuilderSection({
 	// Keep previewData in sync with selectedCv when selectedCv changes
 	useEffect(() => {
 		if (selectedCv) {
-			setPreviewData(selectedCv.generatedContent as unknown as TailoredCVData);
+			setPreviewData(selectedCv.generatedContent);
 		} else {
 			setPreviewData(null);
 		}
@@ -110,22 +110,22 @@ export function CVBuilderSection({
 		});
 	};
 
-	const handleSelectCv = (cv: TailoredCV) => {
+	const handleSelectCv = (cv: ParsedTailoredCV) => {
 		setSelectedCv(cv);
 	};
 
-	const displayData = previewData || (selectedCv?.generatedContent as unknown as TailoredCVData);
+	const displayData = previewData || selectedCv?.generatedContent;
 
 	return (
 		<div className='grid grid-cols-1 lg:grid-cols-12 gap-6 h-full'>
 			{/* LEFT PANE: CONTROLS & FORM */}
 			<div className='lg:col-span-4 space-y-6 flex flex-col h-full print:hidden'>
 				{selectedCv ? (
-					<EditTailoredCVForm 
-						cv={selectedCv} 
+					<EditTailoredCVForm
+						cv={selectedCv}
 						profile={profile}
-						onUpdatePreview={setPreviewData} 
-						onClose={() => setSelectedCv(null)} 
+						onUpdatePreview={setPreviewData}
+						onClose={() => setSelectedCv(null)}
 					/>
 				) : (
 					<>
@@ -202,7 +202,9 @@ export function CVBuilderSection({
 										>
 											<div className='overflow-hidden'>
 												<p className='font-medium truncate'>{cv.jobTitle}</p>
-												<p className='text-xs text-muted-foreground'>{new Date(cv.createdAt).toLocaleDateString('en-US')}</p>
+												<p className='text-xs text-muted-foreground'>
+													{new Date(cv.createdAt).toLocaleDateString('en-US')}
+												</p>
 											</div>
 											<Button
 												variant='ghost'
@@ -240,13 +242,9 @@ export function CVBuilderSection({
 							</Button>
 						</div>
 						<div className='p-8 md:p-12 print:p-0 flex-1 overflow-y-auto print:overflow-visible bg-white text-black print:bg-transparent'>
-							<CVLayoutControls 
-								layout={layout} 
-								onChange={setLayout} 
-								projects={displayData?.projects || []}
-							/>
+							<CVLayoutControls layout={layout} onChange={setLayout} projects={displayData?.projects || []} />
 							<CVPreview
-								data={displayData}
+								data={displayData!}
 								profile={profile}
 								jobTitle={displayData?.jobTitleOverride || selectedCv.jobTitle}
 								educations={educations}
