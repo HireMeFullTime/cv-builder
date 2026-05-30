@@ -6,7 +6,7 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { revalidatePath } from "next/cache";
 import { tailoredCVSchema } from "@/lib/validations";
 import { ParsedTailoredCV } from "@/types";
-import { generateObject } from "ai";
+import { generateText, Output } from "ai";
 import { Prisma } from "@prisma/client";
 import { TailoredCVData } from "@/types";
 
@@ -110,9 +110,9 @@ INSTRUCTIONS:
 `;
 
   try {
-    const { object } = await generateObject({
+    const { output: object } = await generateText({
       model: google('gemini-2.5-flash'),
-      schema: tailoredCVSchema,
+      output: Output.object({ schema: tailoredCVSchema }),
       prompt: systemPrompt,
     });
 
