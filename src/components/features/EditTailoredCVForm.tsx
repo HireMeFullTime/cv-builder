@@ -15,6 +15,9 @@ import {updateTailoredCV} from '@/actions/cv';
 import {Profile} from '@prisma/client';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 
+import {Checkbox} from '@/components/ui/checkbox';
+import {MonthYearPicker} from '@/components/features/MonthYearPicker';
+
 export function EditTailoredCVForm({
 	cv,
 	profile,
@@ -58,12 +61,22 @@ export function EditTailoredCVForm({
 		name: 'relevantSkills' as never // react-hook-form type workaround for string array
 	});
 
-	const {fields: projectFields, move: moveProject, remove: removeProject, append: appendProject} = useFieldArray({
+	const {
+		fields: projectFields,
+		move: moveProject,
+		remove: removeProject,
+		append: appendProject
+	} = useFieldArray({
 		control: form.control,
 		name: 'projects'
 	});
 
-	const {fields: experienceFields, move: moveExperience, remove: removeExperience, append: appendExperience} = useFieldArray({
+	const {
+		fields: experienceFields,
+		move: moveExperience,
+		remove: removeExperience,
+		append: appendExperience
+	} = useFieldArray({
 		control: form.control,
 		name: 'selectedExperiences'
 	});
@@ -334,31 +347,87 @@ export function EditTailoredCVForm({
 														</FormItem>
 													)}
 												/>
-												<div className='grid grid-cols-2 gap-4'>
+												<div className='space-y-3'>
 													<FormField
 														control={form.control}
-														name={`selectedExperiences.${expIndex}.startDate`}
+														name={`selectedExperiences.${expIndex}.isCurrent`}
 														render={({field}) => (
-															<FormItem className='space-y-1'>
-																<FormLabel className='text-xs'>Start Date</FormLabel>
+															<FormItem className='flex flex-row items-center space-x-2 space-y-0'>
 																<FormControl>
-																	<Input {...field} className='h-8 text-sm' />
+																	<Checkbox
+																		checked={field.value}
+																		onCheckedChange={checked => {
+																			field.onChange(checked);
+																			if (checked) {
+																				form.setValue(`selectedExperiences.${expIndex}.endDate`, '');
+																			}
+																		}}
+																	/>
 																</FormControl>
+																<FormLabel className='text-xs font-normal'>Present (I currently work here)</FormLabel>
 															</FormItem>
 														)}
 													/>
-													<FormField
-														control={form.control}
-														name={`selectedExperiences.${expIndex}.endDate`}
-														render={({field}) => (
-															<FormItem className='space-y-1'>
-																<FormLabel className='text-xs'>End Date</FormLabel>
-																<FormControl>
-																	<Input {...field} value={field.value || ''} className='h-8 text-sm' />
-																</FormControl>
-															</FormItem>
+													<div className='grid grid-cols-2 gap-4'>
+														<FormField
+															control={form.control}
+															name={`selectedExperiences.${expIndex}.startDate`}
+															render={({field}) => {
+																const parseDateString = (val: string) => {
+																	if (!val) return undefined;
+																	const parts = val.split('-');
+																	if (parts.length >= 2)
+																		return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1);
+																	return new Date(val);
+																};
+																const formatDate = (date?: Date) => {
+																	if (!date) return '';
+																	return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+																};
+																return (
+																	<FormItem className='space-y-1'>
+																		<FormLabel className='text-xs'>Start Date</FormLabel>
+																		<FormControl>
+																			<MonthYearPicker
+																				value={parseDateString(field.value)}
+																				onChange={date => field.onChange(formatDate(date))}
+																			/>
+																		</FormControl>
+																	</FormItem>
+																);
+															}}
+														/>
+														{!form.watch(`selectedExperiences.${expIndex}.isCurrent`) && (
+															<FormField
+																control={form.control}
+																name={`selectedExperiences.${expIndex}.endDate`}
+																render={({field}) => {
+																	const parseDateString = (val: string) => {
+																		if (!val) return undefined;
+																		const parts = val.split('-');
+																		if (parts.length >= 2)
+																			return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1);
+																		return new Date(val);
+																	};
+																	const formatDate = (date?: Date) => {
+																		if (!date) return '';
+																		return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+																	};
+																	return (
+																		<FormItem className='space-y-1'>
+																			<FormLabel className='text-xs'>End Date</FormLabel>
+																			<FormControl>
+																				<MonthYearPicker
+																					value={parseDateString(field.value || '')}
+																					onChange={date => field.onChange(formatDate(date))}
+																				/>
+																			</FormControl>
+																		</FormItem>
+																	);
+																}}
+															/>
 														)}
-													/>
+													</div>
 												</div>
 
 												{/* Nested Accomplishments for this experience */}
@@ -403,7 +472,16 @@ export function EditTailoredCVForm({
 									type='button'
 									variant='outline'
 									size='sm'
-									onClick={() => appendExperience({ id: crypto.randomUUID(), jobTitle: '', company: '', startDate: '', isCurrent: false, accomplishments: [] })}
+									onClick={() =>
+										appendExperience({
+											id: crypto.randomUUID(),
+											jobTitle: '',
+											company: '',
+											startDate: '',
+											isCurrent: false,
+											accomplishments: []
+										})
+									}
 									className='w-full border-dashed mt-2'
 								>
 									<Plus className='w-4 h-4 mr-2' /> Add Experience
@@ -488,7 +566,15 @@ export function EditTailoredCVForm({
 									type='button'
 									variant='outline'
 									size='sm'
-									onClick={() => appendProject({ id: crypto.randomUUID(), title: '', shortDescription: '', techStack: [], accomplishments: [] })}
+									onClick={() =>
+										appendProject({
+											id: crypto.randomUUID(),
+											title: '',
+											shortDescription: '',
+											techStack: [],
+											accomplishments: []
+										})
+									}
 									className='w-full border-dashed mt-2'
 								>
 									<Plus className='w-4 h-4 mr-2' /> Add Project
@@ -640,7 +726,7 @@ function ExperienceAccomplishments({form, expIndex}: {form: UseFormReturn<Tailor
 					type='button'
 					variant='ghost'
 					size='sm'
-					onClick={() => append({ value: '' })}
+					onClick={() => append({value: ''})}
 					className='w-fit text-[10px] h-6 px-2 mt-1'
 				>
 					<Plus className='w-3 h-3 mr-1' /> Add Point
