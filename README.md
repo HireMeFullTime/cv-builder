@@ -1,36 +1,146 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CV & Portfolio Builder
+
+## Table of contents
+- [Overview](#overview)
+  - [The challenge](#the-challenge)
+  - [AI-First Methodology](#ai-first-methodology)
+- [Links](#links)
+- [Process](#process)
+  - [Built with](#built-with)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running Locally](#running-locally)
+  - [Running Tests](#running-tests)
+- [Important Decisions](#important-decisions)
+  - [Key Aspects](#key-aspects)
+  - [Security & Validation](#security--validation)
+  - [PDF Generation Note](#pdf-generation-note)
+- [Screenshots](#screenshots)
+
+## Overview
+
+### The challenge
+
+Users can:
+- **Manage Professional Data:** Add, edit, and organize their personal profile, skills, education, experience, languages, and technical projects.
+- **Dynamic CV Generation:** Input a target job title and description to dynamically generate a tailored CV. The system uses AI to filter and highlight relevant projects and skills for specific job offers.
+- **Secure Authentication:** Sign in securely using OAuth providers (GitHub, Google) via NextAuth.
+- **Real-time Feedback:** Experience immediate feedback via toast notifications (e.g., login errors, save successes) and skeleton loaders during data fetching.
+- **Export to PDF:** Generate a clean, A4-optimized CV view and export it seamlessly to PDF.
+- **Other:**
+  - **Responsive Design:** Optimized for both mobile and desktop viewports, following a strict mobile-first approach.
+  - **Error Handling:** Robust handling of OAuth linking errors and runtime validation.
+  - **Performance:** Optimized data fetching with parallel queries (`Promise.all`) avoiding N+1 problems.
+
+### AI-First Methodology
+
+This project was developed using an **AI-First methodology**. Instead of traditional solo coding, I closely collaborated with an advanced AI agent throughout the entire software development lifecycle. 
+
+- **Architectural Consultation:** The AI was consulted regarding the choice of technology stack, state management, and database schemas.
+- **Rule Enforcement:** A strict set of guidelines (`AGENTS.md`) was established, outlining coding standards (Functional Programming, strict Zod validation, Server Actions). The AI was responsible for adhering to these rules while generating code.
+- **Code Review & Iteration:** I actively reviewed the AI-generated code, requested corrections, pointed out UX/UI flaws, and supervised security audits to ensure the final product met high-quality engineering standards.
+
+## Links
+
+- Live Demo: [Add your link here]
+- Repository: [Add your link here]
+
+## Process
+
+### Built with
+
+- **Next.js** (App Router, Server Actions, Server and Client components)
+- **TypeScript**
+- **Tailwind CSS & shadcn/ui** (Clean, mobile-first styling)
+- **Prisma ORM & Vercel Postgres** (Robust database architecture)
+- **NextAuth.js / Auth.js v5** (Authentication)
+- **Vercel AI SDK** (Generative AI integration with Gemini)
+- **Zod & React Hook Form** (Strict runtime validation and form handling)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js (version 18.x or higher recommended)
+- npm (or yarn/pnpm/bun)
+- A PostgreSQL database (e.g., Vercel Postgres)
+- Gemini API Key for the CV generation
+
+### Installation
+
+Clone the repository:
+```bash
+git clone [https://github.com/your-username/cv-builder.git]
+```
+
+Navigate to the project directory:
+```bash
+cd cv-builder
+```
+
+Install dependencies:
+```bash
+npm install
+```
+
+### Running Locally
+
+Before starting the development server, ensure you have the required environment variables set in a `.env` file at the root of the project:
+
+```env
+# Database
+POSTGRES_PRISMA_URL="your_database_url_here"
+
+# Authentication
+AUTH_SECRET="your_nextauth_secret_here"
+AUTH_GITHUB_ID="your_github_id_here"
+AUTH_GITHUB_SECRET="your_github_secret_here"
+AUTH_GOOGLE_ID="your_google_id_here"
+AUTH_GOOGLE_SECRET="your_google_secret_here"
+
+# AI Integration
+GEMINI_API_KEY="your_gemini_api_key_here"
+```
+
+Sync the database schema:
+```bash
+npx prisma db push
+```
+
+Start the development server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Running Tests
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To run the full test suite (Jest & React Testing Library):
 
-## Learn More
+```bash
+npm test
+```
+*(Note: Tests are currently in the implementation phase.)*
 
-To learn more about Next.js, take a look at the following resources:
+## Important Decisions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Key Aspects
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Server Actions for Mutations:** All database interactions (CRUD) and AI generations are handled securely via Next.js Server Actions. No direct database queries are made from Client Components.
+- **Component Colocation:** Zod schemas and TypeScript interfaces are strictly decoupled from UI components, residing in dedicated `src/lib/` and `src/types/` directories.
 
-## Deploy on Vercel
+### Security & Validation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Data Isolation:** Every single database operation enforcing data retrieval or mutation strictly checks the user's session (`where: { userId: session.user.id }`). This guarantees absolute data isolation between users.
+- **Runtime JSON Validation:** The data generated by the AI is stored as JSON in the database. To ensure structural integrity, the payload is parsed and validated at runtime using `Zod` *before* hitting the Prisma client.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### PDF Generation Note
+
+> **Tip**
+> **Why CSS over heavy libraries?** For the MVP phase, I intentionally avoided heavy PDF generation libraries (like `@react-pdf/renderer` or `Puppeteer`). Instead, PDF exporting is implemented purely via CSS print media queries (`@media print`). This ensures the generated CV is optimized for A4 size, hides UI controls during printing, and correctly handles page breaks without bloating the application bundle.
+
+## Screenshots
+
+*(Add screenshots of your application here)*
