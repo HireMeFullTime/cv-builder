@@ -116,6 +116,19 @@ export function CVBuilderSection({
 
 	const displayData = previewData || selectedCv?.generatedContent;
 
+	const renderSubmitButtonContent = () => {
+		if (isGenerating) {
+			return (
+				<>
+					<Loader2 className='mr-2 h-4 w-4 animate-spin' />
+					Generating (Takes ~10-20s)
+				</>
+			);
+		}
+		if (!profile) return 'Profile Required';
+		return 'Generate Tailored CV';
+	};
+
 	return (
 		<div className='grid grid-cols-1 lg:grid-cols-12 gap-6 h-full'>
 			{/* LEFT PANE: CONTROLS & FORM */}
@@ -170,16 +183,14 @@ export function CVBuilderSection({
 											)}
 										/>
 
-										<Button type='submit' className='w-full' disabled={isGenerating}>
-											{isGenerating ? (
-												<>
-													<Loader2 className='mr-2 h-4 w-4 animate-spin' />
-													Generating (Takes ~10-20s)
-												</>
-											) : (
-												'Generate Tailored CV'
-											)}
+										<Button type='submit' className='w-full' disabled={isGenerating || !profile}>
+											{renderSubmitButtonContent()}
 										</Button>
+										{!profile && (
+											<p className="text-sm text-destructive text-center mt-2">
+												You must complete your basic profile before generating a CV.
+											</p>
+										)}
 									</form>
 								</Form>
 							</CardContent>
