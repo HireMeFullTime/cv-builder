@@ -116,11 +116,13 @@ INSTRUCTIONS:
       prompt: systemPrompt,
     });
 
-      const tailoredCV = await prisma.tailoredCV.create({
+    const validatedContent = tailoredCVSchema.parse(object);
+
+    const tailoredCV = await prisma.tailoredCV.create({
       data: {
         jobTitle,
         jobDescription,
-        generatedContent: object as Prisma.InputJsonValue,
+        generatedContent: validatedContent as Prisma.InputJsonValue,
         userId,
       },
     });
