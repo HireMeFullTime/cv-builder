@@ -15,7 +15,7 @@ export default async function CVBuilderPage() {
   const languages = await getLanguages();
 
   return (
-    <div className="mx-auto w-full max-w-[1400px] space-y-6">
+    <div className="mx-auto w-full max-w-350 space-y-6">
       <div className="space-y-4 print:hidden">
         <Link href="/dashboard" className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "-ml-3 text-muted-foreground w-fit")}>
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Dashboard

@@ -10,7 +10,7 @@ export default function GlobalError({error, reset}: {error: Error & {digest?: st
 	}, [error]);
 
 	return (
-		<div className='flex min-h-screen flex-col items-center justify-center bg-background text-foreground p-4'>
+		<main className='flex min-h-screen flex-col items-center justify-center bg-background text-foreground p-4'>
 			<div className='flex flex-col items-center max-w-md text-center gap-6 p-8 border border-border rounded-xl shadow-sm bg-card text-card-foreground'>
 				<div className='rounded-full bg-destructive/10 p-4 text-destructive'>
 					<svg
@@ -41,6 +41,6 @@ export default function GlobalError({error, reset}: {error: Error & {digest?: st
 					</Link>
 				</div>
 			</div>
-		</div>
+		</main>
 	);
 }

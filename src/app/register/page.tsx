@@ -10,7 +10,7 @@ export default async function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background text-foreground p-4">
+    <main className="flex min-h-screen items-center justify-center bg-background text-foreground p-4">
       <div className="flex flex-col items-center max-w-md w-full p-8 border border-border rounded-xl shadow-sm bg-card text-card-foreground gap-6">
         <h1 className="text-3xl font-bold tracking-tight text-center">Create an Account</h1>
         
@@ -19,6 +19,6 @@ export default async function RegisterPage() {
           <RegisterForm />
         </div>
       </div>
-    </div>
+    </main>
   );
 }
