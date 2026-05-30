@@ -60,9 +60,11 @@
 	html {
 		@apply font-sans;
 	}
-	@media print {
-		@page {
-			margin: 0cm;
-		}
+}
+
+@media print {
+	@page {
+		size: A4;
+		margin: 0.5cm;
 	}
 }

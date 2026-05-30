@@ -6,7 +6,7 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { revalidatePath } from "next/cache";
 import { tailoredCVSchema } from "@/lib/validations";
 import { ParsedTailoredCV } from "@/types";
-import { generateText } from "ai";
+import { generateObject } from "ai";
 import { Prisma } from "@prisma/client";
 import { TailoredCVData } from "@/types";
 
@@ -110,13 +110,11 @@ INSTRUCTIONS:
 `;
 
   try {
-    const { text } = await generateText({
+    const { object } = await generateObject({
       model: google('gemini-2.5-flash'),
+      schema: tailoredCVSchema,
       prompt: systemPrompt,
     });
-
-    const jsonString = text.replace(/```json\n?|```/g, "").trim();
-    const object = tailoredCVSchema.parse(JSON.parse(jsonString));
 
       const tailoredCV = await prisma.tailoredCV.create({
       data: {
@@ -146,10 +144,16 @@ export async function getTailoredCVs(): Promise<ParsedTailoredCV[]> {
     orderBy: { createdAt: "desc" },
   });
 
-  return cvs.map((cv) => ({
-    ...cv,
-    generatedContent: tailoredCVSchema.parse(cv.generatedContent),
-  }));
+  return cvs
+    .map((cv) => {
+      const parsed = tailoredCVSchema.safeParse(cv.generatedContent);
+      if (!parsed.success) return null;
+      return {
+        ...cv,
+        generatedContent: parsed.data,
+      };
+    })
+    .filter((cv): cv is ParsedTailoredCV => cv !== null);
 }
 
 export async function getTailoredCVById(id: string): Promise<ParsedTailoredCV | null> {
@@ -162,9 +166,12 @@ export async function getTailoredCVById(id: string): Promise<ParsedTailoredCV | 
 
   if (!cv) return null;
 
+  const parsed = tailoredCVSchema.safeParse(cv.generatedContent);
+  if (!parsed.success) return null;
+
   return {
     ...cv,
-    generatedContent: tailoredCVSchema.parse(cv.generatedContent),
+    generatedContent: parsed.data,
   };
 }
 
