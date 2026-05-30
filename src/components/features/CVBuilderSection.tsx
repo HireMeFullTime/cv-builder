@@ -242,7 +242,7 @@ export function CVBuilderSection({
 							</Button>
 						</div>
 						<div className='p-8 md:p-12 print:p-0 flex-1 overflow-y-auto print:overflow-visible bg-white text-black print:bg-transparent'>
-							<CVLayoutControls layout={layout} onChange={setLayout} projects={displayData?.projects || []} />
+							<CVLayoutControls layout={layout} onChange={setLayout} projects={displayData?.projects || []} experiences={displayData?.selectedExperiences || []} />
 							<CVPreview
 								data={displayData!}
 								profile={profile}

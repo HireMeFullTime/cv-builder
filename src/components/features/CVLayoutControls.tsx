@@ -69,7 +69,7 @@ function DroppableColumn({id, items, children}: {id: string; items: string[]; ch
 	const {setNodeRef} = useDroppable({id});
 	return (
 		<SortableContext id={id} items={items} strategy={verticalListSortingStrategy}>
-			<div ref={setNodeRef} className='min-h-[50px]'>
+			<div ref={setNodeRef} className='min-h-12.5'>
 				{children}
 			</div>
 		</SortableContext>
@@ -79,11 +79,13 @@ function DroppableColumn({id, items, children}: {id: string; items: string[]; ch
 export function CVLayoutControls({
 	layout,
 	onChange,
-	projects
+	projects,
+	experiences
 }: {
 	layout: ColumnLayout;
 	onChange: (newLayout: ColumnLayout) => void;
 	projects?: {id: string; title: string}[];
+	experiences?: {id: string; jobTitle: string; company: string}[];
 }) {
 	const [activeId, setActiveId] = useState<CVSectionId | null>(null);
 
@@ -159,11 +161,35 @@ export function CVLayoutControls({
 		}
 	};
 
-	const toggleProjectVisibility = (projectId: string, isChecked: boolean) => {
+	const toggleProjectVisibility = (projectId: string, isVisible: boolean) => {
 		const currentHidden = layout.hiddenProjectIds || [];
+		let newHidden: string[];
+
+		if (isVisible) {
+			newHidden = currentHidden.filter(id => id !== projectId);
+		} else {
+			newHidden = [...currentHidden, projectId];
+		}
+
 		onChange({
 			...layout,
-			hiddenProjectIds: isChecked ? currentHidden.filter(id => id !== projectId) : [...currentHidden, projectId]
+			hiddenProjectIds: newHidden
+		});
+	};
+
+	const toggleExperienceVisibility = (expId: string, isVisible: boolean) => {
+		const currentHidden = layout.hiddenExperienceIds || [];
+		let newHidden: string[];
+
+		if (isVisible) {
+			newHidden = currentHidden.filter(id => id !== expId);
+		} else {
+			newHidden = [...currentHidden, expId];
+		}
+
+		onChange({
+			...layout,
+			hiddenExperienceIds: newHidden
 		});
 	};
 
@@ -285,6 +311,34 @@ export function CVLayoutControls({
 											className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer'
 										>
 											{proj.title}
+										</label>
+									</div>
+								);
+							})}
+						</div>
+					</div>
+				)}
+
+				{experiences && experiences.length > 0 && (
+					<div className='mt-4 pt-4 border-t'>
+						<h4 className='text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3'>
+							Included Experiences
+						</h4>
+						<div className='flex flex-wrap gap-4'>
+							{experiences.map(exp => {
+								const isHidden = layout.hiddenExperienceIds?.includes(exp.id) ?? false;
+								return (
+									<div key={exp.id} className='flex items-center space-x-2'>
+										<Checkbox
+											id={`exp-${exp.id}`}
+											checked={!isHidden}
+											onCheckedChange={checked => toggleExperienceVisibility(exp.id, checked as boolean)}
+										/>
+										<label
+											htmlFor={`exp-${exp.id}`}
+											className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer'
+										>
+											{exp.company}
 										</label>
 									</div>
 								);

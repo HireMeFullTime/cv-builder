@@ -39,4 +39,5 @@ export interface ColumnLayout {
   ratio?: ColumnRatio;
   leftColumnWidth?: number;
   hiddenProjectIds?: string[];
+  hiddenExperienceIds?: string[];
 }

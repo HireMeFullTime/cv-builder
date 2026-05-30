@@ -58,9 +58,14 @@ export function EditTailoredCVForm({
 		name: 'relevantSkills' as never // react-hook-form type workaround for string array
 	});
 
-	const {fields: projectFields, move: moveProject} = useFieldArray({
+	const {fields: projectFields, move: moveProject, remove: removeProject, append: appendProject} = useFieldArray({
 		control: form.control,
 		name: 'projects'
+	});
+
+	const {fields: experienceFields, move: moveExperience, remove: removeExperience, append: appendExperience} = useFieldArray({
+		control: form.control,
+		name: 'selectedExperiences'
 	});
 
 	// Watch for real-time preview
@@ -295,6 +300,117 @@ export function EditTailoredCVForm({
 							</div>
 						</div>
 
+						{/* Experiences */}
+						<div className='space-y-4'>
+							<h3 className='text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2'>
+								Experience
+							</h3>
+							<div className='space-y-6'>
+								{experienceFields.map((expField, expIndex) => (
+									<div key={expField.id} className='p-4 rounded-lg border bg-muted/10 space-y-4'>
+										<div className='flex justify-between items-start'>
+											<div className='flex-1 space-y-3 mr-4'>
+												<FormField
+													control={form.control}
+													name={`selectedExperiences.${expIndex}.jobTitle`}
+													render={({field}) => (
+														<FormItem className='space-y-1'>
+															<FormLabel className='text-xs'>Job Title</FormLabel>
+															<FormControl>
+																<Input {...field} className='h-8 font-semibold' />
+															</FormControl>
+														</FormItem>
+													)}
+												/>
+												<FormField
+													control={form.control}
+													name={`selectedExperiences.${expIndex}.company`}
+													render={({field}) => (
+														<FormItem className='space-y-1'>
+															<FormLabel className='text-xs'>Company</FormLabel>
+															<FormControl>
+																<Input {...field} className='h-8 text-sm' />
+															</FormControl>
+														</FormItem>
+													)}
+												/>
+												<div className='grid grid-cols-2 gap-4'>
+													<FormField
+														control={form.control}
+														name={`selectedExperiences.${expIndex}.startDate`}
+														render={({field}) => (
+															<FormItem className='space-y-1'>
+																<FormLabel className='text-xs'>Start Date</FormLabel>
+																<FormControl>
+																	<Input {...field} className='h-8 text-sm' />
+																</FormControl>
+															</FormItem>
+														)}
+													/>
+													<FormField
+														control={form.control}
+														name={`selectedExperiences.${expIndex}.endDate`}
+														render={({field}) => (
+															<FormItem className='space-y-1'>
+																<FormLabel className='text-xs'>End Date</FormLabel>
+																<FormControl>
+																	<Input {...field} value={field.value || ''} className='h-8 text-sm' />
+																</FormControl>
+															</FormItem>
+														)}
+													/>
+												</div>
+
+												{/* Nested Accomplishments for this experience */}
+												<ExperienceAccomplishments form={form} expIndex={expIndex} />
+											</div>
+
+											<div className='flex flex-col gap-1'>
+												<Button
+													type='button'
+													variant='secondary'
+													size='icon'
+													className='h-8 w-8'
+													onClick={() => moveExperience(expIndex, expIndex - 1)}
+													disabled={expIndex === 0}
+												>
+													<ArrowUp className='w-4 h-4' />
+												</Button>
+												<Button
+													type='button'
+													variant='secondary'
+													size='icon'
+													className='h-8 w-8'
+													onClick={() => moveExperience(expIndex, expIndex + 1)}
+													disabled={expIndex === experienceFields.length - 1}
+												>
+													<ArrowDown className='w-4 h-4' />
+												</Button>
+												<Button
+													type='button'
+													variant='ghost'
+													size='icon'
+													className='h-8 w-8 text-destructive hover:bg-destructive/10'
+													onClick={() => removeExperience(expIndex)}
+												>
+													<Trash2 className='w-4 h-4' />
+												</Button>
+											</div>
+										</div>
+									</div>
+								))}
+								<Button
+									type='button'
+									variant='outline'
+									size='sm'
+									onClick={() => appendExperience({ id: crypto.randomUUID(), jobTitle: '', company: '', startDate: '', isCurrent: false, accomplishments: [] })}
+									className='w-full border-dashed mt-2'
+								>
+									<Plus className='w-4 h-4 mr-2' /> Add Experience
+								</Button>
+							</div>
+						</div>
+
 						{/* Projects */}
 						<div className='space-y-4'>
 							<h3 className='text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2'>
@@ -355,10 +471,28 @@ export function EditTailoredCVForm({
 												>
 													<ArrowDown className='w-4 h-4' />
 												</Button>
+												<Button
+													type='button'
+													variant='ghost'
+													size='icon'
+													className='h-8 w-8 text-destructive hover:bg-destructive/10'
+													onClick={() => removeProject(projIndex)}
+												>
+													<Trash2 className='w-4 h-4' />
+												</Button>
 											</div>
 										</div>
 									</div>
 								))}
+								<Button
+									type='button'
+									variant='outline'
+									size='sm'
+									onClick={() => appendProject({ id: crypto.randomUUID(), title: '', shortDescription: '', techStack: [], accomplishments: [] })}
+									className='w-full border-dashed mt-2'
+								>
+									<Plus className='w-4 h-4 mr-2' /> Add Project
+								</Button>
 							</div>
 						</div>
 					</form>
@@ -439,6 +573,77 @@ function ProjectTechStack({form, projIndex}: {form: UseFormReturn<TailoredCVData
 					className='w-fit text-[10px] h-6 px-2 mt-1'
 				>
 					<Plus className='w-3 h-3 mr-1' /> Add Tech
+				</Button>
+			</div>
+		</div>
+	);
+}
+
+// Sub-component for nested field array (Accomplishments)
+function ExperienceAccomplishments({form, expIndex}: {form: UseFormReturn<TailoredCVData>; expIndex: number}) {
+	const {fields, append, remove, move} = useFieldArray({
+		control: form.control,
+		name: `selectedExperiences.${expIndex}.accomplishments` as never
+	});
+
+	return (
+		<div className='space-y-2 mt-2'>
+			<FormLabel className='text-xs'>Accomplishments</FormLabel>
+			<div className='flex flex-col gap-2'>
+				{fields.map((field, idx) => (
+					<div key={field.id} className='flex items-start gap-1'>
+						<FormField
+							control={form.control}
+							name={`selectedExperiences.${expIndex}.accomplishments.${idx}.value`}
+							render={({field: inputField}) => (
+								<FormItem className='flex-1 mb-0 space-y-0'>
+									<FormControl>
+										<Textarea {...inputField} className='min-h-16 text-xs resize-none' />
+									</FormControl>
+								</FormItem>
+							)}
+						/>
+						<div className='flex flex-col gap-1'>
+							<Button
+								type='button'
+								variant='ghost'
+								size='icon'
+								className='h-6 w-6'
+								onClick={() => move(idx, idx - 1)}
+								disabled={idx === 0}
+							>
+								<ArrowUp className='w-3 h-3' />
+							</Button>
+							<Button
+								type='button'
+								variant='ghost'
+								size='icon'
+								className='h-6 w-6'
+								onClick={() => move(idx, idx + 1)}
+								disabled={idx === fields.length - 1}
+							>
+								<ArrowDown className='w-3 h-3' />
+							</Button>
+							<Button
+								type='button'
+								variant='ghost'
+								size='icon'
+								className='h-6 w-6 text-destructive'
+								onClick={() => remove(idx)}
+							>
+								<Trash2 className='w-3 h-3' />
+							</Button>
+						</div>
+					</div>
+				))}
+				<Button
+					type='button'
+					variant='ghost'
+					size='sm'
+					onClick={() => append({ value: '' })}
+					className='w-fit text-[10px] h-6 px-2 mt-1'
+				>
+					<Plus className='w-3 h-3 mr-1' /> Add Point
 				</Button>
 			</div>
 		</div>
