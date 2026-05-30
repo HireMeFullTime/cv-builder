@@ -1,6 +1,7 @@
 import {auth} from '@/auth';
 import {LoginForm} from '@/components/features/LoginForm';
 import {redirect} from 'next/navigation';
+import {Suspense} from 'react';
 
 export default async function Home() {
 	const session = await auth();
@@ -16,7 +17,9 @@ export default async function Home() {
 
 				<div className='flex flex-col items-center gap-4 w-full'>
 					<p className='text-muted-foreground text-center'>You are not logged in.</p>
-					<LoginForm />
+					<Suspense fallback={<div className="w-full flex justify-center py-8 text-sm text-muted-foreground">Loading login form...</div>}>
+						<LoginForm />
+					</Suspense>
 				</div>
 			</div>
 		</div>

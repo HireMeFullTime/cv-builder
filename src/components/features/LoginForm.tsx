@@ -5,8 +5,8 @@ import { signIn } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/lib/validations";
 import { type LoginData } from "@/types";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
 
@@ -16,7 +16,17 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const error = searchParams?.get("error");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (error === "OAuthAccountNotLinked") {
+      toast.error(
+        "This email is already linked to another account. Please sign in using the correct provider or select another email."
+      );
+    }
+  }, [error]);
 
   const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),

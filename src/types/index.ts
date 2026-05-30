@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TailoredCV } from "@prisma/client";
 import {
   profileSchema,
   skillSchema,
@@ -23,6 +24,10 @@ export type LoginData = z.infer<typeof loginSchema>;
 export type TailoredCVData = z.infer<typeof tailoredCVSchema>;
 export type CVBuilderFormData = z.infer<typeof cvBuilderFormSchema>;
 
+export type ParsedTailoredCV = Omit<TailoredCV, "generatedContent"> & {
+  generatedContent: TailoredCVData;
+};
+
 export type LayoutMode = 'single' | 'two-column';
 export type CVSectionId = 'summary' | 'skills' | 'experience' | 'projects' | 'education' | 'languages';
 export type ColumnRatio = 'equal' | 'left-narrow' | 'right-narrow';
@@ -34,4 +39,5 @@ export interface ColumnLayout {
   ratio?: ColumnRatio;
   leftColumnWidth?: number;
   hiddenProjectIds?: string[];
+  hiddenExperienceIds?: string[];
 }

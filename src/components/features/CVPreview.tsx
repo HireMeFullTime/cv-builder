@@ -50,13 +50,16 @@ export function CVPreview({
 					</section>
 				);
 
-			case 'experience':
+			case 'experience': {
 				if (!data.selectedExperiences || data.selectedExperiences.length === 0) return null;
+				const visibleExperiences = data.selectedExperiences.filter(exp => !currentLayout.hiddenExperienceIds?.includes(exp.id));
+				if (visibleExperiences.length === 0) return null;
+
 				return (
 					<section key='experience'>
 						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Experience</h3>
 						<div className='space-y-5'>
-							{data.selectedExperiences.map(exp => (
+							{visibleExperiences.map(exp => (
 								<div key={exp.id}>
 									<div className='flex justify-between items-baseline mb-1'>
 										<h4 className='font-bold text-black'>{exp.jobTitle}</h4>
@@ -87,6 +90,7 @@ export function CVPreview({
 						</div>
 					</section>
 				);
+			}
 
 			case 'education':
 				if (!educations || educations.length === 0) return null;
