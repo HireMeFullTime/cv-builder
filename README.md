@@ -19,7 +19,7 @@
 - [Screenshots](#screenshots)
 
 ## Overview
-
+This project is a dedicated **CV & Portfolio Builder tailored specifically for software developers and IT professionals**. It goes beyond standard CV templates by focusing on technical skills, project portfolios, and dynamic AI-driven tailoring for specific tech roles.
 ### The challenge
 
 Users can:
