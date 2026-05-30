@@ -221,6 +221,7 @@ export function CVBuilderSection({
 												variant='ghost'
 												size='icon'
 												className='text-destructive hover:bg-destructive/10 shrink-0 ml-2'
+												aria-label='Delete CV'
 												onClick={e => {
 													e.stopPropagation();
 													handleDelete(cv.id);

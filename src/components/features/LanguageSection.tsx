@@ -81,10 +81,10 @@ export function LanguageSection({ initialLanguages }: { initialLanguages: Langua
                     </div>
                   </div>
                   <div className="flex gap-1 shrink-0">
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditingId(lang.id)}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Edit language" onClick={() => setEditingId(lang.id)}>
                       <Edit className="w-4 h-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleDelete(lang.id)}>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Delete language" onClick={() => handleDelete(lang.id)}>
                       <Trash2 className="w-4 h-4 text-destructive" />
                     </Button>
                   </div>

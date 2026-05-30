@@ -83,10 +83,10 @@ export function ExperienceSection({ initialExperiences }: { initialExperiences: 
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="ghost" size="icon" onClick={() => setEditingId(exp.id!)}>
+                    <Button variant="ghost" size="icon" aria-label="Edit experience" onClick={() => setEditingId(exp.id!)}>
                       <Edit className="w-4 h-4 text-muted-foreground" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => handleDelete(exp.id!)}>
+                    <Button variant="ghost" size="icon" aria-label="Delete experience" onClick={() => handleDelete(exp.id!)}>
                       <Trash2 className="w-4 h-4 text-destructive" />
                     </Button>
                   </div>
