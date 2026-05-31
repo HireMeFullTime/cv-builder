@@ -53,7 +53,7 @@ export function ExportButton() {
         ) : (
           <Download className="w-4 h-4" />
         )}
-        <span className="hidden sm:inline-block">
+        <span>
           {isExporting ? "Exporting..." : "Export JSON"}
         </span>
       </Button>
