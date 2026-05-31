@@ -55,12 +55,12 @@ function SortableItem({id}: SortableItemProps) {
 		<div
 			ref={setNodeRef}
 			style={style}
-			className='flex items-center gap-2 p-2 mb-2 bg-background border rounded-md shadow-sm cursor-grab active:cursor-grabbing text-sm font-medium'
+			className='flex items-center gap-1.5 p-1.5 sm:p-2 mb-2 bg-background border rounded-md shadow-sm cursor-grab active:cursor-grabbing text-xs sm:text-sm font-medium min-w-0'
 			{...attributes}
 			{...listeners}
 		>
-			<GripVertical className='w-4 h-4 text-muted-foreground' />
-			{SECTION_LABELS[id]}
+			<GripVertical className='w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground shrink-0' />
+			<span className='truncate'>{SECTION_LABELS[id]}</span>
 		</div>
 	);
 }
@@ -98,8 +98,8 @@ export function CVLayoutControls({
 		}),
 		useSensor(TouchSensor, {
 			activationConstraint: {
-				delay: 250,
-				tolerance: 5
+				delay: 150,
+				tolerance: 10
 			}
 		}),
 		useSensor(KeyboardSensor, {
@@ -290,9 +290,9 @@ export function CVLayoutControls({
 
 					<DragOverlay>
 						{activeId ? (
-							<div className='flex items-center gap-2 p-2 bg-background border border-primary rounded-md shadow-lg text-sm font-medium opacity-90 cursor-grabbing'>
-								<GripVertical className='w-4 h-4 text-muted-foreground' />
-								{SECTION_LABELS[activeId]}
+							<div className='flex items-center gap-1.5 p-1.5 sm:p-2 bg-background border border-primary rounded-md shadow-lg text-xs sm:text-sm font-medium opacity-90 cursor-grabbing min-w-0'>
+								<GripVertical className='w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground shrink-0' />
+								<span className='truncate'>{SECTION_LABELS[activeId]}</span>
 							</div>
 						) : null}
 					</DragOverlay>
