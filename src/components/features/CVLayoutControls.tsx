@@ -203,7 +203,7 @@ export function CVLayoutControls({
 	return (
 		<Card className='print:hidden border-dashed bg-muted/30 shadow-none mb-4'>
 			<CardHeader className='p-4 pb-2'>
-				<div className='flex items-center justify-between'>
+				<div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
 					<div>
 						<CardTitle className='text-base flex items-center gap-2'>
 							<LayoutTemplate className='w-4 h-4' />
@@ -211,9 +211,9 @@ export function CVLayoutControls({
 						</CardTitle>
 						<CardDescription className='text-xs'>Drag and drop sections to reorder or hide projects</CardDescription>
 					</div>
-					<div className='flex gap-2 items-center'>
+					<div className='flex flex-wrap items-center gap-4'>
 						{layout.mode === 'two-column' && (
-							<div className='flex flex-col gap-1 mr-4'>
+							<div className='flex flex-col gap-1.5 grow sm:grow-0 min-w-35'>
 								<div className='flex items-center justify-between'>
 									<span className='text-[10px] font-medium text-muted-foreground uppercase tracking-wider'>
 										Col Width: {layout.leftColumnWidth ?? 50}%
@@ -226,17 +226,17 @@ export function CVLayoutControls({
 									step='5'
 									value={layout.leftColumnWidth ?? 50}
 									onChange={e => onChange({...layout, leftColumnWidth: Number(e.target.value)})}
-									className='w-32 h-1.5 bg-muted rounded-lg appearance-none cursor-pointer accent-black'
+									className='w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer accent-black'
 									title='Adjust left column width'
 								/>
 							</div>
 						)}
-						<div className='flex gap-1'>
+						<div className='flex gap-1.5 w-full sm:w-auto'>
 							<Button
 								variant={layout.mode === 'single' ? 'default' : 'outline'}
 								size='sm'
 								onClick={() => onChange({...layout, mode: 'single'})}
-								className='h-8 text-xs'
+								className='h-8 text-xs flex-1 sm:flex-none'
 							>
 								<LayoutTemplate className='w-3 h-3 mr-1.5' />1 Col
 							</Button>
@@ -244,7 +244,7 @@ export function CVLayoutControls({
 								variant={layout.mode === 'two-column' ? 'default' : 'outline'}
 								size='sm'
 								onClick={() => onChange({...layout, mode: 'two-column'})}
-								className='h-8 text-xs'
+								className='h-8 text-xs flex-1 sm:flex-none'
 							>
 								<Columns2 className='w-3 h-3 mr-1.5' />2 Cols
 							</Button>
