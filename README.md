@@ -16,6 +16,7 @@
   - [Key Aspects](#key-aspects)
   - [Security & Validation](#security--validation)
   - [PDF Generation Note](#pdf-generation-note)
+- [Future Features & Ideas](#future-features--ideas)
 - [Screenshots](#screenshots)
 
 ## Overview
@@ -140,6 +141,18 @@ npm test
 
 > **Tip**
 > **Why CSS over heavy libraries?** For the MVP phase, I intentionally avoided heavy PDF generation libraries. Instead, PDF exporting is implemented purely via CSS print media queries (`@media print`). This ensures the generated CV is optimized for A4 size, hides UI controls during printing, and correctly handles page breaks without bloating the application bundle.
+
+## Future Features & Ideas
+
+While the MVP is fully functional, here are some ideas planned for future iterations:
+
+- **Multiple CV Templates:** Add more diverse visual templates (e.g., Creative, Minimalist, Corporate) beyond the default layout.
+- **Native PDF Generation:** Transition from browser-based printing to a dedicated backend PDF generation service (e.g., `@react-pdf/renderer`) for pixel-perfect exports across all devices.
+- **Drag & Drop Reordering:** Implement a drag-and-drop interface allowing users to easily reorder sections and items within their generated CVs before exporting.
+- **Public Portfolio View:** Generate a unique, shareable link for each CV to act as a live web portfolio.
+- **CV Duplication:** Allow users to duplicate existing generated CVs to quickly iterate or create slight variations.
+- **DOCX Export:** Provide the ability to export the tailored CV to Microsoft Word (.docx) and PDF format.
+
 
 ## Screenshots
 
