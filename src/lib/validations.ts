@@ -134,6 +134,17 @@ export const generatedProjectSchema = z.object({
     techStack: z.array(z.string())
 });
 
+export const tailoredEducationSchema = z.object({
+    id: z.string(),
+    institution: z.string(),
+    degree: z.string(),
+    fieldOfStudy: z.string().nullable().optional(),
+    startDate: z.string(),
+    endDate: z.string().nullable().optional(),
+    isCurrent: z.boolean(),
+    description: z.string().nullable().optional(),
+});
+
 export const tailoredCVSchema = z.object({
     jobTitleOverride: z.string().optional(),
     personalInfo: z.object({
@@ -152,4 +163,5 @@ export const tailoredCVSchema = z.object({
     projects: z.array(generatedProjectSchema).describe("The user's projects, filtered and tailored to show relevance to the job description. Do NOT include projects that are completely irrelevant."),
     professionalSummary: z.string().optional(),
     selectedProjects: z.array(generatedProjectSchema).optional(),
+    selectedEducations: z.array(tailoredEducationSchema).optional(),
 });

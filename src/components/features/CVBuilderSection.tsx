@@ -56,11 +56,24 @@ export function CVBuilderSection({
 	// Keep previewData in sync with selectedCv when selectedCv changes
 	useEffect(() => {
 		if (selectedCv) {
-			setPreviewData(selectedCv.generatedContent);
+			const data = { ...selectedCv.generatedContent };
+			if (!data.selectedEducations && educations && educations.length > 0) {
+				data.selectedEducations = educations.map(edu => ({
+					id: edu.id,
+					institution: edu.institution,
+					degree: edu.degree,
+					fieldOfStudy: edu.fieldOfStudy,
+					startDate: edu.startDate.toISOString(),
+					endDate: edu.endDate ? edu.endDate.toISOString() : null,
+					isCurrent: edu.isCurrent,
+					description: edu.description,
+				}));
+			}
+			setPreviewData(data);
 		} else {
 			setPreviewData(null);
 		}
-	}, [selectedCv]);
+	}, [selectedCv, educations]);
 
 	// Sync local cvs state when initialCVs prop changes from router.refresh()
 	useEffect(() => {
@@ -137,6 +150,7 @@ export function CVBuilderSection({
 					<EditTailoredCVForm
 						cv={selectedCv}
 						profile={profile}
+						educations={educations}
 						onUpdatePreview={setPreviewData}
 						onClose={() => setSelectedCv(null)}
 					/>
@@ -252,14 +266,14 @@ export function CVBuilderSection({
 			<div className='lg:col-span-8 bg-background border rounded-lg shadow-sm min-h-200 flex flex-col print:border-none print:shadow-none print:col-span-12'>
 				{selectedCv ? (
 					<>
-						<div className='border-b p-4 flex items-center justify-between bg-muted/20 print:hidden'>
-							<div className='flex items-center gap-2'>
-								<Button variant='ghost' size='sm' onClick={() => setSelectedCv(null)} className='lg:hidden'>
+						<div className='border-b p-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-muted/20 print:hidden'>
+							<div className='flex items-center gap-2 min-w-0'>
+								<Button variant='ghost' size='sm' onClick={() => setSelectedCv(null)} className='lg:hidden shrink-0'>
 									<ArrowLeft className='w-4 h-4 mr-1' /> Back
 								</Button>
-								<h3 className='font-semibold'>Preview: {selectedCv.jobTitle}</h3>
+								<h3 className='font-semibold truncate'>Preview: {selectedCv.jobTitle}</h3>
 							</div>
-							<Button variant='outline' size='sm' onClick={() => window.print()} className='gap-2'>
+							<Button variant='outline' size='sm' onClick={() => window.print()} className='gap-2 w-full sm:w-auto shrink-0'>
 								<Printer className='w-4 h-4' /> Print / Export PDF
 							</Button>
 						</div>

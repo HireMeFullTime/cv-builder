@@ -10,7 +10,8 @@ import {
 	DragOverlay,
 	closestCorners,
 	KeyboardSensor,
-	PointerSensor,
+	MouseSensor,
+	TouchSensor,
 	useSensor,
 	useSensors,
 	useDroppable,
@@ -36,11 +37,7 @@ const SECTION_LABELS: Record<CVSectionId, string> = {
 	projects: 'Projects',
 	languages: 'Languages'
 };
-
-interface SortableItemProps {
-	id: CVSectionId;
-}
-
+import {type SortableItemProps} from '@/types';
 function SortableItem({id}: SortableItemProps) {
 	const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({id});
 
@@ -54,12 +51,12 @@ function SortableItem({id}: SortableItemProps) {
 		<div
 			ref={setNodeRef}
 			style={style}
-			className='flex items-center gap-2 p-2 mb-2 bg-background border rounded-md shadow-sm cursor-grab active:cursor-grabbing text-sm font-medium'
+			className='flex items-center gap-1.5 p-1.5 sm:p-2 mb-2 bg-background border rounded-md shadow-sm cursor-grab active:cursor-grabbing text-xs sm:text-sm font-medium min-w-0'
 			{...attributes}
 			{...listeners}
 		>
-			<GripVertical className='w-4 h-4 text-muted-foreground' />
-			{SECTION_LABELS[id]}
+			<GripVertical className='w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground shrink-0' />
+			<span className='truncate'>{SECTION_LABELS[id]}</span>
 		</div>
 	);
 }
@@ -90,9 +87,15 @@ export function CVLayoutControls({
 	const [activeId, setActiveId] = useState<CVSectionId | null>(null);
 
 	const sensors = useSensors(
-		useSensor(PointerSensor, {
+		useSensor(MouseSensor, {
 			activationConstraint: {
 				distance: 5
+			}
+		}),
+		useSensor(TouchSensor, {
+			activationConstraint: {
+				delay: 150,
+				tolerance: 10
 			}
 		}),
 		useSensor(KeyboardSensor, {
@@ -196,7 +199,7 @@ export function CVLayoutControls({
 	return (
 		<Card className='print:hidden border-dashed bg-muted/30 shadow-none mb-4'>
 			<CardHeader className='p-4 pb-2'>
-				<div className='flex items-center justify-between'>
+				<div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
 					<div>
 						<CardTitle className='text-base flex items-center gap-2'>
 							<LayoutTemplate className='w-4 h-4' />
@@ -204,9 +207,9 @@ export function CVLayoutControls({
 						</CardTitle>
 						<CardDescription className='text-xs'>Drag and drop sections to reorder or hide projects</CardDescription>
 					</div>
-					<div className='flex gap-2 items-center'>
+					<div className='flex flex-wrap items-center gap-4'>
 						{layout.mode === 'two-column' && (
-							<div className='flex flex-col gap-1 mr-4'>
+							<div className='flex flex-col gap-1.5 grow sm:grow-0 min-w-35'>
 								<div className='flex items-center justify-between'>
 									<span className='text-[10px] font-medium text-muted-foreground uppercase tracking-wider'>
 										Col Width: {layout.leftColumnWidth ?? 50}%
@@ -219,17 +222,17 @@ export function CVLayoutControls({
 									step='5'
 									value={layout.leftColumnWidth ?? 50}
 									onChange={e => onChange({...layout, leftColumnWidth: Number(e.target.value)})}
-									className='w-32 h-1.5 bg-muted rounded-lg appearance-none cursor-pointer accent-black'
+									className='w-full h-1.5 bg-muted rounded-lg appearance-none cursor-pointer accent-black'
 									title='Adjust left column width'
 								/>
 							</div>
 						)}
-						<div className='flex gap-1'>
+						<div className='flex gap-1.5 w-full sm:w-auto'>
 							<Button
 								variant={layout.mode === 'single' ? 'default' : 'outline'}
 								size='sm'
 								onClick={() => onChange({...layout, mode: 'single'})}
-								className='h-8 text-xs'
+								className='h-8 text-xs flex-1 sm:flex-none'
 							>
 								<LayoutTemplate className='w-3 h-3 mr-1.5' />1 Col
 							</Button>
@@ -237,7 +240,7 @@ export function CVLayoutControls({
 								variant={layout.mode === 'two-column' ? 'default' : 'outline'}
 								size='sm'
 								onClick={() => onChange({...layout, mode: 'two-column'})}
-								className='h-8 text-xs'
+								className='h-8 text-xs flex-1 sm:flex-none'
 							>
 								<Columns2 className='w-3 h-3 mr-1.5' />2 Cols
 							</Button>
@@ -283,9 +286,9 @@ export function CVLayoutControls({
 
 					<DragOverlay>
 						{activeId ? (
-							<div className='flex items-center gap-2 p-2 bg-background border border-primary rounded-md shadow-lg text-sm font-medium opacity-90 cursor-grabbing'>
-								<GripVertical className='w-4 h-4 text-muted-foreground' />
-								{SECTION_LABELS[activeId]}
+							<div className='flex items-center gap-1.5 p-1.5 sm:p-2 bg-background border border-primary rounded-md shadow-lg text-xs sm:text-sm font-medium opacity-90 cursor-grabbing min-w-0'>
+								<GripVertical className='w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground shrink-0' />
+								<span className='truncate'>{SECTION_LABELS[activeId]}</span>
 							</div>
 						) : null}
 					</DragOverlay>
