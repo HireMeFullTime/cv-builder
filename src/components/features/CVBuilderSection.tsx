@@ -252,14 +252,14 @@ export function CVBuilderSection({
 			<div className='lg:col-span-8 bg-background border rounded-lg shadow-sm min-h-200 flex flex-col print:border-none print:shadow-none print:col-span-12'>
 				{selectedCv ? (
 					<>
-						<div className='border-b p-4 flex items-center justify-between bg-muted/20 print:hidden'>
-							<div className='flex items-center gap-2'>
-								<Button variant='ghost' size='sm' onClick={() => setSelectedCv(null)} className='lg:hidden'>
+						<div className='border-b p-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-muted/20 print:hidden'>
+							<div className='flex items-center gap-2 min-w-0'>
+								<Button variant='ghost' size='sm' onClick={() => setSelectedCv(null)} className='lg:hidden shrink-0'>
 									<ArrowLeft className='w-4 h-4 mr-1' /> Back
 								</Button>
-								<h3 className='font-semibold'>Preview: {selectedCv.jobTitle}</h3>
+								<h3 className='font-semibold truncate'>Preview: {selectedCv.jobTitle}</h3>
 							</div>
-							<Button variant='outline' size='sm' onClick={() => window.print()} className='gap-2'>
+							<Button variant='outline' size='sm' onClick={() => window.print()} className='gap-2 w-full sm:w-auto shrink-0'>
 								<Printer className='w-4 h-4' /> Print / Export PDF
 							</Button>
 						</div>
