@@ -37,11 +37,7 @@ const SECTION_LABELS: Record<CVSectionId, string> = {
 	projects: 'Projects',
 	languages: 'Languages'
 };
-
-interface SortableItemProps {
-	id: CVSectionId;
-}
-
+import {type SortableItemProps} from '@/types';
 function SortableItem({id}: SortableItemProps) {
 	const {attributes, listeners, setNodeRef, transform, transition, isDragging} = useSortable({id});
 

@@ -4,11 +4,7 @@ import { useState, KeyboardEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { X, PlusCircle } from "lucide-react";
-
-interface Accomplishment {
-  value: string;
-}
-
+import { type Accomplishment } from "@/types";
 export function AccomplishmentsInput({ 
   value = [], 
   onChange,

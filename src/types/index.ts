@@ -41,3 +41,11 @@ export interface ColumnLayout {
   hiddenProjectIds?: string[];
   hiddenExperienceIds?: string[];
 }
+
+export interface SortableItemProps {
+  id: CVSectionId;
+}
+
+export interface Accomplishment {
+  value: string;
+}
