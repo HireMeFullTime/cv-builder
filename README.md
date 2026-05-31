@@ -152,6 +152,7 @@ While the MVP is fully functional, here are some ideas planned for future iterat
 - **Public Portfolio View:** Generate a unique, shareable link for each CV to act as a live web portfolio.
 - **CV Duplication:** Allow users to duplicate existing generated CVs to quickly iterate or create slight variations.
 - **DOCX Export:** Provide the ability to export the tailored CV to Microsoft Word (.docx) and PDF format.
+- **Smart JSON Import:** Allow users to upload their existing CV data in JSON format, automatically mapping and populating the app's internal profile structure.
 
 
 ## Screenshots
