@@ -14,7 +14,7 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {toast} from 'sonner';
-import {Loader2, Trash2, ArrowLeft, Printer} from 'lucide-react';
+import {Loader2, Trash2, ArrowLeft, Printer, Sparkles} from 'lucide-react';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useRouter} from 'next/navigation';
@@ -148,6 +148,13 @@ export function CVBuilderSection({
 								<CardDescription>Paste the job details to generate a tailored CV.</CardDescription>
 							</CardHeader>
 							<CardContent>
+								<div className='flex items-start gap-3 p-4 rounded-lg bg-primary/10 border border-primary/20 mb-4'>
+									<Sparkles className='w-5 h-5 text-primary shrink-0 mt-0.5' />
+									<div className='text-xs text-foreground space-y-1'>
+										<p className='font-semibold'>AI-Powered CV Generation</p>
+										<p className='opacity-90 leading-relaxed'>Our AI analyzes the job description and your profile data to automatically select the most relevant experience, skills, and projects. It also tailors descriptions and generates a professional summary matched to the role.</p>
+									</div>
+								</div>
 								<Form {...form}>
 									<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
 										<FormField
@@ -187,10 +194,13 @@ export function CVBuilderSection({
 											{renderSubmitButtonContent()}
 										</Button>
 										{!profile && (
-											<p className="text-sm text-destructive text-center mt-2">
+											<p className='text-sm text-destructive text-center mt-2'>
 												You must complete your basic profile before generating a CV.
 											</p>
 										)}
+										<p className='text-[11px] text-muted-foreground text-center mt-3'>
+											Generated content is AI-assisted. You can review and edit all sections after generation.
+										</p>
 									</form>
 								</Form>
 							</CardContent>
@@ -254,7 +264,12 @@ export function CVBuilderSection({
 							</Button>
 						</div>
 						<div className='p-8 md:p-12 print:p-0 flex-1 overflow-y-auto print:overflow-visible bg-white text-black print:bg-transparent'>
-							<CVLayoutControls layout={layout} onChange={setLayout} projects={displayData?.projects || []} experiences={displayData?.selectedExperiences || []} />
+							<CVLayoutControls
+								layout={layout}
+								onChange={setLayout}
+								projects={displayData?.projects || []}
+								experiences={displayData?.selectedExperiences || []}
+							/>
 							<CVPreview
 								data={displayData!}
 								profile={profile}
