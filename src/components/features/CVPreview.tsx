@@ -98,7 +98,7 @@ export function CVPreview({
 					<section key='education'>
 						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Education</h3>
 						<div className='space-y-4'>
-							{educations.map(edu => (
+							{(data?.selectedEducations && data.selectedEducations.length > 0 ? data.selectedEducations : educations).map(edu => (
 								<div key={edu.id}>
 									<div className='flex justify-between items-baseline mb-1'>
 										<h4 className='font-bold text-black'>{edu.institution}</h4>

@@ -56,11 +56,24 @@ export function CVBuilderSection({
 	// Keep previewData in sync with selectedCv when selectedCv changes
 	useEffect(() => {
 		if (selectedCv) {
-			setPreviewData(selectedCv.generatedContent);
+			const data = { ...selectedCv.generatedContent };
+			if (!data.selectedEducations && educations && educations.length > 0) {
+				data.selectedEducations = educations.map(edu => ({
+					id: edu.id,
+					institution: edu.institution,
+					degree: edu.degree,
+					fieldOfStudy: edu.fieldOfStudy,
+					startDate: edu.startDate.toISOString(),
+					endDate: edu.endDate ? edu.endDate.toISOString() : null,
+					isCurrent: edu.isCurrent,
+					description: edu.description,
+				}));
+			}
+			setPreviewData(data);
 		} else {
 			setPreviewData(null);
 		}
-	}, [selectedCv]);
+	}, [selectedCv, educations]);
 
 	// Sync local cvs state when initialCVs prop changes from router.refresh()
 	useEffect(() => {
@@ -137,6 +150,7 @@ export function CVBuilderSection({
 					<EditTailoredCVForm
 						cv={selectedCv}
 						profile={profile}
+						educations={educations}
 						onUpdatePreview={setPreviewData}
 						onClose={() => setSelectedCv(null)}
 					/>
