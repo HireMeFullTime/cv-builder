@@ -153,6 +153,7 @@ While the MVP is fully functional, here are some ideas planned for future iterat
 - **CV Duplication:** Allow users to duplicate existing generated CVs to quickly iterate or create slight variations.
 - **DOCX Export:** Provide the ability to export the tailored CV to Microsoft Word (.docx) and PDF format.
 - **Smart JSON Import:** Allow users to upload their existing CV data in JSON format, automatically mapping and populating the app's internal profile structure.
+- **Account Deletion:** Provide users with a self-service option to permanently delete their account and all associated data, ensuring full privacy and GDPR compliance.
 
 
 ## Screenshots
