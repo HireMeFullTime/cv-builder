@@ -1,59 +1,46 @@
 'use client';
 
-import {useForm, useFieldArray} from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {tailoredCVSchema} from '@/lib/validations';
-import {TailoredCVData, ParsedTailoredCV} from '@/types';
-import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
-import {Textarea} from '@/components/ui/textarea';
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/components/ui/form';
-import {ArrowUp, ArrowDown, Trash2, Plus, Save, Undo2} from 'lucide-react';
 import {useEffect} from 'react';
+import {Button} from '@/components/ui/button';
+import {Form, FormField, FormItem, FormControl, FormMessage} from '@/components/ui/form';
+import {Textarea} from '@/components/ui/textarea';
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
+import {Save, Undo2} from 'lucide-react';
 import {toast} from 'sonner';
 import {updateTailoredCV} from '@/actions/cv';
-import {Profile, Education} from '@prisma/client';
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 
-import {Checkbox} from '@/components/ui/checkbox';
-import {MonthYearPicker} from '@/components/features/MonthYearPicker';
-import {EditCVProjectTechStack} from '@/components/features/EditCVProjectTechStack';
-import {EditCVExperienceAccomplishments} from '@/components/features/EditCVExperienceAccomplishments';
+// Import newly extracted subcomponents
+import {EditPersonalInfoSection} from './EditPersonalInfoSection';
+import {EditSkillsSection} from './EditSkillsSection';
+import {EditExperienceSection} from './EditExperienceSection';
+import {EditEducationSection} from './EditEducationSection';
+import {EditProjectsSection} from './EditProjectsSection';
 
-export function EditTailoredCVForm({
-	cv,
-	profile,
-	educations,
-	onUpdatePreview,
-	onClose
-}: {
-	cv: ParsedTailoredCV;
-	profile: Profile | null;
-	educations: Education[];
-	onUpdatePreview: (data: TailoredCVData) => void;
-	onClose: () => void;
-}) {
-	const generatedContent = cv.generatedContent || {};
+import {TailoredCVData, EditTailoredCVFormProps} from '@/types';
+
+export function EditTailoredCVForm({cv, profile, educations, onClose, onUpdatePreview}: EditTailoredCVFormProps) {
 	const form = useForm<TailoredCVData>({
 		resolver: zodResolver(tailoredCVSchema),
 		defaultValues: {
-			jobTitleOverride: generatedContent.jobTitleOverride || cv.jobTitle,
-			personalInfo: generatedContent.personalInfo || {
+			jobTitleOverride: cv.generatedContent.jobTitleOverride || cv.jobTitle || '',
+			personalInfo: cv.generatedContent.personalInfo || {
 				firstName: profile?.firstName || '',
 				lastName: profile?.lastName || '',
-				title: profile?.title || '',
 				email: profile?.email || '',
 				phone: profile?.phone || '',
 				location: profile?.location || '',
 				linkedinUrl: profile?.linkedinUrl || '',
 				githubUrl: profile?.githubUrl || ''
 			},
-			summary: generatedContent.summary || generatedContent.professionalSummary || '',
-			relevantSkills: generatedContent.relevantSkills || [],
-			selectedExperiences: generatedContent.selectedExperiences || [],
-			selectedEducations: generatedContent.selectedEducations && generatedContent.selectedEducations.length > 0
-				? generatedContent.selectedEducations
-				: educations.map(edu => ({
+			summary: cv.generatedContent.summary || '',
+			relevantSkills: cv.generatedContent.relevantSkills || [],
+			selectedExperiences: cv.generatedContent.selectedExperiences || [],
+			selectedEducations:
+				cv.generatedContent.selectedEducations ||
+				educations?.map(edu => ({
 					id: edu.id,
 					institution: edu.institution,
 					degree: edu.degree,
@@ -61,50 +48,12 @@ export function EditTailoredCVForm({
 					startDate: edu.startDate.toISOString(),
 					endDate: edu.endDate ? edu.endDate.toISOString() : null,
 					isCurrent: edu.isCurrent,
-					description: edu.description,
-				})),
-			projects: generatedContent.projects || generatedContent.selectedProjects || []
-		}
-	});
-
-	const {
-		fields: skillFields,
-		append: appendSkill,
-		remove: removeSkill,
-		move: moveSkill
-	} = useFieldArray({
-		control: form.control,
-		name: 'relevantSkills' as never // react-hook-form type workaround for string array
-	});
-
-	const {
-		fields: educationFields,
-		append: appendEducation,
-		remove: removeEducation,
-		move: moveEducation
-	} = useFieldArray({
-		control: form.control,
-		name: 'selectedEducations'
-	});
-
-	const {
-		fields: projectFields,
-		move: moveProject,
-		remove: removeProject,
-		append: appendProject
-	} = useFieldArray({
-		control: form.control,
-		name: 'projects'
-	});
-
-	const {
-		fields: experienceFields,
-		move: moveExperience,
-		remove: removeExperience,
-		append: appendExperience
-	} = useFieldArray({
-		control: form.control,
-		name: 'selectedExperiences'
+					description: edu.description
+				})) ||
+				[],
+			projects: cv.generatedContent.projects || []
+		},
+		mode: 'onChange'
 	});
 
 	// Watch for real-time preview
@@ -117,6 +66,7 @@ export function EditTailoredCVForm({
 				summary: value.summary || '',
 				relevantSkills: value.relevantSkills || [],
 				selectedExperiences: value.selectedExperiences || [],
+				selectedEducations: value.selectedEducations || [],
 				projects: value.projects || []
 			};
 			onUpdatePreview(safeValue as TailoredCVData);
@@ -151,112 +101,8 @@ export function EditTailoredCVForm({
 			<CardContent className='flex-1 overflow-y-auto p-4 space-y-6'>
 				<Form {...form}>
 					<form id='edit-cv-form' onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-						{/* CV Header */}
-						<div className='space-y-4'>
-							<h3 className='text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2'>
-								Header / Contact Info
-							</h3>
-							<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-								<FormField
-									control={form.control}
-									name='personalInfo.firstName'
-									render={({field}) => (
-										<FormItem>
-											<FormLabel className='text-xs'>First Name</FormLabel>
-											<FormControl>
-												<Input {...field} className='h-8 text-sm' />
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name='personalInfo.lastName'
-									render={({field}) => (
-										<FormItem>
-											<FormLabel className='text-xs'>Last Name</FormLabel>
-											<FormControl>
-												<Input {...field} className='h-8 text-sm' />
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name='jobTitleOverride'
-									render={({field}) => (
-										<FormItem className='col-span-2'>
-											<FormLabel className='text-xs'>Job Title (Displayed under name)</FormLabel>
-											<FormControl>
-												<Input {...field} className='h-8 text-sm' />
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name='personalInfo.email'
-									render={({field}) => (
-										<FormItem>
-											<FormLabel className='text-xs'>Email</FormLabel>
-											<FormControl>
-												<Input {...field} className='h-8 text-sm' />
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name='personalInfo.phone'
-									render={({field}) => (
-										<FormItem>
-											<FormLabel className='text-xs'>Phone</FormLabel>
-											<FormControl>
-												<Input {...field} className='h-8 text-sm' />
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name='personalInfo.location'
-									render={({field}) => (
-										<FormItem className='col-span-2'>
-											<FormLabel className='text-xs'>Location</FormLabel>
-											<FormControl>
-												<Input {...field} className='h-8 text-sm' />
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name='personalInfo.linkedinUrl'
-									render={({field}) => (
-										<FormItem>
-											<FormLabel className='text-xs'>LinkedIn URL</FormLabel>
-											<FormControl>
-												<Input {...field} className='h-8 text-sm' />
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name='personalInfo.githubUrl'
-									render={({field}) => (
-										<FormItem>
-											<FormLabel className='text-xs'>GitHub URL</FormLabel>
-											<FormControl>
-												<Input {...field} className='h-8 text-sm' />
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-							</div>
-						</div>
+						<EditPersonalInfoSection control={form.control} />
 
-						{/* Summary */}
 						<div className='space-y-4'>
 							<h3 className='text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2'>
 								Summary
@@ -275,544 +121,10 @@ export function EditTailoredCVForm({
 							/>
 						</div>
 
-						{/* Skills */}
-						<div className='space-y-4'>
-							<h3 className='text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2'>
-								Key Skills
-							</h3>
-							<div className='space-y-2'>
-								{skillFields.map((field, index) => (
-									<div key={field.id} className='flex items-center gap-2'>
-										<FormField
-											control={form.control}
-											name={`relevantSkills.${index}`}
-											render={({field: inputField}) => (
-												<FormItem className='flex-1 mb-0 space-y-0'>
-													<FormControl>
-														<Input {...inputField} className='h-8 text-sm' />
-													</FormControl>
-												</FormItem>
-											)}
-										/>
-										<div className='flex gap-1'>
-											<Button
-												type='button'
-												variant='ghost'
-												size='icon'
-												className='h-8 w-8'
-												aria-label='Move skill up'
-												onClick={() => moveSkill(index, index - 1)}
-												disabled={index === 0}
-											>
-												<ArrowUp className='w-4 h-4' />
-											</Button>
-											<Button
-												type='button'
-												variant='ghost'
-												size='icon'
-												className='h-8 w-8'
-												aria-label='Move skill down'
-												onClick={() => moveSkill(index, index + 1)}
-												disabled={index === skillFields.length - 1}
-											>
-												<ArrowDown className='w-4 h-4' />
-											</Button>
-											<Button
-												type='button'
-												variant='ghost'
-												size='icon'
-												className='h-8 w-8 text-destructive'
-												aria-label='Remove skill'
-												onClick={() => removeSkill(index)}
-											>
-												<Trash2 className='w-4 h-4' />
-											</Button>
-										</div>
-									</div>
-								))}
-								<Button
-									type='button'
-									variant='outline'
-									size='sm'
-									onClick={() => appendSkill('')}
-									className='mt-2 text-xs h-8'
-								>
-									<Plus className='w-3 h-3 mr-1' /> Add Skill
-								</Button>
-							</div>
-						</div>
-
-						{/* Experiences */}
-						<div className='space-y-4'>
-							<h3 className='text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2'>
-								Experience
-							</h3>
-							<div className='space-y-6'>
-								{experienceFields.map((expField, expIndex) => (
-									<div key={expField.id} className='p-4 rounded-lg border bg-muted/10 space-y-4'>
-										<div className='flex justify-between items-start'>
-											<div className='flex-1 space-y-3 mr-4'>
-												<FormField
-													control={form.control}
-													name={`selectedExperiences.${expIndex}.jobTitle`}
-													render={({field}) => (
-														<FormItem className='space-y-1'>
-															<FormLabel className='text-xs'>Job Title</FormLabel>
-															<FormControl>
-																<Input {...field} className='h-8 font-semibold' />
-															</FormControl>
-														</FormItem>
-													)}
-												/>
-												<FormField
-													control={form.control}
-													name={`selectedExperiences.${expIndex}.company`}
-													render={({field}) => (
-														<FormItem className='space-y-1'>
-															<FormLabel className='text-xs'>Company</FormLabel>
-															<FormControl>
-																<Input {...field} className='h-8 text-sm' />
-															</FormControl>
-														</FormItem>
-													)}
-												/>
-												<div className='space-y-3'>
-													<FormField
-														control={form.control}
-														name={`selectedExperiences.${expIndex}.isCurrent`}
-														render={({field}) => (
-															<FormItem className='flex flex-row items-center space-x-2 space-y-0'>
-																<FormControl>
-																	<Checkbox
-																		checked={field.value}
-																		onCheckedChange={checked => {
-																			field.onChange(checked);
-																			if (checked) {
-																				form.setValue(`selectedExperiences.${expIndex}.endDate`, '');
-																			}
-																		}}
-																	/>
-																</FormControl>
-																<FormLabel className='text-xs font-normal'>Present (I currently work here)</FormLabel>
-															</FormItem>
-														)}
-													/>
-													<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-														<FormField
-															control={form.control}
-															name={`selectedExperiences.${expIndex}.startDate`}
-															render={({field}) => {
-																const parseDateString = (val: string) => {
-																	if (!val) return undefined;
-																	const parts = val.split('-');
-																	if (parts.length >= 2)
-																		return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1);
-																	return new Date(val);
-																};
-																const formatDate = (date?: Date) => {
-																	if (!date) return '';
-																	return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
-																};
-																return (
-																	<FormItem className='space-y-1'>
-																		<FormLabel className='text-xs'>Start Date</FormLabel>
-																		<FormControl>
-																			<MonthYearPicker
-																				value={parseDateString(field.value)}
-																				onChange={date => field.onChange(formatDate(date))}
-																			/>
-																		</FormControl>
-																	</FormItem>
-																);
-															}}
-														/>
-														{!form.watch(`selectedExperiences.${expIndex}.isCurrent`) && (
-															<FormField
-																control={form.control}
-																name={`selectedExperiences.${expIndex}.endDate`}
-																render={({field}) => {
-																	const parseDateString = (val: string) => {
-																		if (!val) return undefined;
-																		const parts = val.split('-');
-																		if (parts.length >= 2)
-																			return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1);
-																		return new Date(val);
-																	};
-																	const formatDate = (date?: Date) => {
-																		if (!date) return '';
-																		return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
-																	};
-																	return (
-																		<FormItem className='space-y-1'>
-																			<FormLabel className='text-xs'>End Date</FormLabel>
-																			<FormControl>
-																				<MonthYearPicker
-																					value={parseDateString(field.value || '')}
-																					onChange={date => field.onChange(formatDate(date))}
-																				/>
-																			</FormControl>
-																		</FormItem>
-																	);
-																}}
-															/>
-														)}
-													</div>
-												</div>
-
-												{/* Nested Accomplishments for this experience */}
-												<EditCVExperienceAccomplishments form={form} expIndex={expIndex} />
-											</div>
-
-											<div className='flex flex-col gap-1'>
-												<Button
-													type='button'
-													variant='secondary'
-													size='icon'
-													className='h-8 w-8'
-													aria-label='Move experience up'
-													onClick={() => moveExperience(expIndex, expIndex - 1)}
-													disabled={expIndex === 0}
-												>
-													<ArrowUp className='w-4 h-4' />
-												</Button>
-												<Button
-													type='button'
-													variant='secondary'
-													size='icon'
-													className='h-8 w-8'
-													aria-label='Move experience down'
-													onClick={() => moveExperience(expIndex, expIndex + 1)}
-													disabled={expIndex === experienceFields.length - 1}
-												>
-													<ArrowDown className='w-4 h-4' />
-												</Button>
-												<Button
-													type='button'
-													variant='ghost'
-													size='icon'
-													className='h-8 w-8 text-destructive hover:bg-destructive/10'
-													aria-label='Remove experience'
-													onClick={() => removeExperience(expIndex)}
-												>
-													<Trash2 className='w-4 h-4' />
-												</Button>
-											</div>
-										</div>
-									</div>
-								))}
-								<Button
-									type='button'
-									variant='outline'
-									size='sm'
-									onClick={() =>
-										appendExperience({
-											id: crypto.randomUUID(),
-											jobTitle: '',
-											company: '',
-											startDate: '',
-											isCurrent: false,
-											accomplishments: []
-										})
-									}
-									className='w-full border-dashed mt-2'
-								>
-									<Plus className='w-4 h-4 mr-2' /> Add Experience
-								</Button>
-							</div>
-						</div>
-						{/* Education */}
-						<div className='space-y-4'>
-							<h3 className='text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2'>
-								Education
-							</h3>
-							<div className='space-y-6'>
-								{educationFields.map((eduField, eduIndex) => (
-									<div key={eduField.id} className='p-4 rounded-lg border bg-muted/10 space-y-4'>
-										<div className='flex justify-between items-start'>
-											<div className='flex-1 space-y-3 mr-4'>
-												<FormField
-													control={form.control}
-													name={`selectedEducations.${eduIndex}.institution`}
-													render={({field}) => (
-														<FormItem>
-															<FormLabel className='text-xs'>Institution</FormLabel>
-															<FormControl>
-																<Input {...field} className='h-8 text-sm' />
-															</FormControl>
-														</FormItem>
-													)}
-												/>
-												<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-													<FormField
-														control={form.control}
-														name={`selectedEducations.${eduIndex}.degree`}
-														render={({field}) => (
-															<FormItem>
-																<FormLabel className='text-xs'>Degree</FormLabel>
-																<FormControl>
-																	<Input {...field} className='h-8 text-sm' />
-																</FormControl>
-															</FormItem>
-														)}
-													/>
-													<FormField
-														control={form.control}
-														name={`selectedEducations.${eduIndex}.fieldOfStudy`}
-														render={({field}) => (
-															<FormItem>
-																<FormLabel className='text-xs'>Field of Study</FormLabel>
-																<FormControl>
-																	<Input {...field} value={field.value || ''} className='h-8 text-sm' />
-																</FormControl>
-															</FormItem>
-														)}
-													/>
-												</div>
-												<FormField
-													control={form.control}
-													name={`selectedEducations.${eduIndex}.isCurrent`}
-													render={({field}) => (
-														<FormItem className='flex flex-row items-center space-x-2 space-y-0'>
-															<FormControl>
-																<Checkbox
-																	checked={field.value}
-																	onCheckedChange={checked => {
-																		field.onChange(checked);
-																		if (checked) {
-																			form.setValue(`selectedEducations.${eduIndex}.endDate`, '');
-																		}
-																	}}
-																/>
-															</FormControl>
-															<FormLabel className='text-xs font-normal'>Present (I currently study here)</FormLabel>
-														</FormItem>
-													)}
-												/>
-												<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-													<FormField
-														control={form.control}
-														name={`selectedEducations.${eduIndex}.startDate`}
-														render={({field}) => {
-															const parseDateString = (val: string) => {
-																if (!val) return undefined;
-																const parts = val.split('-');
-																if (parts.length >= 2) return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1);
-																return new Date(val);
-															};
-															const formatDate = (date?: Date) => {
-																if (!date) return '';
-																return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
-															};
-															return (
-																<FormItem className='space-y-1'>
-																	<FormLabel className='text-xs'>Start Date</FormLabel>
-																	<FormControl>
-																		<MonthYearPicker
-																			value={parseDateString(field.value || '')}
-																			onChange={date => field.onChange(formatDate(date))}
-																		/>
-																	</FormControl>
-																</FormItem>
-															);
-														}}
-													/>
-													{!form.watch(`selectedEducations.${eduIndex}.isCurrent`) && (
-														<FormField
-															control={form.control}
-															name={`selectedEducations.${eduIndex}.endDate`}
-															render={({field}) => {
-																const parseDateString = (val: string) => {
-																	if (!val) return undefined;
-																	const parts = val.split('-');
-																	if (parts.length >= 2) return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1);
-																	return new Date(val);
-																};
-																const formatDate = (date?: Date) => {
-																	if (!date) return '';
-																	return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
-																};
-																return (
-																	<FormItem className='space-y-1'>
-																		<FormLabel className='text-xs'>End Date</FormLabel>
-																		<FormControl>
-																			<MonthYearPicker
-																				value={parseDateString(field.value || '')}
-																				onChange={date => field.onChange(formatDate(date))}
-																			/>
-																		</FormControl>
-																	</FormItem>
-																);
-															}}
-														/>
-													)}
-												</div>
-												<FormField
-													control={form.control}
-													name={`selectedEducations.${eduIndex}.description`}
-													render={({field}) => (
-														<FormItem>
-															<FormLabel className='text-xs'>Description (optional)</FormLabel>
-															<FormControl>
-																<Textarea {...field} value={field.value || ''} className='min-h-16 text-sm resize-y' />
-															</FormControl>
-														</FormItem>
-													)}
-												/>
-											</div>
-
-											<div className='flex flex-col gap-1'>
-												<Button
-													type='button'
-													variant='secondary'
-													size='icon'
-													className='h-8 w-8'
-													aria-label='Move education up'
-													onClick={() => moveEducation(eduIndex, eduIndex - 1)}
-													disabled={eduIndex === 0}
-												>
-													<ArrowUp className='w-4 h-4' />
-												</Button>
-												<Button
-													type='button'
-													variant='secondary'
-													size='icon'
-													className='h-8 w-8'
-													aria-label='Move education down'
-													onClick={() => moveEducation(eduIndex, eduIndex + 1)}
-													disabled={eduIndex === educationFields.length - 1}
-												>
-													<ArrowDown className='w-4 h-4' />
-												</Button>
-												<Button
-													type='button'
-													variant='ghost'
-													size='icon'
-													className='h-8 w-8 text-destructive hover:bg-destructive/10'
-													aria-label='Remove education'
-													onClick={() => removeEducation(eduIndex)}
-												>
-													<Trash2 className='w-4 h-4' />
-												</Button>
-											</div>
-										</div>
-									</div>
-								))}
-								<Button
-									type='button'
-									variant='outline'
-									size='sm'
-									onClick={() =>
-										appendEducation({
-											id: crypto.randomUUID(),
-											institution: '',
-											degree: '',
-											fieldOfStudy: '',
-											startDate: '',
-											isCurrent: false,
-											description: ''
-										})
-									}
-									className='w-full border-dashed mt-2'
-								>
-									<Plus className='w-4 h-4 mr-2' /> Add Education
-								</Button>
-							</div>
-						</div>
-						{/* Projects */}
-						<div className='space-y-4'>
-							<h3 className='text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2'>
-								Projects
-							</h3>
-							<div className='space-y-6'>
-								{projectFields.map((projField, projIndex) => (
-									<div key={projField.id} className='p-4 rounded-lg border bg-muted/10 space-y-4'>
-										<div className='flex justify-between items-start'>
-											<div className='flex-1 space-y-3 mr-4'>
-												<FormField
-													control={form.control}
-													name={`projects.${projIndex}.title`}
-													render={({field}) => (
-														<FormItem className='space-y-1'>
-															<FormLabel className='text-xs'>Project Title</FormLabel>
-															<FormControl>
-																<Input {...field} className='h-8 font-semibold' />
-															</FormControl>
-														</FormItem>
-													)}
-												/>
-												<FormField
-													control={form.control}
-													name={`projects.${projIndex}.shortDescription`}
-													render={({field}) => (
-														<FormItem className='space-y-1'>
-															<FormLabel className='text-xs'>Short Description</FormLabel>
-															<FormControl>
-																<Textarea {...field} className='h-20 text-sm resize-none' />
-															</FormControl>
-														</FormItem>
-													)}
-												/>
-
-												{/* Nested Tech Stack for this project */}
-												<EditCVProjectTechStack form={form} projIndex={projIndex} />
-											</div>
-
-											<div className='flex flex-col gap-1'>
-												<Button
-													type='button'
-													variant='secondary'
-													size='icon'
-													className='h-8 w-8'
-													aria-label='Move project up'
-													onClick={() => moveProject(projIndex, projIndex - 1)}
-													disabled={projIndex === 0}
-												>
-													<ArrowUp className='w-4 h-4' />
-												</Button>
-												<Button
-													type='button'
-													variant='secondary'
-													size='icon'
-													className='h-8 w-8'
-													aria-label='Move project down'
-													onClick={() => moveProject(projIndex, projIndex + 1)}
-													disabled={projIndex === projectFields.length - 1}
-												>
-													<ArrowDown className='w-4 h-4' />
-												</Button>
-												<Button
-													type='button'
-													variant='ghost'
-													size='icon'
-													className='h-8 w-8 text-destructive hover:bg-destructive/10'
-													aria-label='Remove project'
-													onClick={() => removeProject(projIndex)}
-												>
-													<Trash2 className='w-4 h-4' />
-												</Button>
-											</div>
-										</div>
-									</div>
-								))}
-								<Button
-									type='button'
-									variant='outline'
-									size='sm'
-									onClick={() =>
-										appendProject({
-											id: crypto.randomUUID(),
-											title: '',
-											shortDescription: '',
-											techStack: [],
-											accomplishments: []
-										})
-									}
-									className='w-full border-dashed mt-2'
-								>
-									<Plus className='w-4 h-4 mr-2' /> Add Project
-								</Button>
-							</div>
-						</div>
+						<EditSkillsSection control={form.control} />
+						<EditExperienceSection form={form} />
+						<EditEducationSection form={form} />
+						<EditProjectsSection form={form} />
 					</form>
 				</Form>
 			</CardContent>

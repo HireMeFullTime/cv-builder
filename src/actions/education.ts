@@ -21,37 +21,42 @@ export async function getEducations() {
 }
 
 export async function upsertEducation(data: z.infer<typeof educationSchema>) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    throw new Error("Unauthorized");
-  }
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("Unauthorized");
+    }
 
-  const parsedData = educationSchema.parse(data);
+    const parsedData = educationSchema.parse(data);
 
-  const payload = {
-    institution: parsedData.institution,
-    degree: parsedData.degree,
-    fieldOfStudy: parsedData.fieldOfStudy || null,
-    startDate: parsedData.startDate,
-    endDate: parsedData.endDate || null,
-    isCurrent: parsedData.isCurrent,
-    description: parsedData.description || null,
-    url: parsedData.url || null,
-  };
+    const payload = {
+      institution: parsedData.institution,
+      degree: parsedData.degree,
+      fieldOfStudy: parsedData.fieldOfStudy || null,
+      startDate: parsedData.startDate,
+      endDate: parsedData.endDate || null,
+      isCurrent: parsedData.isCurrent,
+      description: parsedData.description || null,
+      url: parsedData.url || null,
+    };
 
-  if (parsedData.id) {
-    const education = await prisma.education.update({
-      where: { id: parsedData.id, userId: session.user.id },
-      data: payload,
-    });
-    revalidatePath("/dashboard");
-    return education;
-  } else {
-    const education = await prisma.education.create({
-      data: { ...payload, userId: session.user.id },
-    });
-    revalidatePath("/dashboard");
-    return education;
+    if (parsedData.id) {
+      const education = await prisma.education.update({
+        where: { id: parsedData.id, userId: session.user.id },
+        data: payload,
+      });
+      revalidatePath("/dashboard");
+      return education;
+    } else {
+      const education = await prisma.education.create({
+        data: { ...payload, userId: session.user.id },
+      });
+      revalidatePath("/dashboard");
+      return education;
+    }
+  } catch (error) {
+    console.error("Failed to upsert education:", error);
+    throw new Error(error instanceof Error ? error.message : "Failed to save education data.");
   }
 }
 

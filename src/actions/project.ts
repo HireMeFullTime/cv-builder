@@ -17,37 +17,42 @@ export async function getProjects() {
 }
 
 export async function upsertProject(data: z.infer<typeof projectSchema>) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    throw new Error("Unauthorized");
-  }
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("Unauthorized");
+    }
 
-  const parsedData = projectSchema.parse(data);
+    const parsedData = projectSchema.parse(data);
 
-  const payload = {
-    title: parsedData.title,
-    shortDescription: parsedData.shortDescription,
-    role: parsedData.role || null,
-    linkUrl: parsedData.linkUrl || null,
-    githubUrl: parsedData.githubUrl || null,
-    isCurrent: parsedData.isCurrent,
-    techStack: parsedData.techStack,
-    accomplishments: parsedData.accomplishments ?? undefined,
-  };
+    const payload = {
+      title: parsedData.title,
+      shortDescription: parsedData.shortDescription,
+      role: parsedData.role || null,
+      linkUrl: parsedData.linkUrl || null,
+      githubUrl: parsedData.githubUrl || null,
+      isCurrent: parsedData.isCurrent,
+      techStack: parsedData.techStack,
+      accomplishments: parsedData.accomplishments ?? undefined,
+    };
 
-  if (parsedData.id) {
-    const project = await prisma.project.update({
-      where: { id: parsedData.id, userId: session.user.id },
-      data: payload,
-    });
-    revalidatePath("/dashboard");
-    return project;
-  } else {
-    const project = await prisma.project.create({
-      data: { ...payload, userId: session.user.id },
-    });
-    revalidatePath("/dashboard");
-    return project;
+    if (parsedData.id) {
+      const project = await prisma.project.update({
+        where: { id: parsedData.id, userId: session.user.id },
+        data: payload,
+      });
+      revalidatePath("/dashboard");
+      return project;
+    } else {
+      const project = await prisma.project.create({
+        data: { ...payload, userId: session.user.id },
+      });
+      revalidatePath("/dashboard");
+      return project;
+    }
+  } catch (error) {
+    console.error("Failed to upsert project:", error);
+    throw new Error(error instanceof Error ? error.message : "Failed to save project data.");
   }
 }
 
