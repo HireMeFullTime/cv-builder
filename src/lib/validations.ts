@@ -104,6 +104,7 @@ export const registerSchema = z.object({
 export const cvBuilderFormSchema = z.object({
     jobTitle: z.string().min(3, "Job title is required"),
     jobDescription: z.string().min(20, "Please provide a detailed job description"),
+    useDemoData: z.boolean().optional(),
 });
 
 export const generatedAccomplishmentSchema = z.object({
@@ -156,6 +157,7 @@ export const tailoredCVSchema = z.object({
         location: z.string().optional(),
         githubUrl: z.string().optional(),
         linkedinUrl: z.string().optional(),
+        gdprClause: z.string().optional(),
     }).optional(),
     summary: z.string().describe("A 3-4 sentence summary tailored specifically to the job role, emphasizing relevant strengths from the user's background."),
     relevantSkills: z.array(z.string()).describe("A list of the most relevant skills for this specific job, ordered by importance. Exclude completely irrelevant skills."),
@@ -164,4 +166,5 @@ export const tailoredCVSchema = z.object({
     professionalSummary: z.string().optional(),
     selectedProjects: z.array(generatedProjectSchema).optional(),
     selectedEducations: z.array(tailoredEducationSchema).optional(),
+    languages: z.array(z.any()).optional(),
 });

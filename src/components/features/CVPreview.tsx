@@ -135,13 +135,14 @@ export function CVPreview({
 				);
 			}
 
-			case 'education':
-				if (!educations || educations.length === 0) return null;
+			case 'education': {
+				const educationList = data?.selectedEducations && data.selectedEducations.length > 0 ? data.selectedEducations : educations;
+				if (!educationList || educationList.length === 0) return null;
 				return (
 					<section key='education'>
 						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb)'>Education</h3>
 						<div className={itemSpace}>
-							{(data?.selectedEducations && data.selectedEducations.length > 0 ? data.selectedEducations : educations).map(edu => (
+							{educationList.map(edu => (
 								<div key={edu.id}>
 									<div className='flex justify-between items-baseline mb-1'>
 										<h4 className='font-bold text-black'>{edu.institution}</h4>
@@ -166,14 +167,16 @@ export function CVPreview({
 						</div>
 					</section>
 				);
+			}
 
-			case 'languages':
-				if (!languages || languages.length === 0) return null;
+			case 'languages': {
+				const languageList = data?.languages && data.languages.length > 0 ? data.languages : languages;
+				if (!languageList || languageList.length === 0) return null;
 				return (
 					<section key='languages'>
 						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb)'>Languages</h3>
 						<div className='flex flex-col gap-1.5'>
-							{languages.map(lang => (
+							{languageList.map((lang: any) => (
 								<div key={lang.id} className='text-(length:--cv-text-sm) text-black leading-snug wrap-break-word'>
 									<span className='font-bold'>{lang.name}</span>
 									{lang.proficiency && <span> – {lang.proficiency}</span>}
@@ -182,6 +185,7 @@ export function CVPreview({
 						</div>
 					</section>
 				);
+			}
 
 			case 'projects': {
 				const projectsContent = data.projects || data.selectedProjects || [];
@@ -344,11 +348,11 @@ export function CVPreview({
 			</div>
 
 			{/* Footer / GDPR Clause */}
-			{profile?.gdprClause && (
+			{(data?.personalInfo?.gdprClause || profile?.gdprClause) && (
 				<footer 
 					className='border-t border-black text-[10px] text-black text-justify leading-tight mt-(--sec-spacing) pt-(--title-mb)'
 				>
-					{profile.gdprClause}
+					{data?.personalInfo?.gdprClause || profile?.gdprClause}
 				</footer>
 			)}
 		</div>
