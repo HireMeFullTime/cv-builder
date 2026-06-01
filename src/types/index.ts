@@ -32,6 +32,15 @@ export type LayoutMode = 'single' | 'two-column';
 export type CVSectionId = 'summary' | 'skills' | 'experience' | 'projects' | 'education' | 'languages';
 export type ColumnRatio = 'equal' | 'left-narrow' | 'right-narrow';
 
+export interface ThemeSettings {
+  fontFamily: 'sans' | 'serif' | 'mono';
+  fontSize: 'sm' | 'base' | 'lg';
+  spacing: 'compact' | 'normal' | 'relaxed';
+  documentMargins?: number;
+  sectionSpacing?: number;
+  columnSpacing?: number;
+}
+
 export interface ColumnLayout {
   mode: LayoutMode;
   leftColumn: CVSectionId[];
@@ -40,6 +49,7 @@ export interface ColumnLayout {
   leftColumnWidth?: number;
   hiddenProjectIds?: string[];
   hiddenExperienceIds?: string[];
+  theme?: ThemeSettings;
 }
 
 export interface SortableItemProps {
