@@ -17,33 +17,38 @@ export async function getLanguages() {
 }
 
 export async function upsertLanguage(data: z.infer<typeof languageSchema>) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    throw new Error("Unauthorized");
-  }
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("Unauthorized");
+    }
 
-  const parsedData = languageSchema.parse(data);
+    const parsedData = languageSchema.parse(data);
 
-  if (parsedData.id) {
-    const language = await prisma.language.update({
-      where: { id: parsedData.id, userId: session.user.id },
-      data: {
-        name: parsedData.name,
-        proficiency: parsedData.proficiency,
-      },
-    });
-    revalidatePath("/dashboard");
-    return language;
-  } else {
-    const language = await prisma.language.create({
-      data: {
-        name: parsedData.name,
-        proficiency: parsedData.proficiency,
-        userId: session.user.id,
-      },
-    });
-    revalidatePath("/dashboard");
-    return language;
+    if (parsedData.id) {
+      const language = await prisma.language.update({
+        where: { id: parsedData.id, userId: session.user.id },
+        data: {
+          name: parsedData.name,
+          proficiency: parsedData.proficiency,
+        },
+      });
+      revalidatePath("/dashboard");
+      return language;
+    } else {
+      const language = await prisma.language.create({
+        data: {
+          name: parsedData.name,
+          proficiency: parsedData.proficiency,
+          userId: session.user.id,
+        },
+      });
+      revalidatePath("/dashboard");
+      return language;
+    }
+  } catch (error) {
+    console.error("Failed to upsert language:", error);
+    throw new Error(error instanceof Error ? error.message : "Failed to save language data.");
   }
 }
 

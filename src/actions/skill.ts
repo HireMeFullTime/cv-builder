@@ -17,37 +17,43 @@ export async function getSkills() {
 }
 
 export async function upsertSkillCategory(data: z.infer<typeof skillsFormSchema>) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    throw new Error("Unauthorized");
-  }
+  try {
 
-  const parsedData = skillsFormSchema.parse(data);
-  const userId = session.user.id;
-  const targetCategory = parsedData.oldCategory || null;
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("Unauthorized");
+    }
 
-  await prisma.$transaction(async (tx) => {
-    await tx.skill.deleteMany({
-      where: {
+    const parsedData = skillsFormSchema.parse(data);
+    const userId = session.user.id;
+    const targetCategory = parsedData.oldCategory || null;
+
+    await prisma.$transaction(async (tx) => {
+      await tx.skill.deleteMany({
+        where: {
+          userId: userId,
+          category: targetCategory,
+        },
+      });
+
+      const newSkills = parsedData.skills.map((skillName) => ({
+        name: skillName,
+        category: parsedData.category || null,
         userId: userId,
-        category: targetCategory,
-      },
+      }));
+
+      if (newSkills.length > 0) {
+        await tx.skill.createMany({
+          data: newSkills,
+        });
+      }
     });
 
-    const newSkills = parsedData.skills.map((skillName) => ({
-      name: skillName,
-      category: parsedData.category || null,
-      userId: userId,
-    }));
-
-    if (newSkills.length > 0) {
-      await tx.skill.createMany({
-        data: newSkills,
-      });
-    }
-  });
-
-  revalidatePath("/dashboard");
+    revalidatePath("/dashboard");
+  } catch (error) {
+    console.error("Failed to upsert skills:", error);
+    throw new Error(error instanceof Error ? error.message : "Failed to save skills data.");
+  }
 }
 
 export async function deleteSkillCategory(category: string | null) {

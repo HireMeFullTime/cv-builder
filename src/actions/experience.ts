@@ -21,37 +21,42 @@ export async function getExperiences() {
 }
 
 export async function upsertExperience(data: z.infer<typeof experienceSchema>) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    throw new Error("Unauthorized");
-  }
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      throw new Error("Unauthorized");
+    }
 
-  const parsedData = experienceSchema.parse(data);
+    const parsedData = experienceSchema.parse(data);
 
-  const payload = {
-    jobTitle: parsedData.jobTitle,
-    company: parsedData.company,
-    location: parsedData.location || null,
-    startDate: parsedData.startDate,
-    endDate: parsedData.endDate || null,
-    isCurrent: parsedData.isCurrent,
-    description: parsedData.description || null,
-    accomplishments: parsedData.accomplishments ?? undefined,
-  };
+    const payload = {
+      jobTitle: parsedData.jobTitle,
+      company: parsedData.company,
+      location: parsedData.location || null,
+      startDate: parsedData.startDate,
+      endDate: parsedData.endDate || null,
+      isCurrent: parsedData.isCurrent,
+      description: parsedData.description || null,
+      accomplishments: parsedData.accomplishments ?? undefined,
+    };
 
-  if (parsedData.id) {
-    const exp = await prisma.experience.update({
-      where: { id: parsedData.id, userId: session.user.id },
-      data: payload,
-    });
-    revalidatePath("/dashboard");
-    return exp;
-  } else {
-    const exp = await prisma.experience.create({
-      data: { ...payload, userId: session.user.id },
-    });
-    revalidatePath("/dashboard");
-    return exp;
+    if (parsedData.id) {
+      const exp = await prisma.experience.update({
+        where: { id: parsedData.id, userId: session.user.id },
+        data: payload,
+      });
+      revalidatePath("/dashboard");
+      return exp;
+    } else {
+      const exp = await prisma.experience.create({
+        data: { ...payload, userId: session.user.id },
+      });
+      revalidatePath("/dashboard");
+      return exp;
+    }
+  } catch (error) {
+    console.error("Failed to upsert experience:", error);
+    throw new Error(error instanceof Error ? error.message : "Failed to save experience data.");
   }
 }
 
