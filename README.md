@@ -46,6 +46,11 @@ This project was developed using an **AI-First methodology**. Instead of traditi
 
 - [Live Demo](https://cv-builder-alpha-dun.vercel.app/)
 
+### Demo Account (for recruiters & reviewers)
+If you just want to see the app in action without creating an account or using OAuth, feel free to log in with these test credentials:
+- **Email:** `test@wp.pl`
+- **Password:** `Testtest1234`
+
 
 ## Process
 
@@ -72,7 +77,7 @@ This project was developed using an **AI-First methodology**. Instead of traditi
 
 Clone the repository:
 ```bash
-git clone [https://github.com/your-username/cv-builder.git]
+git clone https://github.com/HireMeFullTime/cv-builder.git
 ```
 
 Navigate to the project directory:
@@ -91,7 +96,7 @@ Before starting the development server, ensure you have the required environment
 
 ```env
 # Database
-POSTGRES_PRISMA_URL="your_database_url_here"
+PRISMA_DATABASE_URL="your_database_url_here"
 
 # Authentication
 AUTH_SECRET="your_nextauth_secret_here"

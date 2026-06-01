@@ -60,6 +60,9 @@
 	html {
 		@apply font-sans;
 	}
+	button, a, [role="button"] {
+		@apply cursor-pointer;
+	}
 }
 
 @media print {
@@ -70,6 +73,13 @@
 }
 
 /* Elegant sonner toast styling (colored borders and icons, white background) */
+.toaster.group {
+	--normal-bg: var(--popover);
+	--normal-text: var(--popover-foreground);
+	--normal-border: var(--border);
+	--border-radius: var(--radius);
+}
+
 .toaster.group .toast[data-type="success"] {
 	background-color: var(--card);
 	color: var(--foreground);
