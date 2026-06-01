@@ -83,9 +83,14 @@ export function CVBuilderSection({
 		}
 	}, [selectedCv, educations]);
 
-	// Sync local cvs state when initialCVs prop changes from router.refresh()
+	// Sync local cvs state when initialCVs prop changes from router.refresh() or revalidatePath
 	useEffect(() => {
 		setCvs(initialCVs);
+		setSelectedCv(prev => {
+			if (!prev) return null;
+			const updated = initialCVs.find(cv => cv.id === prev.id);
+			return updated || prev;
+		});
 	}, [initialCVs]);
 
 	async function onSubmit(data: CVBuilderFormData) {

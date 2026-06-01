@@ -59,3 +59,22 @@ export interface SortableItemProps {
 export interface Accomplishment {
   value: string;
 }
+
+import { Control, UseFormReturn } from "react-hook-form";
+import { Profile, Education } from "@prisma/client";
+
+export interface EditTailoredCVFormProps {
+  cv: ParsedTailoredCV;
+  profile?: Profile | null;
+  educations?: Education[];
+  onClose: () => void;
+  onUpdatePreview: (data: TailoredCVData) => void;
+}
+
+export interface EditSectionControlProps {
+  control: Control<TailoredCVData>;
+}
+
+export interface EditSectionFormProps {
+  form: UseFormReturn<TailoredCVData>;
+}
