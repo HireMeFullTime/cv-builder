@@ -60,6 +60,9 @@
 	html {
 		@apply font-sans;
 	}
+	button, a, [role="button"] {
+		@apply cursor-pointer;
+	}
 }
 
 @media print {

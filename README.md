@@ -46,6 +46,11 @@ This project was developed using an **AI-First methodology**. Instead of traditi
 
 - [Live Demo](https://cv-builder-alpha-dun.vercel.app/)
 
+### Demo Account (for recruiters & reviewers)
+If you just want to see the app in action without creating an account or using OAuth, feel free to log in with these test credentials:
+- **Email:** `test@wp.pl`
+- **Password:** `Testtest1234`
+
 
 ## Process
 
