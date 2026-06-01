@@ -14,7 +14,81 @@ const google = createGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY,
 });
 
-export async function generateTailoredCV(jobTitle: string, jobDescription: string) {
+const DEMO_CANDIDATE_DATA = {
+  profile: {
+    firstName: "Alex",
+    lastName: "Demo",
+    title: "Senior Frontend Developer",
+    email: "alex.demo@example.com",
+    phone: "+1 234 567 890",
+    location: "Remote",
+    githubUrl: "https://github.com/alexdemo",
+    linkedinUrl: "https://linkedin.com/in/alexdemo",
+    bio: "Passionate Senior Frontend Developer with over 6 years of experience building scalable web applications using React, Next.js, and TypeScript.",
+    gdprClause: "I agree to the processing of personal data provided in this document for realising the recruitment process pursuant to the Personal Data Protection Act of 10 May 2018 (Journal of Laws 2018, item 1000) and in agreement with Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (General Data Protection Regulation).",
+  },
+  skills: ["React", "Next.js", "TypeScript", "JavaScript", "Tailwind CSS", "Node.js", "GraphQL", "Redux", "Jest", "Git"],
+  experiences: [
+    {
+      id: "demo-exp-1",
+      jobTitle: "Senior Frontend Engineer",
+      company: "TechNova Solutions",
+      location: "San Francisco, CA",
+      startDate: "2020-03-01T00:00:00.000Z",
+      endDate: null,
+      isCurrent: true,
+      description: "Leading the frontend team in building a high-performance SaaS platform.",
+      accomplishments: [
+        { value: "Architected and migrated legacy React codebase to Next.js App Router, improving load times by 40%." },
+        { value: "Mentored 4 junior developers and established strict TypeScript and ESLint standards." },
+        { value: "Implemented a fully accessible component library using Radix UI and Tailwind CSS." }
+      ]
+    },
+    {
+      id: "demo-exp-2",
+      jobTitle: "Frontend Developer",
+      company: "WebFlow Agency",
+      location: "New York, NY",
+      startDate: "2017-06-01T00:00:00.000Z",
+      endDate: "2020-02-28T00:00:00.000Z",
+      isCurrent: false,
+      description: "Developed custom web applications for enterprise clients.",
+      accomplishments: [
+        { value: "Built 15+ responsive websites using React and Redux." },
+        { value: "Integrated third-party APIs (Stripe, Twilio) reducing manual processing time by 30%." }
+      ]
+    }
+  ],
+  projects: [
+    {
+      id: "demo-proj-1",
+      title: "E-Commerce Dashboard",
+      role: "Lead Developer",
+      shortDescription: "A comprehensive analytics dashboard for e-commerce store owners.",
+      linkUrl: "https://demo-dashboard.example.com",
+      githubUrl: "https://github.com/alexdemo/dashboard",
+      techStack: ["Next.js", "TypeScript", "Recharts", "Prisma"],
+      accomplishments: [
+        { value: "Handled real-time data visualization of over 100k daily transactions." },
+        { value: "Achieved 99/100 Lighthouse performance score." }
+      ]
+    }
+  ],
+  educations: [
+    {
+      id: "demo-edu-1",
+      institution: "University of Technology",
+      degree: "Bachelor of Science",
+      fieldOfStudy: "Computer Science",
+      startDate: "2013-09-01T00:00:00.000Z",
+      endDate: "2017-06-01T00:00:00.000Z",
+      isCurrent: false,
+      description: "Graduated with honors. Specialized in Human-Computer Interaction."
+    }
+  ]
+};
+
+export async function generateTailoredCV(jobTitle: string, jobDescription: string, useDemoData: boolean = false) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");
 
@@ -37,47 +111,53 @@ export async function generateTailoredCV(jobTitle: string, jobDescription: strin
   }
   // ---------------------------------------------------------
 
-  const [profile, experiences, projects, skills] = await Promise.all([
-    prisma.profile.findUnique({ where: { userId } }),
-    prisma.experience.findMany({ where: { userId }, orderBy: { startDate: "desc" } }),
-    prisma.project.findMany({ where: { userId }, orderBy: { createdAt: "desc" } }),
-    prisma.skill.findMany({ where: { userId }, orderBy: { createdAt: "asc" } }),
-  ]);
+  let candidateData;
 
-  if (!profile) {
-    throw new Error("Profile must be completed before generating a CV.");
+  if (useDemoData) {
+    candidateData = DEMO_CANDIDATE_DATA;
+  } else {
+    const [profile, experiences, projects, skills] = await Promise.all([
+      prisma.profile.findUnique({ where: { userId } }),
+      prisma.experience.findMany({ where: { userId }, orderBy: { startDate: "desc" } }),
+      prisma.project.findMany({ where: { userId }, orderBy: { createdAt: "desc" } }),
+      prisma.skill.findMany({ where: { userId }, orderBy: { createdAt: "asc" } }),
+    ]);
+
+    if (!profile) {
+      throw new Error("Profile must be completed before generating a CV.");
+    }
+
+    candidateData = {
+      profile: {
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        title: profile.title,
+        bio: profile.bio,
+      },
+      skills: skills.map(s => s.name),
+      experiences: experiences.map(exp => ({
+        id: exp.id,
+        jobTitle: exp.jobTitle,
+        company: exp.company,
+        location: exp.location,
+        startDate: exp.startDate.toISOString(),
+        endDate: exp.endDate?.toISOString() || null,
+        isCurrent: exp.isCurrent,
+        description: exp.description,
+        accomplishments: exp.accomplishments,
+      })),
+      projects: projects.map(proj => ({
+        id: proj.id,
+        title: proj.title,
+        role: proj.role,
+        shortDescription: proj.shortDescription,
+        linkUrl: proj.linkUrl,
+        githubUrl: proj.githubUrl,
+        techStack: proj.techStack,
+        accomplishments: proj.accomplishments,
+      }))
+    };
   }
-
-  const candidateData = {
-    profile: {
-      firstName: profile.firstName,
-      lastName: profile.lastName,
-      title: profile.title,
-      bio: profile.bio,
-    },
-    skills: skills.map(s => s.name),
-    experiences: experiences.map(exp => ({
-      id: exp.id,
-      jobTitle: exp.jobTitle,
-      company: exp.company,
-      location: exp.location,
-      startDate: exp.startDate.toISOString(),
-      endDate: exp.endDate?.toISOString() || null,
-      isCurrent: exp.isCurrent,
-      description: exp.description,
-      accomplishments: exp.accomplishments,
-    })),
-    projects: projects.map(proj => ({
-      id: proj.id,
-      title: proj.title,
-      role: proj.role,
-      shortDescription: proj.shortDescription,
-      linkUrl: proj.linkUrl,
-      githubUrl: proj.githubUrl,
-      techStack: proj.techStack,
-      accomplishments: proj.accomplishments,
-    }))
-  };
 
   const systemPrompt = `
 You are an expert IT Technical Recruiter and CV Writer. 
@@ -134,6 +214,21 @@ INSTRUCTIONS:
     });
 
     const validatedContent = tailoredCVSchema.parse(object);
+
+    if (useDemoData) {
+      validatedContent.personalInfo = {
+        firstName: DEMO_CANDIDATE_DATA.profile.firstName,
+        lastName: DEMO_CANDIDATE_DATA.profile.lastName,
+        title: DEMO_CANDIDATE_DATA.profile.title,
+        email: DEMO_CANDIDATE_DATA.profile.email,
+        phone: DEMO_CANDIDATE_DATA.profile.phone,
+        location: DEMO_CANDIDATE_DATA.profile.location,
+        githubUrl: DEMO_CANDIDATE_DATA.profile.githubUrl,
+        linkedinUrl: DEMO_CANDIDATE_DATA.profile.linkedinUrl,
+        gdprClause: DEMO_CANDIDATE_DATA.profile.gdprClause,
+      };
+      validatedContent.selectedEducations = DEMO_CANDIDATE_DATA.educations;
+    }
 
     const tailoredCV = await prisma.tailoredCV.create({
       data: {

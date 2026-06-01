@@ -13,6 +13,7 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
+import {Checkbox} from '@/components/ui/checkbox';
 import {toast} from 'sonner';
 import {Loader2, Trash2, ArrowLeft, Printer, Sparkles} from 'lucide-react';
 import {useForm} from 'react-hook-form';
@@ -57,9 +58,27 @@ export function CVBuilderSection({
 		resolver: zodResolver(cvBuilderFormSchema),
 		defaultValues: {
 			jobTitle: '',
-			jobDescription: ''
+			jobDescription: '',
+			useDemoData: false
 		}
 	});
+
+	const useDemoData = form.watch('useDemoData');
+
+	useEffect(() => {
+		if (useDemoData) {
+			if (!form.getValues('jobTitle')) {
+				form.setValue('jobTitle', 'Senior Frontend Developer', { shouldValidate: true });
+			}
+			if (!form.getValues('jobDescription')) {
+				form.setValue(
+					'jobDescription',
+					'We are looking for an experienced Senior Frontend Developer to join our team. You should have deep knowledge of React, Next.js, and TypeScript. Experience with building scalable SaaS applications and leading a small team of developers is highly desirable. We value clean code, testing, and modern UI/UX practices.',
+					{ shouldValidate: true }
+				);
+			}
+		}
+	}, [useDemoData, form]);
 
 	// Keep previewData in sync with selectedCv when selectedCv changes
 	useEffect(() => {
@@ -96,7 +115,7 @@ export function CVBuilderSection({
 	async function onSubmit(data: CVBuilderFormData) {
 		setIsGenerating(true);
 		try {
-			await generateTailoredCV(data.jobTitle, data.jobDescription);
+			await generateTailoredCV(data.jobTitle, data.jobDescription, data.useDemoData);
 			toast.success('CV Generated Successfully!');
 
 			form.reset();
@@ -151,7 +170,9 @@ export function CVBuilderSection({
 				</>
 			);
 		}
-		if (!profile) return 'Profile Required';
+		
+		const useDemoData = form.watch('useDemoData');
+		if (!profile && !useDemoData) return 'Profile Required';
 		return 'Generate Tailored CV';
 	};
 
@@ -217,10 +238,34 @@ export function CVBuilderSection({
 											)}
 										/>
 
-										<Button type='submit' className='w-full' disabled={isGenerating || !profile}>
+										<FormField
+											control={form.control}
+											name='useDemoData'
+											render={({field}) => (
+												<FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm bg-muted/30">
+													<FormControl>
+														<Checkbox
+															checked={field.value}
+															onCheckedChange={field.onChange}
+															disabled={isGenerating}
+														/>
+													</FormControl>
+													<div className="space-y-1 leading-none">
+														<FormLabel>
+															Use Demo Profile Data (Test Drive)
+														</FormLabel>
+														<p className="text-sm text-muted-foreground">
+															Generates the CV using a pre-filled Senior Frontend Developer profile instead of your actual database records.
+														</p>
+													</div>
+												</FormItem>
+											)}
+										/>
+
+										<Button type='submit' className='w-full' disabled={isGenerating || (!profile && !useDemoData)}>
 											{renderSubmitButtonContent()}
 										</Button>
-										{!profile && (
+										{!profile && !useDemoData && (
 											<p className='text-sm text-destructive text-center mt-2'>
 												You must complete your basic profile before generating a CV.
 											</p>
