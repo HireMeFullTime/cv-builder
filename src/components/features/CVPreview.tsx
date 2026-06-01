@@ -26,6 +26,49 @@ export function CVPreview({
 		rightColumn: []
 	};
 
+	const theme = currentLayout.theme || { fontFamily: 'sans', fontSize: 'base', spacing: 'normal' };
+	const fontClass = theme.fontFamily === 'serif' ? 'font-serif' : theme.fontFamily === 'mono' ? 'font-mono' : 'font-sans';
+	
+	const getFontSizes = () => {
+		switch (theme.fontSize) {
+			case 'sm':
+				return {
+					'--cv-text-xs': '10px',
+					'--cv-text-sm': '12px',
+					'--cv-text-base': '14px',
+					'--cv-text-lg': '16px',
+					'--cv-text-xl': '18px',
+					'--cv-text-4xl': '30px',
+				} as React.CSSProperties;
+			case 'lg':
+				return {
+					'--cv-text-xs': '14px',
+					'--cv-text-sm': '16px',
+					'--cv-text-base': '18px',
+					'--cv-text-lg': '20px',
+					'--cv-text-xl': '24px',
+					'--cv-text-4xl': '40px',
+				} as React.CSSProperties;
+			case 'base':
+			default:
+				return {
+					'--cv-text-xs': '12px',
+					'--cv-text-sm': '14px',
+					'--cv-text-base': '16px',
+					'--cv-text-lg': '18px',
+					'--cv-text-xl': '20px',
+					'--cv-text-4xl': '36px',
+				} as React.CSSProperties;
+		}
+	};
+	
+	const docPadding = theme.documentMargins ?? 32;
+	const secSpacing = theme.sectionSpacing ?? 24;
+	const colSpacing = theme.columnSpacing ?? 24;
+	const titleMb = Math.max(8, Math.round(secSpacing * 0.4));
+	
+	const itemSpace = theme.spacing === 'compact' ? 'space-y-3' : theme.spacing === 'relaxed' ? 'space-y-6' : 'space-y-4';
+
 	const renderSection = (id: CVSectionId) => {
 		switch (id) {
 			case 'summary': {
@@ -33,8 +76,8 @@ export function CVPreview({
 				if (!summaryContent) return null;
 				return (
 					<section key='summary'>
-						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Summary</h3>
-						<p className='text-black leading-relaxed text-sm whitespace-pre-wrap'>{summaryContent}</p>
+						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb)'>Summary</h3>
+						<p className='text-black leading-relaxed text-(length:--cv-text-sm) whitespace-pre-wrap'>{summaryContent}</p>
 					</section>
 				);
 			}
@@ -43,8 +86,8 @@ export function CVPreview({
 				if (!data.relevantSkills || data.relevantSkills.length === 0) return null;
 				return (
 					<section key='skills'>
-						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Key Skills</h3>
-						<div className='text-sm font-bold text-black leading-relaxed'>
+						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb)'>Key Skills</h3>
+						<div className='text-(length:--cv-text-sm) font-bold text-black leading-relaxed'>
 							{data.relevantSkills.join(' • ')}
 						</div>
 					</section>
@@ -57,13 +100,13 @@ export function CVPreview({
 
 				return (
 					<section key='experience'>
-						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Experience</h3>
-						<div className='space-y-5'>
+						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb)'>Experience</h3>
+						<div className={itemSpace}>
 							{visibleExperiences.map(exp => (
 								<div key={exp.id}>
 									<div className='flex justify-between items-baseline mb-1'>
 										<h4 className='font-bold text-black'>{exp.jobTitle}</h4>
-										<span className='text-xs font-bold text-black whitespace-nowrap'>
+										<span className='text-(length:--cv-text-xs) font-bold text-black whitespace-nowrap'>
 											{new Date(exp.startDate).toLocaleDateString('en-US', {month: 'short', year: 'numeric'})} -
 											{exp.isCurrent
 												? ' Present'
@@ -72,12 +115,12 @@ export function CVPreview({
 													: ''}
 										</span>
 									</div>
-									<div className='text-sm font-medium text-black mb-2'>
+									<div className='text-(length:--cv-text-sm) font-medium text-black mb-2'>
 										{exp.company}
 										{exp.location ? ` | ${exp.location}` : ''}
 									</div>
 									{exp.accomplishments && exp.accomplishments.length > 0 && (
-										<ul className='list-disc list-outside ml-4 space-y-1.5 text-sm text-black'>
+										<ul className='list-disc list-outside ml-4 space-y-1 text-(length:--cv-text-sm) text-black'>
 											{exp.accomplishments.map((acc, idx) => (
 												<li key={idx} className='pl-1'>
 													{acc.value}
@@ -96,13 +139,13 @@ export function CVPreview({
 				if (!educations || educations.length === 0) return null;
 				return (
 					<section key='education'>
-						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Education</h3>
-						<div className='space-y-4'>
+						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb)'>Education</h3>
+						<div className={itemSpace}>
 							{(data?.selectedEducations && data.selectedEducations.length > 0 ? data.selectedEducations : educations).map(edu => (
 								<div key={edu.id}>
 									<div className='flex justify-between items-baseline mb-1'>
 										<h4 className='font-bold text-black'>{edu.institution}</h4>
-										<span className='text-xs font-bold text-black whitespace-nowrap'>
+										<span className='text-(length:--cv-text-xs) font-bold text-black whitespace-nowrap'>
 											{new Date(edu.startDate).toLocaleDateString('en-US', {month: 'short', year: 'numeric'})} -
 											{edu.isCurrent
 												? ' Present'
@@ -111,12 +154,12 @@ export function CVPreview({
 													: ''}
 										</span>
 									</div>
-									<div className='text-sm font-medium text-black'>
+									<div className='text-(length:--cv-text-sm) font-medium text-black'>
 										{edu.degree}
 										{edu.fieldOfStudy ? ` in ${edu.fieldOfStudy}` : ''}
 									</div>
 									{edu.description && (
-										<p className='text-sm text-black mt-1.5 leading-relaxed'>{edu.description}</p>
+										<p className='text-(length:--cv-text-sm) text-black mt-1.5 leading-relaxed'>{edu.description}</p>
 									)}
 								</div>
 							))}
@@ -128,10 +171,10 @@ export function CVPreview({
 				if (!languages || languages.length === 0) return null;
 				return (
 					<section key='languages'>
-						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Languages</h3>
+						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb)'>Languages</h3>
 						<div className='flex flex-col gap-1.5'>
 							{languages.map(lang => (
-								<div key={lang.id} className='text-sm text-black leading-snug wrap-break-word'>
+								<div key={lang.id} className='text-(length:--cv-text-sm) text-black leading-snug wrap-break-word'>
 									<span className='font-bold'>{lang.name}</span>
 									{lang.proficiency && <span> – {lang.proficiency}</span>}
 								</div>
@@ -148,8 +191,8 @@ export function CVPreview({
 
 				return (
 					<section key='projects'>
-						<h3 className='text-lg font-bold uppercase tracking-wider text-black mb-3'>Projects</h3>
-						<div className='grid grid-cols-1 gap-5'>
+						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb)'>Projects</h3>
+						<div className={`grid grid-cols-1 ${itemSpace}`}>
 							{visibleProjects.map(proj => (
 								<div key={proj.id} className='break-inside-avoid'>
 									<div className='flex justify-between items-baseline mb-1'>
@@ -181,15 +224,15 @@ export function CVPreview({
 											)}
 										</h4>
 										{proj.role && (
-											<span className='text-xs font-bold text-black'>
+											<span className='text-(length:--cv-text-xs) font-bold text-black'>
 												{proj.role}
 											</span>
 										)}
 									</div>
-									<p className='text-sm text-black mb-2 leading-relaxed'>{proj.shortDescription}</p>
+									<p className='text-(length:--cv-text-sm) text-black mb-2 leading-relaxed'>{proj.shortDescription}</p>
 
 									{proj.accomplishments && proj.accomplishments.length > 0 && (
-										<ul className='list-disc list-outside ml-4 space-y-1 text-sm text-black mb-2'>
+										<ul className='list-disc list-outside ml-4 space-y-1 text-(length:--cv-text-sm) text-black mb-2'>
 											{proj.accomplishments.map((acc, idx) => (
 												<li key={idx} className='pl-1'>
 													{acc.value}
@@ -199,7 +242,7 @@ export function CVPreview({
 									)}
 
 									{proj.techStack && proj.techStack.length > 0 && (
-										<div className='text-xs font-bold text-black mt-2 leading-relaxed'>
+										<div className='text-(length:--cv-text-xs) font-bold text-black mt-2 leading-relaxed'>
 											{proj.techStack.join(' • ')}
 										</div>
 									)}
@@ -215,18 +258,30 @@ export function CVPreview({
 		}
 	};
 
+	const dynamicStyles = {
+		'--doc-padding': `${docPadding}px`,
+		'--sec-spacing': `${secSpacing}px`,
+		'--col-spacing': `${colSpacing}px`,
+		'--title-mb': `${titleMb}px`,
+		'--left-col-width': `${currentLayout.leftColumnWidth ?? 50}%`,
+		...getFontSizes()
+	} as React.CSSProperties;
+
 	return (
-		<div className='flex flex-col min-h-full font-sans text-black bg-white'>
+		<div 
+			style={dynamicStyles}
+			className={`flex flex-col min-h-full text-black bg-white shadow-lg print:shadow-none mx-auto w-full max-w-[210mm] print:w-full print:max-w-none p-(--doc-padding) ${fontClass}`}
+		>
 			{/* Header section with Personal Info */}
-			<header className='mb-8 border-b-2 border-black pb-6'>
-				<h1 className='text-4xl font-bold text-black tracking-tight uppercase'>
+			<header className='border-b-2 border-black pb-4 mb-(--sec-spacing)'>
+				<h1 className='text-(length:--cv-text-4xl) leading-none font-bold text-black tracking-tight uppercase'>
 					{data?.personalInfo?.firstName || profile?.firstName} {data?.personalInfo?.lastName || profile?.lastName}
 				</h1>
-				<h2 className='text-xl font-medium text-black mt-2'>
+				<h2 className='text-(length:--cv-text-xl) font-medium text-black mt-2'>
 					{data?.jobTitleOverride || jobTitle || data?.personalInfo?.title || profile?.title || 'Professional'}
 				</h2>
 
-				<div className='flex flex-wrap gap-x-4 gap-y-2 mt-4 text-sm text-black'>
+				<div className='flex flex-wrap gap-x-4 gap-y-2 mt-4 text-(length:--cv-text-sm) text-black'>
 					{(data?.personalInfo?.email || profile?.email) && (
 						<div className='flex items-center gap-1.5'>
 							<Mail className='w-4 h-4' />
@@ -269,32 +324,30 @@ export function CVPreview({
 			</header>
 
 			{/* Main Content */}
-			<div
-				className={`
-					${
-					currentLayout.mode === 'two-column'
-						? 'grid gap-8 print:gap-8'
-						: 'space-y-8 print:space-y-6'
-				}`}
-				style={
-					currentLayout.mode === 'two-column'
-						? {gridTemplateColumns: `${currentLayout.leftColumnWidth ?? 50}fr ${100 - (currentLayout.leftColumnWidth ?? 50)}fr`}
-						: undefined
-				}
-			>
-				{currentLayout.mode === 'single' ? (
-					<>{currentLayout.leftColumn.map(renderSection)}</>
-				) : (
+			<div className='flex-1 flex flex-col sm:flex-row gap-(--col-spacing)'>
+				{currentLayout.mode === 'two-column' ? (
 					<>
-						<div className='space-y-8 print:space-y-6'>{currentLayout.leftColumn.map(renderSection)}</div>
-						<div className='space-y-8 print:space-y-6'>{currentLayout.rightColumn.map(renderSection)}</div>
+						<div
+							className='flex flex-col w-(--left-col-width) gap-(--sec-spacing)'
+						>
+							{currentLayout.leftColumn.map(id => renderSection(id))}
+						</div>
+						<div className='flex flex-col flex-1 gap-(--sec-spacing)'>
+							{currentLayout.rightColumn.map(id => renderSection(id))}
+						</div>
 					</>
+				) : (
+					<div className='flex flex-col w-full gap-(--sec-spacing)'>
+						{currentLayout.leftColumn.map(id => renderSection(id))}
+					</div>
 				)}
 			</div>
 
 			{/* Footer / GDPR Clause */}
 			{profile?.gdprClause && (
-				<footer className='mt-12 pt-6 border-t border-black text-[10px] text-black text-justify leading-tight'>
+				<footer 
+					className='border-t border-black text-[10px] text-black text-justify leading-tight mt-(--sec-spacing) pt-(--title-mb)'
+				>
 					{profile.gdprClause}
 				</footer>
 			)}

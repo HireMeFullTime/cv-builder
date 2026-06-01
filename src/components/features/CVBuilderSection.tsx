@@ -40,7 +40,15 @@ export function CVBuilderSection({
 		leftColumn: ['summary', 'skills', 'experience', 'education', 'languages', 'projects'],
 		rightColumn: [],
 		ratio: 'left-narrow',
-		leftColumnWidth: 30
+		leftColumnWidth: 30,
+		theme: {
+			fontFamily: 'sans',
+			fontSize: 'base',
+			spacing: 'normal',
+			documentMargins: 32,
+			sectionSpacing: 24,
+			columnSpacing: 24
+		}
 	});
 
 	const router = useRouter();
