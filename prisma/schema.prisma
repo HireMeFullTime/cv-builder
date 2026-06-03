@@ -99,6 +99,8 @@ model Skill {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Project {
@@ -118,6 +120,8 @@ model Project {
 
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
 }
 
 model Experience {
@@ -137,6 +141,8 @@ model Experience {
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model TailoredCV {
@@ -150,6 +156,8 @@ model TailoredCV {
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Education {
@@ -168,6 +176,8 @@ model Education {
 
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+
+  @@index([userId])
 }
 
 model Language {
@@ -180,4 +190,6 @@ model Language {
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }
