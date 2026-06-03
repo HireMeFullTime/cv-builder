@@ -1,9 +1,15 @@
 'use client';
 
-import {TailoredCVData, ColumnLayout, CVSectionId, LanguageData} from '@/types';
+import {TailoredCVData, ColumnLayout, CVSectionId} from '@/types';
 import {Profile, Education, Language} from '@prisma/client';
-import {MapPin, Mail, Phone, Link as LinkIcon, ExternalLink, Globe} from 'lucide-react';
-import Link from 'next/link';
+import {CVPreviewHeader} from './cv-preview/CVPreviewHeader';
+import {CVPreviewSummary} from './cv-preview/CVPreviewSummary';
+import {CVPreviewSkills} from './cv-preview/CVPreviewSkills';
+import {CVPreviewExperience} from './cv-preview/CVPreviewExperience';
+import {CVPreviewEducation} from './cv-preview/CVPreviewEducation';
+import {CVPreviewLanguages} from './cv-preview/CVPreviewLanguages';
+import {CVPreviewProjects} from './cv-preview/CVPreviewProjects';
+import {CVPreviewFooter} from './cv-preview/CVPreviewFooter';
 
 export function CVPreview({
 	data,
@@ -70,221 +76,64 @@ export function CVPreview({
 
 	const itemSpace = theme.spacing === 'compact' ? 'space-y-3' : theme.spacing === 'relaxed' ? 'space-y-6' : 'space-y-4';
 
-	const formatDate = (dateString?: string | Date | null) => {
-		if (!dateString) return '';
-		const d = new Date(dateString);
-		return isNaN(d.getTime()) ? '' : d.toLocaleDateString('en-US', {month: 'short', year: 'numeric', timeZone: 'UTC'});
-	};
-
 	const renderSection = (id: CVSectionId) => {
 		switch (id) {
-			case 'summary': {
-				const summaryContent = data.summary || data.professionalSummary;
-				if (!summaryContent) return null;
+			case 'summary':
 				return (
-					<section key='summary'>
-						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb) break-after-avoid'>
-							Summary
-						</h3>
-						<p className='text-black leading-relaxed text-(length:--cv-text-sm) whitespace-pre-wrap'>
-							{summaryContent}
-						</p>
-					</section>
+					<CVPreviewSummary
+						key='summary'
+						summary={data.summary}
+						professionalSummary={data.professionalSummary}
+					/>
 				);
-			}
 
-			case 'skills': {
-				if (!data.relevantSkills || data.relevantSkills.length === 0) return null;
-				const visibleSkills = data.relevantSkills.filter(Boolean);
-				if (visibleSkills.length === 0) return null;
+			case 'skills':
 				return (
-					<section key='skills'>
-						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb) break-after-avoid'>
-							Key Skills
-						</h3>
-						<div className='text-(length:--cv-text-sm) font-bold text-black leading-relaxed'>
-							{visibleSkills.join(' • ')}
-						</div>
-					</section>
+					<CVPreviewSkills
+						key='skills'
+						relevantSkills={data.relevantSkills}
+					/>
 				);
-			}
 
-			case 'experience': {
-				if (!data.selectedExperiences || data.selectedExperiences.length === 0) return null;
-				const visibleExperiences = data.selectedExperiences.filter(
-					exp => !currentLayout.hiddenExperienceIds?.includes(exp.id) && (exp.jobTitle || exp.company)
-				);
-				if (visibleExperiences.length === 0) return null;
-
+			case 'experience':
 				return (
-					<section key='experience'>
-						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb) break-after-avoid'>
-							Experience
-						</h3>
-						<div className={itemSpace}>
-							{visibleExperiences.map(exp => (
-								<div key={exp.id} className="break-inside-avoid">
-									<div className='flex justify-between items-baseline mb-1'>
-										<h4 className='font-bold text-black'>{exp.jobTitle}</h4>
-										<span className='text-(length:--cv-text-xs) font-bold text-black whitespace-nowrap'>
-											{[formatDate(exp.startDate), exp.isCurrent ? 'Present' : formatDate(exp.endDate)]
-												.filter(Boolean)
-												.join(' - ')}
-										</span>
-									</div>
-									<div className='text-(length:--cv-text-sm) font-medium text-black mb-2'>
-										{exp.company}
-										{exp.location ? ` | ${exp.location}` : ''}
-									</div>
-									{exp.accomplishments && exp.accomplishments.filter(acc => acc.value).length > 0 && (
-										<ul className='list-disc list-outside ml-4 space-y-1 text-(length:--cv-text-sm) text-black'>
-											{exp.accomplishments
-												.filter(acc => acc.value)
-												.map((acc, idx) => (
-													<li key={idx} className='pl-1'>
-														{acc.value}
-													</li>
-												))}
-										</ul>
-									)}
-								</div>
-							))}
-						</div>
-					</section>
+					<CVPreviewExperience
+						key='experience'
+						experiences={data.selectedExperiences}
+						hiddenExperienceIds={currentLayout.hiddenExperienceIds}
+						itemSpace={itemSpace}
+					/>
 				);
-			}
 
-			case 'education': {
-				const educationList =
-					data?.selectedEducations && data.selectedEducations.length > 0 ? data.selectedEducations : educations;
-				if (!educationList || educationList.length === 0) return null;
-				const visibleEducations = educationList.filter(edu => edu.institution || edu.degree);
-				if (visibleEducations.length === 0) return null;
-
+			case 'education':
 				return (
-					<section key='education'>
-						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb) break-after-avoid'>
-							Education
-						</h3>
-						<div className={itemSpace}>
-							{visibleEducations.map(edu => (
-								<div key={edu.id} className="break-inside-avoid">
-									<div className='flex justify-between items-baseline mb-1'>
-										<h4 className='font-bold text-black'>{edu.institution}</h4>
-										<span className='text-(length:--cv-text-xs) font-bold text-black whitespace-nowrap'>
-											{[formatDate(edu.startDate), edu.isCurrent ? 'Present' : formatDate(edu.endDate)]
-												.filter(Boolean)
-												.join(' - ')}
-										</span>
-									</div>
-									<div className='text-(length:--cv-text-sm) font-medium text-black'>
-										{edu.degree}
-										{edu.fieldOfStudy ? ` in ${edu.fieldOfStudy}` : ''}
-									</div>
-									{edu.description && (
-										<p className='text-(length:--cv-text-sm) text-black mt-1.5 leading-relaxed'>{edu.description}</p>
-									)}
-								</div>
-							))}
-						</div>
-					</section>
+					<CVPreviewEducation
+						key='education'
+						selectedEducations={data.selectedEducations}
+						educations={educations}
+						itemSpace={itemSpace}
+					/>
 				);
-			}
 
-			case 'languages': {
-				const languageList = data?.languages && data.languages.length > 0 ? data.languages : languages;
-				if (!languageList || languageList.length === 0) return null;
-				const visibleLanguages = languageList.filter((lang: Language | LanguageData) => lang.name);
-				if (visibleLanguages.length === 0) return null;
-
+			case 'languages':
 				return (
-					<section key='languages'>
-						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb) break-after-avoid'>
-							Languages
-						</h3>
-						<div className='flex flex-col gap-1.5'>
-							{visibleLanguages.map((lang: Language | LanguageData) => (
-								<div key={lang.id} className='text-(length:--cv-text-sm) text-black leading-snug wrap-break-word break-inside-avoid'>
-									<span className='font-bold'>{lang.name}</span>
-									{lang.proficiency && <span> – {lang.proficiency}</span>}
-								</div>
-							))}
-						</div>
-					</section>
+					<CVPreviewLanguages
+						key='languages'
+						languagesData={data.languages}
+						languages={languages}
+					/>
 				);
-			}
 
-			case 'projects': {
-				const projectsContent = data.projects || data.selectedProjects || [];
-				const visibleProjects = projectsContent.filter(
-					(proj: NonNullable<TailoredCVData['projects']>[number]) =>
-						!currentLayout.hiddenProjectIds?.includes(proj.id) && (proj.title || proj.shortDescription)
-				);
-				if (visibleProjects.length === 0) return null;
-
+			case 'projects':
 				return (
-					<section key='projects'>
-						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb) break-after-avoid'>
-							Projects
-						</h3>
-						<div className={`grid grid-cols-1 ${itemSpace}`}>
-							{visibleProjects.map((proj: NonNullable<TailoredCVData['projects']>[number]) => (
-								<div key={proj.id} className='break-inside-avoid'>
-									<div className='flex justify-between items-baseline mb-1'>
-										<h4 className='font-bold text-black flex items-center gap-2'>
-											{proj.title}
-											{proj.linkUrl && (
-												<Link
-													href={proj.linkUrl}
-													target='_blank'
-													rel='noreferrer'
-													className='text-black hover:opacity-70 transition-opacity'
-													title='Project Website'
-													aria-label={`Visit project website for ${proj.title}`}
-												>
-													<Globe className='w-3.5 h-3.5' />
-												</Link>
-											)}
-											{proj.githubUrl && (
-												<Link
-													href={proj.githubUrl}
-													target='_blank'
-													rel='noreferrer'
-													className='text-black hover:opacity-70 transition-opacity'
-													title='GitHub Repository'
-													aria-label={`View GitHub repository for ${proj.title}`}
-												>
-													<ExternalLink className='w-3.5 h-3.5' />
-												</Link>
-											)}
-										</h4>
-										{proj.role && <span className='text-(length:--cv-text-xs) font-bold text-black'>{proj.role}</span>}
-									</div>
-									<p className='text-(length:--cv-text-sm) text-black mb-2 leading-relaxed'>{proj.shortDescription}</p>
-
-									{proj.accomplishments && proj.accomplishments.filter(acc => acc.value).length > 0 && (
-										<ul className='list-disc list-outside ml-4 space-y-1 text-(length:--cv-text-sm) text-black mb-2'>
-											{proj.accomplishments
-												.filter(acc => acc.value)
-												.map((acc, idx) => (
-													<li key={idx} className='pl-1'>
-														{acc.value}
-													</li>
-												))}
-										</ul>
-									)}
-
-									{proj.techStack && proj.techStack.filter(Boolean).length > 0 && (
-										<div className='text-(length:--cv-text-xs) font-bold text-black mt-2 leading-relaxed'>
-											{proj.techStack.filter(Boolean).join(' • ')}
-										</div>
-									)}
-								</div>
-							))}
-						</div>
-					</section>
+					<CVPreviewProjects
+						key='projects'
+						projects={data.projects}
+						selectedProjects={data.selectedProjects}
+						hiddenProjectIds={currentLayout.hiddenProjectIds}
+						itemSpace={itemSpace}
+					/>
 				);
-			}
 
 			default:
 				return null;
@@ -305,71 +154,12 @@ export function CVPreview({
 			style={dynamicStyles}
 			className={`flex flex-col min-h-full text-black bg-white shadow-lg print:shadow-none mx-auto w-full max-w-[210mm] print:w-full print:max-w-none p-(--doc-padding) box-decoration-clone ${fontClass}`}
 		>
-				{/* Header section with Personal Info */}
-			<header className='border-b-2 border-black pb-4 mb-(--sec-spacing)'>
-				<h1 className='text-(length:--cv-text-4xl) leading-none font-bold text-black tracking-tight uppercase'>
-					{data?.personalInfo?.firstName || profile?.firstName} {data?.personalInfo?.lastName || profile?.lastName}
-				</h1>
-				<h2 className='text-(length:--cv-text-xl) font-medium text-black mt-2'>
-					{data?.jobTitleOverride || jobTitle || data?.personalInfo?.title || profile?.title || 'Professional'}
-				</h2>
-
-				<div className='flex flex-wrap gap-x-4 gap-y-2 mt-4 text-(length:--cv-text-sm) text-black'>
-					{(data?.personalInfo?.email || profile?.email) && (
-						<div className='flex items-center gap-1.5'>
-							<Mail className='w-4 h-4' />
-							<Link
-								href={`mailto:${data?.personalInfo?.email || profile?.email}`}
-								className='hover:underline text-black'
-							>
-								{data?.personalInfo?.email || profile?.email}
-							</Link>
-						</div>
-					)}
-					{(data?.personalInfo?.phone || profile?.phone) && (
-						<div className='flex items-center gap-1.5'>
-							<Phone className='w-4 h-4' />
-							<Link href={`tel:${data?.personalInfo?.phone || profile?.phone}`} className='hover:underline text-black'>
-								{data?.personalInfo?.phone || profile?.phone}
-							</Link>
-						</div>
-					)}
-					{(data?.personalInfo?.location || profile?.location) && (
-						<div className='flex items-center gap-1.5'>
-							<MapPin className='w-4 h-4' />
-							<span>{data?.personalInfo?.location || profile?.location}</span>
-						</div>
-					)}
-					{(data?.personalInfo?.linkedinUrl || profile?.linkedinUrl) && (
-						<div className='flex items-center gap-1.5'>
-							<LinkIcon className='w-4 h-4' />
-							<Link
-								href={data?.personalInfo?.linkedinUrl || profile?.linkedinUrl || '#'}
-								target='_blank'
-								rel='noreferrer'
-								className='hover:underline text-black'
-							>
-								{(data?.personalInfo?.linkedinUrl || profile?.linkedinUrl || '')
-									.replace('https://www.', '')
-									.replace('https://', '')}
-							</Link>
-						</div>
-					)}
-					{(data?.personalInfo?.githubUrl || profile?.githubUrl) && (
-						<div className='flex items-center gap-1.5'>
-							<ExternalLink className='w-4 h-4' />
-							<Link
-								href={data?.personalInfo?.githubUrl || profile?.githubUrl || '#'}
-								target='_blank'
-								rel='noreferrer'
-								className='hover:underline text-black'
-							>
-								{(data?.personalInfo?.githubUrl || profile?.githubUrl || '').replace('https://', '')}
-							</Link>
-						</div>
-					)}
-				</div>
-			</header>
+			<CVPreviewHeader
+				personalInfo={data?.personalInfo}
+				profile={profile}
+				jobTitleOverride={data?.jobTitleOverride}
+				jobTitle={jobTitle}
+			/>
 
 			{/* Main Content */}
 			<div className='flex-1 flex flex-col sm:flex-row gap-(--col-spacing)'>
@@ -389,12 +179,10 @@ export function CVPreview({
 				)}
 			</div>
 
-			{/* Footer / GDPR Clause */}
-			{(data?.personalInfo?.gdprClause || profile?.gdprClause) && (
-				<footer className='border-t border-black text-[10px] text-black text-justify leading-tight mt-(--sec-spacing) pt-(--title-mb)'>
-					{data?.personalInfo?.gdprClause || profile?.gdprClause}
-				</footer>
-			)}
+			<CVPreviewFooter
+				personalInfo={data?.personalInfo}
+				profile={profile}
+			/>
 		</div>
 	);
 }

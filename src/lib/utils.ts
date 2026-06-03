@@ -19,3 +19,8 @@ export function formatDate(date?: Date): string {
   return `${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, '0')}`;
 }
 
+export function formatPreviewDate(dateString?: string | Date | null): string {
+  if (!dateString) return '';
+  const d = new Date(dateString);
+  return isNaN(d.getTime()) ? '' : d.toLocaleDateString('en-US', {month: 'short', year: 'numeric', timeZone: 'UTC'});
+}
