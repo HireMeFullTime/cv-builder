@@ -80,7 +80,7 @@ export function EditEducationSection({form}: EditSectionFormProps) {
 										</FormItem>
 									)}
 								/>
-								<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+								<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4'>
 									<FormField
 										control={form.control}
 										name={`selectedEducations.${eduIndex}.startDate`}
@@ -88,12 +88,13 @@ export function EditEducationSection({form}: EditSectionFormProps) {
 											const parseDateString = (val: string) => {
 												if (!val) return undefined;
 												const parts = val.split('-');
-												if (parts.length >= 2) return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1);
+												if (parts.length >= 2)
+													return new Date(Date.UTC(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1));
 												return new Date(val);
 											};
 											const formatDate = (date?: Date) => {
 												if (!date) return '';
-												return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+												return `${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, '0')}`;
 											};
 											return (
 												<FormItem className='space-y-1'>
@@ -116,12 +117,13 @@ export function EditEducationSection({form}: EditSectionFormProps) {
 												const parseDateString = (val: string | null | undefined) => {
 													if (!val) return undefined;
 													const parts = val.split('-');
-													if (parts.length >= 2) return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1);
+													if (parts.length >= 2)
+														return new Date(Date.UTC(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1));
 													return new Date(val);
 												};
 												const formatDate = (date?: Date) => {
 													if (!date) return '';
-													return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+													return `${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, '0')}`;
 												};
 												return (
 													<FormItem className='space-y-1'>

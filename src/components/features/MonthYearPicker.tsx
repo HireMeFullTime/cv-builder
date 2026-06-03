@@ -2,20 +2,7 @@
 
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 
-const MONTHS = [
-	'January',
-	'February',
-	'March',
-	'April',
-	'May',
-	'June',
-	'July',
-	'August',
-	'September',
-	'October',
-	'November',
-	'December'
-];
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const currentYear = new Date().getFullYear();
 
@@ -67,9 +54,9 @@ export function MonthYearPicker({
 	};
 
 	return (
-		<div className='flex gap-2 w-full'>
+		<div className='flex gap-1 w-full'>
 			<Select value={selectedMonth} onValueChange={handleMonthChange}>
-				<SelectTrigger className='w-full'>
+				<SelectTrigger className='w-full px-2 text-sm'>
 					<SelectValue placeholder='Month' />
 				</SelectTrigger>
 				<SelectContent>
@@ -89,7 +76,7 @@ export function MonthYearPicker({
 			</Select>
 
 			<Select value={selectedYear} onValueChange={handleYearChange}>
-				<SelectTrigger className='w-full'>
+				<SelectTrigger className='w-full px-2 text-sm'>
 					<SelectValue placeholder='Year' />
 				</SelectTrigger>
 				<SelectContent>
