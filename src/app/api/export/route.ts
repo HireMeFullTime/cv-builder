@@ -25,7 +25,7 @@ export async function GET() {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  const stripMeta = (item: any) => {
+  const stripMeta = <T extends Record<string, unknown>>(item: T | null) => {
     if (!item) return item;
     const { id, userId, createdAt, updatedAt, ...rest } = item;
     return rest;

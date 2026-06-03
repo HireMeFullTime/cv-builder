@@ -59,6 +59,9 @@ export const experienceSchema = z.object({
             value: z.string().min(3, "Accomplishment must be at least 3 characters long"),
         })
     ).optional(),
+}).refine(data => !data.endDate || data.endDate >= data.startDate, {
+    message: "End date cannot be earlier than start date",
+    path: ["endDate"]
 });
 
 export const educationSchema = z.object({
@@ -71,6 +74,9 @@ export const educationSchema = z.object({
     isCurrent: z.boolean(),
     description: z.string().optional(),
     url: z.url("Invalid URL").optional().or(z.literal("")),
+}).refine(data => !data.endDate || data.endDate >= data.startDate, {
+    message: "End date cannot be earlier than start date",
+    path: ["endDate"]
 });
 
 export const languageSchema = z.object({
@@ -121,6 +127,9 @@ export const generatedExperienceSchema = z.object({
     isCurrent: z.boolean(),
     accomplishments: z.array(generatedAccomplishmentSchema)
         .describe("Tailored accomplishments that strictly match the target job description. Limit to the most relevant points."),
+}).refine(data => !data.endDate || data.endDate >= data.startDate, {
+    message: "End date cannot be earlier than start date",
+    path: ["endDate"]
 });
 
 export const generatedProjectSchema = z.object({
@@ -144,6 +153,9 @@ export const tailoredEducationSchema = z.object({
     endDate: z.string().nullable().optional(),
     isCurrent: z.boolean(),
     description: z.string().nullable().optional(),
+}).refine(data => !data.endDate || data.endDate >= data.startDate, {
+    message: "End date cannot be earlier than start date",
+    path: ["endDate"]
 });
 
 export const tailoredCVSchema = z.object({
@@ -166,5 +178,5 @@ export const tailoredCVSchema = z.object({
     professionalSummary: z.string().optional(),
     selectedProjects: z.array(generatedProjectSchema).optional(),
     selectedEducations: z.array(tailoredEducationSchema).optional(),
-    languages: z.array(z.any()).optional(),
+    languages: z.array(languageSchema).optional(),
 });

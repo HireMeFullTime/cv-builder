@@ -17,13 +17,7 @@ import {CheckCircle} from 'lucide-react';
 import {MonthYearPicker} from '@/components/features/MonthYearPicker';
 import {AccomplishmentsInput} from '@/components/features/AccomplishmentsInput';
 
-export function ExperienceForm({
-	initialData,
-	onClose,
-}: {
-	initialData?: Partial<ExperienceData>;
-	onClose?: () => void;
-}) {
+export function ExperienceForm({initialData, onClose}: {initialData?: Partial<ExperienceData>; onClose?: () => void}) {
 	const [isSaving, setIsSaving] = useState(false);
 
 	const form = useForm<ExperienceData>({
@@ -112,7 +106,7 @@ export function ExperienceForm({
 							)}
 						/>
 
-						<div className='grid grid-cols-1 gap-6 sm:grid-cols-2'>
+						<div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2'>
 							<FormField
 								control={form.control}
 								name='startDate'
@@ -133,9 +127,15 @@ export function ExperienceForm({
 									name='endDate'
 									render={({field}) => (
 										<FormItem>
-											<FormLabel>End Date</FormLabel>
+											<FormLabel className={form.formState.errors.endDate ? 'text-destructive' : ''}>
+												End Date
+											</FormLabel>
 											<FormControl>
-												<MonthYearPicker value={field.value} onChange={field.onChange} />
+												<MonthYearPicker
+													value={field.value}
+													onChange={field.onChange}
+													minDate={form.watch('startDate')}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -166,11 +166,7 @@ export function ExperienceForm({
 								<FormItem>
 									<FormLabel>Description</FormLabel>
 									<FormControl>
-										<Textarea
-											placeholder='Briefly describe your responsibilities...'
-											className='min-h-25'
-											{...field}
-										/>
+										<Textarea placeholder='Briefly describe your responsibilities...' className='min-h-25' {...field} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -179,15 +175,15 @@ export function ExperienceForm({
 
 						<FormField
 							control={form.control}
-							name="accomplishments"
-							render={({ field }) => (
+							name='accomplishments'
+							render={({field}) => (
 								<FormItem>
 									<FormLabel>Key Accomplishments / Responsibilities</FormLabel>
 									<FormControl>
-										<AccomplishmentsInput 
-											value={field.value} 
-											onChange={field.onChange} 
-											placeholder="e.g. Increased page load speed by 30% (press Enter)"
+										<AccomplishmentsInput
+											value={field.value}
+											onChange={field.onChange}
+											placeholder='e.g. Increased page load speed by 30% (press Enter)'
 										/>
 									</FormControl>
 									<FormMessage />

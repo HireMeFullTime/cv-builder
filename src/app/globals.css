@@ -97,3 +97,13 @@
 .toaster.group .toast[data-type="error"] [data-icon] {
 	color: var(--destructive);
 }
+
+.toaster.group .toast[data-type="warning"] {
+	background-color: var(--card);
+	color: var(--foreground);
+	border-color: var(--color-amber-500, #d97706);
+}
+.toaster.group .toast[data-type="warning"] [data-icon] {
+	color: var(--color-amber-500, #d97706);
+}
+
