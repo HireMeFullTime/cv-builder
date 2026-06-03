@@ -7,6 +7,7 @@ import {Button} from '@/components/ui/button';
 import {Checkbox} from '@/components/ui/checkbox';
 import {MonthYearPicker} from '@/components/features/MonthYearPicker';
 import {ArrowUp, ArrowDown, Trash2, Plus} from 'lucide-react';
+import {parseDateString, formatDate} from '@/lib/utils';
 
 export function EditEducationSection({form}: EditSectionFormProps) {
 	const {fields, append, remove, move} = useFieldArray({
@@ -84,69 +85,43 @@ export function EditEducationSection({form}: EditSectionFormProps) {
 									<FormField
 										control={form.control}
 										name={`selectedEducations.${eduIndex}.startDate`}
-										render={({field}) => {
-											const parseDateString = (val: string) => {
-												if (!val) return undefined;
-												const parts = val.split('-');
-												if (parts.length >= 2)
-													return new Date(Date.UTC(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1));
-												return new Date(val);
-											};
-											const formatDate = (date?: Date) => {
-												if (!date) return '';
-												return `${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, '0')}`;
-											};
-											return (
-												<FormItem className='space-y-1'>
-													<FormLabel className='text-xs'>Start Date</FormLabel>
-													<FormControl>
-														<MonthYearPicker
-															value={parseDateString(field.value || '')}
-															onChange={date => field.onChange(formatDate(date))}
-														/>
-													</FormControl>
-												</FormItem>
-											);
-										}}
+										render={({field}) => (
+											<FormItem className='space-y-1'>
+												<FormLabel className='text-xs'>Start Date</FormLabel>
+												<FormControl>
+													<MonthYearPicker
+														value={parseDateString(field.value || '')}
+														onChange={date => field.onChange(formatDate(date))}
+													/>
+												</FormControl>
+											</FormItem>
+										)}
 									/>
 									{!form.watch(`selectedEducations.${eduIndex}.isCurrent`) && (
 										<FormField
 											control={form.control}
 											name={`selectedEducations.${eduIndex}.endDate`}
-											render={({field}) => {
-												const parseDateString = (val: string | null | undefined) => {
-													if (!val) return undefined;
-													const parts = val.split('-');
-													if (parts.length >= 2)
-														return new Date(Date.UTC(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1));
-													return new Date(val);
-												};
-												const formatDate = (date?: Date) => {
-													if (!date) return '';
-													return `${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, '0')}`;
-												};
-												return (
-													<FormItem className='space-y-1'>
-														<FormLabel
-															className={
-																form.formState.errors.selectedEducations?.[eduIndex]?.endDate
-																	? 'text-xs text-destructive'
-																	: 'text-xs'
-															}
-														>
-															End Date
-														</FormLabel>
-														<FormControl>
-															<MonthYearPicker
-																value={parseDateString(field.value || '')}
-																onChange={date => field.onChange(formatDate(date))}
-																minDate={parseDateString(form.watch(`selectedEducations.${eduIndex}.startDate`))}
-															/>
-														</FormControl>
-														<FormMessage />
-													</FormItem>
-												);
-											}}
+											render={({field}) => (
+												<FormItem className='space-y-1'>
+													<FormLabel
+														className={
+															form.formState.errors.selectedEducations?.[eduIndex]?.endDate
+																? 'text-xs text-destructive'
+																: 'text-xs'
+														}
+													>
+														End Date
+													</FormLabel>
+													<FormControl>
+														<MonthYearPicker
+															value={parseDateString(field.value || '')}
+															onChange={date => field.onChange(formatDate(date))}
+															minDate={parseDateString(form.watch(`selectedEducations.${eduIndex}.startDate`))}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
 										/>
 									)}
 								</div>

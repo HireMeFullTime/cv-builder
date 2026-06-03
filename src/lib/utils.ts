@@ -4,3 +4,18 @@ import { twMerge } from 'tailwind-merge';
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export function parseDateString(val: string | null | undefined): Date | undefined {
+  if (!val) return undefined;
+  const parts = val.split('-');
+  if (parts.length >= 2) {
+    return new Date(Date.UTC(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1));
+  }
+  return new Date(val);
+}
+
+export function formatDate(date?: Date): string {
+  if (!date) return '';
+  return `${date.getUTCFullYear()}-${(date.getUTCMonth() + 1).toString().padStart(2, '0')}`;
+}
+
