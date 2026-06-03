@@ -116,11 +116,13 @@ export async function generateTailoredCV(jobTitle: string, jobDescription: strin
   if (useDemoData) {
     candidateData = DEMO_CANDIDATE_DATA;
   } else {
-    const [profile, experiences, projects, skills] = await Promise.all([
+    const [profile, experiences, projects, skills, educations, languages] = await Promise.all([
       prisma.profile.findUnique({ where: { userId } }),
       prisma.experience.findMany({ where: { userId }, orderBy: { startDate: "desc" } }),
       prisma.project.findMany({ where: { userId }, orderBy: { createdAt: "desc" } }),
       prisma.skill.findMany({ where: { userId }, orderBy: { createdAt: "asc" } }),
+      prisma.education.findMany({ where: { userId }, orderBy: { startDate: "desc" } }),
+      prisma.language.findMany({ where: { userId }, orderBy: { createdAt: "asc" } }),
     ]);
 
     if (!profile) {
@@ -132,7 +134,13 @@ export async function generateTailoredCV(jobTitle: string, jobDescription: strin
         firstName: profile.firstName,
         lastName: profile.lastName,
         title: profile.title,
+        email: profile.email,
+        phone: profile.phone,
+        location: profile.location,
+        githubUrl: profile.githubUrl,
+        linkedinUrl: profile.linkedinUrl,
         bio: profile.bio,
+        gdprClause: profile.gdprClause,
       },
       skills: skills.map(s => s.name),
       experiences: experiences.map(exp => ({
@@ -155,7 +163,22 @@ export async function generateTailoredCV(jobTitle: string, jobDescription: strin
         githubUrl: proj.githubUrl,
         techStack: proj.techStack,
         accomplishments: proj.accomplishments,
-      }))
+      })),
+      educations: educations.map(edu => ({
+        id: edu.id,
+        institution: edu.institution,
+        degree: edu.degree,
+        fieldOfStudy: edu.fieldOfStudy,
+        startDate: edu.startDate.toISOString(),
+        endDate: edu.endDate?.toISOString() || null,
+        isCurrent: edu.isCurrent,
+        description: edu.description,
+      })),
+      languages: languages.map(lang => ({
+        id: lang.id,
+        name: lang.name,
+        proficiency: lang.proficiency,
+      })),
     };
   }
 
@@ -175,7 +198,8 @@ INSTRUCTIONS:
 2. Select and order the most relevant skills from the candidate's list. Exclude completely irrelevant ones. Write the skills in english.
 3. Select the most relevant work experiences. Filter or rewrite accomplishments to highlight overlap with the job description. Do NOT hallucinate entirely new experiences, only adjust descriptions of existing ones. Use the exact same IDs.
 4. Select the most relevant projects. Filter out projects that do not match the tech stack or domain of the job description. Use the exact same IDs.
-5. Return the result strictly in valid JSON format matching the following structure. Do not include markdown code blocks.
+5. Include ALL education entries and ALL languages from the candidate data as-is. Do not filter them out. Use the exact same IDs.
+6. Return the result strictly in valid JSON format matching the following structure. Do not include markdown code blocks.
 {
   "summary": "string",
   "relevantSkills": ["string"],
@@ -201,6 +225,25 @@ INSTRUCTIONS:
       "githubUrl": "string | null",
       "techStack": ["string"],
       "accomplishments": [{ "value": "string" }]
+    }
+  ],
+  "selectedEducations": [
+    {
+      "id": "string",
+      "institution": "string",
+      "degree": "string",
+      "fieldOfStudy": "string | null",
+      "startDate": "string (ISO)",
+      "endDate": "string (ISO) | null",
+      "isCurrent": boolean,
+      "description": "string | null"
+    }
+  ],
+  "languages": [
+    {
+      "id": "string",
+      "name": "string",
+      "proficiency": "string"
     }
   ]
 }
@@ -228,6 +271,18 @@ INSTRUCTIONS:
         gdprClause: DEMO_CANDIDATE_DATA.profile.gdprClause,
       };
       validatedContent.selectedEducations = DEMO_CANDIDATE_DATA.educations;
+    } else {
+      validatedContent.personalInfo = {
+        firstName: candidateData.profile.firstName,
+        lastName: candidateData.profile.lastName,
+        title: candidateData.profile.title ?? undefined,
+        email: candidateData.profile.email,
+        phone: candidateData.profile.phone ?? undefined,
+        location: candidateData.profile.location ?? undefined,
+        githubUrl: candidateData.profile.githubUrl ?? undefined,
+        linkedinUrl: candidateData.profile.linkedinUrl ?? undefined,
+        gdprClause: candidateData.profile.gdprClause ?? undefined,
+      };
     }
 
     const tailoredCV = await prisma.tailoredCV.create({
