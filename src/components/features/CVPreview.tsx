@@ -83,7 +83,7 @@ export function CVPreview({
 				if (!summaryContent) return null;
 				return (
 					<section key='summary'>
-						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb)'>
+						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb) break-after-avoid'>
 							Summary
 						</h3>
 						<p className='text-black leading-relaxed text-(length:--cv-text-sm) whitespace-pre-wrap'>
@@ -99,7 +99,7 @@ export function CVPreview({
 				if (visibleSkills.length === 0) return null;
 				return (
 					<section key='skills'>
-						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb)'>
+						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb) break-after-avoid'>
 							Key Skills
 						</h3>
 						<div className='text-(length:--cv-text-sm) font-bold text-black leading-relaxed'>
@@ -118,12 +118,12 @@ export function CVPreview({
 
 				return (
 					<section key='experience'>
-						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb)'>
+						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb) break-after-avoid'>
 							Experience
 						</h3>
 						<div className={itemSpace}>
 							{visibleExperiences.map(exp => (
-								<div key={exp.id}>
+								<div key={exp.id} className="break-inside-avoid">
 									<div className='flex justify-between items-baseline mb-1'>
 										<h4 className='font-bold text-black'>{exp.jobTitle}</h4>
 										<span className='text-(length:--cv-text-xs) font-bold text-black whitespace-nowrap'>
@@ -163,12 +163,12 @@ export function CVPreview({
 
 				return (
 					<section key='education'>
-						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb)'>
+						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb) break-after-avoid'>
 							Education
 						</h3>
 						<div className={itemSpace}>
 							{visibleEducations.map(edu => (
-								<div key={edu.id}>
+								<div key={edu.id} className="break-inside-avoid">
 									<div className='flex justify-between items-baseline mb-1'>
 										<h4 className='font-bold text-black'>{edu.institution}</h4>
 										<span className='text-(length:--cv-text-xs) font-bold text-black whitespace-nowrap'>
@@ -199,12 +199,12 @@ export function CVPreview({
 
 				return (
 					<section key='languages'>
-						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb)'>
+						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb) break-after-avoid'>
 							Languages
 						</h3>
 						<div className='flex flex-col gap-1.5'>
 							{visibleLanguages.map((lang: Language | LanguageData) => (
-								<div key={lang.id} className='text-(length:--cv-text-sm) text-black leading-snug wrap-break-word'>
+								<div key={lang.id} className='text-(length:--cv-text-sm) text-black leading-snug wrap-break-word break-inside-avoid'>
 									<span className='font-bold'>{lang.name}</span>
 									{lang.proficiency && <span> – {lang.proficiency}</span>}
 								</div>
@@ -224,7 +224,7 @@ export function CVPreview({
 
 				return (
 					<section key='projects'>
-						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb)'>
+						<h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb) break-after-avoid'>
 							Projects
 						</h3>
 						<div className={`grid grid-cols-1 ${itemSpace}`}>
@@ -303,9 +303,9 @@ export function CVPreview({
 	return (
 		<div
 			style={dynamicStyles}
-			className={`flex flex-col min-h-full text-black bg-white shadow-lg print:shadow-none mx-auto w-full max-w-[210mm] print:w-full print:max-w-none p-(--doc-padding) ${fontClass}`}
+			className={`flex flex-col min-h-full text-black bg-white shadow-lg print:shadow-none mx-auto w-full max-w-[210mm] print:w-full print:max-w-none p-(--doc-padding) box-decoration-clone ${fontClass}`}
 		>
-			{/* Header section with Personal Info */}
+				{/* Header section with Personal Info */}
 			<header className='border-b-2 border-black pb-4 mb-(--sec-spacing)'>
 				<h1 className='text-(length:--cv-text-4xl) leading-none font-bold text-black tracking-tight uppercase'>
 					{data?.personalInfo?.firstName || profile?.firstName} {data?.personalInfo?.lastName || profile?.lastName}
