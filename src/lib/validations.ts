@@ -166,5 +166,5 @@ export const tailoredCVSchema = z.object({
     professionalSummary: z.string().optional(),
     selectedProjects: z.array(generatedProjectSchema).optional(),
     selectedEducations: z.array(tailoredEducationSchema).optional(),
-    languages: z.array(z.any()).optional(),
+    languages: z.array(languageSchema).optional(),
 });
