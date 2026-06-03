@@ -240,12 +240,12 @@ INSTRUCTIONS:
     });
 
     revalidatePath("/dashboard");
-    return tailoredCV.id;
+    return { success: true, id: tailoredCV.id };
   } catch (error) {
     console.error("AI Generation Error:", error);
 
     const errorMessage = error instanceof Error ? error.message : "Unknown error occurred during AI generation";
-    throw new Error(`Generation failed: ${errorMessage}`);
+    return { success: false, error: `Generation failed: ${errorMessage}` };
   }
 }
 

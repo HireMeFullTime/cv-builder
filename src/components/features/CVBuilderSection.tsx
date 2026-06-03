@@ -115,11 +115,14 @@ export function CVBuilderSection({
 	async function onSubmit(data: CVBuilderFormData) {
 		setIsGenerating(true);
 		try {
-			await generateTailoredCV(data.jobTitle, data.jobDescription, data.useDemoData);
-			toast.success('CV Generated Successfully!');
-
-			form.reset();
-			router.refresh();
+			const result = await generateTailoredCV(data.jobTitle, data.jobDescription, data.useDemoData);
+			if (result.success) {
+				toast.success('CV Generated Successfully!');
+				form.reset();
+				router.refresh();
+			} else {
+				toast.error(result.error || 'Failed to generate CV.');
+			}
 		} catch (error) {
 			console.error(error);
 			const errorMessage =
