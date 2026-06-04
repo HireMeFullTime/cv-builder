@@ -88,6 +88,16 @@ const DEMO_CANDIDATE_DATA = {
   ]
 };
 
+/**
+ * Generates a tailored CV using the Gemini AI model based on the target job requirements.
+ * Validates the generated structure against tailoredCVSchema and stores it in the database.
+ * Enforces a 1-minute rate limit per user.
+ * 
+ * @param jobTitle - Target job title.
+ * @param jobDescription - The job listing description.
+ * @param useDemoData - Optional flag to generate CV based on standard demo data.
+ * @returns Result object containing success state, ID of the new CV, or error message.
+ */
 export async function generateTailoredCV(jobTitle: string, jobDescription: string, useDemoData: boolean = false) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");
@@ -116,6 +126,8 @@ export async function generateTailoredCV(jobTitle: string, jobDescription: strin
   if (useDemoData) {
     candidateData = DEMO_CANDIDATE_DATA;
   } else {
+    // Fetch all candidate data from the database in parallel.
+    // We use Promise.all to optimize query time since all queries are independent.
     const [profile, experiences, projects, skills, educations, languages] = await Promise.all([
       prisma.profile.findUnique({ where: { userId } }),
       prisma.experience.findMany({ where: { userId }, orderBy: { startDate: "desc" } }),
@@ -126,6 +138,7 @@ export async function generateTailoredCV(jobTitle: string, jobDescription: strin
     ]);
 
     if (!profile) {
+      // Profile is required as an absolute minimum to generate a CV.
       throw new Error("Profile must be completed before generating a CV.");
     }
 
@@ -250,12 +263,16 @@ INSTRUCTIONS:
 `;
 
   try {
+    // Call the Gemini API using the Vercel AI SDK.
+    // We use Output.object() with Zod validation, which forces the model to return data
+    // in a strictly defined JSON structure that matches tailoredCVSchema.
     const { output: object } = await generateText({
       model: google('gemini-2.5-flash'),
       output: Output.object({ schema: tailoredCVSchema }),
       prompt: systemPrompt,
     });
 
+    // Double assurance: validate the received object (which was already pre-validated by AI SDK).
     const validatedContent = tailoredCVSchema.parse(object);
 
     if (useDemoData) {
@@ -304,6 +321,12 @@ INSTRUCTIONS:
   }
 }
 
+/**
+ * Fetches all tailored CVs created by the currently authenticated user.
+ * Sorts them by creation date descending.
+ * 
+ * @returns A promise resolving to an array of parsed tailored CVs.
+ */
 export async function getTailoredCVs(): Promise<ParsedTailoredCV[]> {
   const session = await auth();
   if (!session?.user?.id) return [];
@@ -325,6 +348,12 @@ export async function getTailoredCVs(): Promise<ParsedTailoredCV[]> {
     .filter((cv): cv is ParsedTailoredCV => cv !== null);
 }
 
+/**
+ * Fetches a single tailored CV by its ID, ensuring it belongs to the authenticated user.
+ * 
+ * @param id - The ID of the tailored CV.
+ * @returns A promise resolving to the parsed tailored CV, or null if not found/unauthorized.
+ */
 export async function getTailoredCVById(id: string): Promise<ParsedTailoredCV | null> {
   const session = await auth();
   if (!session?.user?.id) return null;
@@ -344,6 +373,12 @@ export async function getTailoredCVById(id: string): Promise<ParsedTailoredCV | 
   };
 }
 
+/**
+ * Deletes a tailored CV by its ID, ensuring it belongs to the authenticated user.
+ * Revalidates the "/dashboard" path to update server-rendered data.
+ * 
+ * @param id - The ID of the tailored CV to delete.
+ */
 export async function deleteTailoredCV(id: string) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");
@@ -355,6 +390,14 @@ export async function deleteTailoredCV(id: string) {
   revalidatePath("/dashboard");
 }
 
+/**
+ * Updates the contents of a tailored CV by its ID, ensuring it belongs to the authenticated user.
+ * Validates the new content structure using Zod before updating.
+ * Revalidates the "/dashboard" path.
+ * 
+ * @param id - The ID of the tailored CV to update.
+ * @param content - The new tailored CV data.
+ */
 export async function updateTailoredCV(id: string, content: TailoredCVData) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");

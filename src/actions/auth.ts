@@ -6,10 +6,20 @@ import bcrypt from "bcryptjs";
 import { registerSchema } from "@/lib/validations";
 import { z } from "zod";
 
+/**
+ * Signs out the currently authenticated user session.
+ */
 export async function signOutAction() {
   await signOut();
 }
 
+/**
+ * Registers a new user in the database.
+ * Hashes the user password using bcryptjs and checks for existing emails.
+ * 
+ * @param data - The registration data validated against registerSchema.
+ * @returns Result object containing success status or error message.
+ */
 export async function registerUser(data: z.infer<typeof registerSchema>) {
   try {
     const validatedData = registerSchema.parse(data);

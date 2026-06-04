@@ -10,6 +10,15 @@ const YEARS = Array.from({length: 55}, (_, i) => currentYear + 5 - i);
 
 import {useEffect} from 'react';
 
+/**
+ * A custom month and year dropdown picker component built with Radix/Shadcn Select.
+ * Handles inputs in UTC to maintain consistency across user timezones and avoids timezone shifts.
+ * Supports disabling months/years before a given minDate and automatically adjusts selected values if they fall behind minDate.
+ * 
+ * @param value - Selected Date object (UTC).
+ * @param onChange - Callback function triggered when a valid month or year is chosen.
+ * @param minDate - Optional threshold Date object. Values prior to this date are disabled or auto-corrected.
+ */
 export function MonthYearPicker({
 	value,
 	onChange,
