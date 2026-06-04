@@ -6,6 +6,14 @@ import { profileSchema } from "@/lib/validations";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
+/**
+ * Creates or updates the user profile in the database.
+ * Validates the data using Zod's profileSchema.
+ * Revalidates the "/dashboard" path.
+ * 
+ * @param data - The user profile data.
+ * @returns The created or updated profile object.
+ */
 export async function upsertProfile(data: z.infer<typeof profileSchema>) {
   try {
     const session = await auth();
@@ -46,6 +54,11 @@ export async function upsertProfile(data: z.infer<typeof profileSchema>) {
   }
 }
 
+/**
+ * Fetches the user profile for the currently authenticated user.
+ * 
+ * @returns A promise resolving to the user profile object or null if not found.
+ */
 export async function getProfile() {
   const session = await auth();
   if (!session?.user?.id) return null;

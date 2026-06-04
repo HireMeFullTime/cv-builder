@@ -6,6 +6,12 @@ import { educationSchema } from "@/lib/validations";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
+/**
+ * Fetches all education records created by the authenticated user.
+ * Sorts them by active status (current studies first), followed by end date and start date descending.
+ * 
+ * @returns A promise resolving to an array of user education records.
+ */
 export async function getEducations() {
   const session = await auth();
   if (!session?.user?.id) return [];
@@ -20,6 +26,14 @@ export async function getEducations() {
   });
 }
 
+/**
+ * Creates a new education record or updates an existing one for the authenticated user.
+ * Validates data using Zod schema prior to database execution.
+ * Revalidates the "/dashboard" path.
+ * 
+ * @param data - The education data validated against educationSchema.
+ * @returns The created or updated education object.
+ */
 export async function upsertEducation(data: z.infer<typeof educationSchema>) {
   try {
     const session = await auth();
@@ -60,6 +74,12 @@ export async function upsertEducation(data: z.infer<typeof educationSchema>) {
   }
 }
 
+/**
+ * Deletes an education record by its ID, ensuring it belongs to the authenticated user.
+ * Revalidates the "/dashboard" path.
+ * 
+ * @param id - The ID of the education record to delete.
+ */
 export async function deleteEducation(id: string) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");

@@ -6,6 +6,12 @@ import { projectSchema } from "@/lib/validations";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
+/**
+ * Fetches all projects created by the authenticated user.
+ * Sorts them by creation date descending.
+ * 
+ * @returns A promise resolving to an array of user projects.
+ */
 export async function getProjects() {
   const session = await auth();
   if (!session?.user?.id) return [];
@@ -16,6 +22,14 @@ export async function getProjects() {
   });
 }
 
+/**
+ * Creates a new project or updates an existing one for the authenticated user.
+ * Validates data using Zod schema prior to database execution.
+ * Revalidates the "/dashboard" path.
+ * 
+ * @param data - The project data validated against projectSchema.
+ * @returns The created or updated project object.
+ */
 export async function upsertProject(data: z.infer<typeof projectSchema>) {
   try {
     const session = await auth();
@@ -56,6 +70,12 @@ export async function upsertProject(data: z.infer<typeof projectSchema>) {
   }
 }
 
+/**
+ * Deletes a project by its ID, ensuring it belongs to the authenticated user.
+ * Revalidates the "/dashboard" path.
+ * 
+ * @param id - The ID of the project to delete.
+ */
 export async function deleteProject(id: string) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");

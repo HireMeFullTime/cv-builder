@@ -6,6 +6,12 @@ import { experienceSchema } from "@/lib/validations";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
+/**
+ * Fetches all work experiences created by the authenticated user.
+ * Sorts them by active status (current jobs first), followed by end date and start date descending.
+ * 
+ * @returns A promise resolving to an array of user experiences.
+ */
 export async function getExperiences() {
   const session = await auth();
   if (!session?.user?.id) return [];
@@ -20,6 +26,14 @@ export async function getExperiences() {
   });
 }
 
+/**
+ * Creates a new experience or updates an existing one for the authenticated user.
+ * Validates data using Zod schema prior to database execution.
+ * Revalidates the "/dashboard" path.
+ * 
+ * @param data - The experience data validated against experienceSchema.
+ * @returns The created or updated experience object.
+ */
 export async function upsertExperience(data: z.infer<typeof experienceSchema>) {
   try {
     const session = await auth();
@@ -60,6 +74,12 @@ export async function upsertExperience(data: z.infer<typeof experienceSchema>) {
   }
 }
 
+/**
+ * Deletes an experience by its ID, ensuring it belongs to the authenticated user.
+ * Revalidates the "/dashboard" path.
+ * 
+ * @param id - The ID of the experience to delete.
+ */
 export async function deleteExperience(id: string) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");

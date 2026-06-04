@@ -6,6 +6,12 @@ import { skillsFormSchema } from "@/lib/validations";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
+/**
+ * Fetches all skills created by the authenticated user.
+ * Sorts them by creation date ascending.
+ * 
+ * @returns A promise resolving to an array of user skills.
+ */
 export async function getSkills() {
   const session = await auth();
   if (!session?.user?.id) return [];
@@ -16,9 +22,15 @@ export async function getSkills() {
   });
 }
 
+/**
+ * Saves (creates/updates) a group of skills under a specific category for the authenticated user.
+ * Performs a transaction that first removes existing skills in the category and then inserts the new list.
+ * Revalidates the "/dashboard" path.
+ * 
+ * @param data - The skills data containing the category and array of skill names.
+ */
 export async function upsertSkillCategory(data: z.infer<typeof skillsFormSchema>) {
   try {
-
     const session = await auth();
     if (!session?.user?.id) {
       throw new Error("Unauthorized");
@@ -56,6 +68,12 @@ export async function upsertSkillCategory(data: z.infer<typeof skillsFormSchema>
   }
 }
 
+/**
+ * Deletes all skills belonging to a specific category for the authenticated user.
+ * Revalidates the "/dashboard" path.
+ * 
+ * @param category - The name of the skill category to delete (can be null/empty).
+ */
 export async function deleteSkillCategory(category: string | null) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");
