@@ -126,6 +126,8 @@ export async function generateTailoredCV(jobTitle: string, jobDescription: strin
   if (useDemoData) {
     candidateData = DEMO_CANDIDATE_DATA;
   } else {
+    // Fetch all candidate data from the database in parallel.
+    // We use Promise.all to optimize query time since all queries are independent.
     const [profile, experiences, projects, skills, educations, languages] = await Promise.all([
       prisma.profile.findUnique({ where: { userId } }),
       prisma.experience.findMany({ where: { userId }, orderBy: { startDate: "desc" } }),
@@ -136,6 +138,7 @@ export async function generateTailoredCV(jobTitle: string, jobDescription: strin
     ]);
 
     if (!profile) {
+      // Profile is required as an absolute minimum to generate a CV.
       throw new Error("Profile must be completed before generating a CV.");
     }
 
@@ -260,12 +263,16 @@ INSTRUCTIONS:
 `;
 
   try {
+    // Call the Gemini API using the Vercel AI SDK.
+    // We use Output.object() with Zod validation, which forces the model to return data
+    // in a strictly defined JSON structure that matches tailoredCVSchema.
     const { output: object } = await generateText({
       model: google('gemini-2.5-flash'),
       output: Output.object({ schema: tailoredCVSchema }),
       prompt: systemPrompt,
     });
 
+    // Double assurance: validate the received object (which was already pre-validated by AI SDK).
     const validatedContent = tailoredCVSchema.parse(object);
 
     if (useDemoData) {

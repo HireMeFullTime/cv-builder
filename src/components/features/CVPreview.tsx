@@ -37,6 +37,8 @@ export function CVPreview({
 		theme.fontFamily === 'serif' ? 'font-serif' : theme.fontFamily === 'mono' ? 'font-mono' : 'font-sans';
 
 	const getFontSizes = () => {
+		// Map the selected base font size to a set of CSS variables,
+		// which define the typographic scale for the entire CV.
 		switch (theme.fontSize) {
 			case 'sm':
 				return {
@@ -69,11 +71,15 @@ export function CVPreview({
 		}
 	};
 
+	// Retrieve the margins and spacing selected by the user (or defaults)
 	const docPadding = theme.documentMargins ?? 32;
 	const secSpacing = theme.sectionSpacing ?? 24;
 	const colSpacing = theme.columnSpacing ?? 24;
+	
+	// Bottom margin for section titles calculated proportionally to the overall section spacing
 	const titleMb = Math.max(8, Math.round(secSpacing * 0.4));
 
+	// Translate the spacing theme into Tailwind classes for laying out list elements (e.g. experiences)
 	const itemSpace = theme.spacing === 'compact' ? 'space-y-3' : theme.spacing === 'relaxed' ? 'space-y-6' : 'space-y-4';
 
 	const renderSection = (id: CVSectionId) => {
@@ -140,6 +146,8 @@ export function CVPreview({
 		}
 	};
 
+	// Dynamic styles injected directly into the main container.
+	// This allows full customization of the CV (e.g. margins) without having to recompile Tailwind.
 	const dynamicStyles = {
 		'--doc-padding': `${docPadding}px`,
 		'--sec-spacing': `${secSpacing}px`,
@@ -152,6 +160,8 @@ export function CVPreview({
 	return (
 		<div
 			style={dynamicStyles}
+			// We use box-decoration-clone so that when paginating in print (PDF)
+			// padding and background are properly preserved. print:shadow-none disables shadow during PDF export.
 			className={`flex flex-col min-h-full text-black bg-white shadow-lg print:shadow-none mx-auto w-full max-w-[210mm] print:w-full print:max-w-none p-(--doc-padding) box-decoration-clone ${fontClass}`}
 		>
 			<CVPreviewHeader
@@ -162,6 +172,7 @@ export function CVPreview({
 			/>
 
 			{/* Main Content */}
+			{/* Column structure depends on the selected mode: single or two-column */}
 			<div className='flex-1 flex flex-col sm:flex-row gap-(--col-spacing)'>
 				{currentLayout.mode === 'two-column' ? (
 					<>
