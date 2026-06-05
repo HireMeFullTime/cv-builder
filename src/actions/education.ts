@@ -81,12 +81,17 @@ export async function upsertEducation(data: z.infer<typeof educationSchema>) {
  * @param id - The ID of the education record to delete.
  */
 export async function deleteEducation(id: string) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error("Unauthorized");
+  try {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-  await prisma.education.delete({
-    where: { id, userId: session.user.id },
-  });
+    await prisma.education.delete({
+      where: { id, userId: session.user.id },
+    });
 
-  revalidatePath("/dashboard");
+    revalidatePath("/dashboard");
+  } catch (error) {
+    console.error("Failed to delete education:", error);
+    throw new Error("Failed to delete education");
+  }
 }

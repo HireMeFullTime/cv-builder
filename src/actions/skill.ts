@@ -75,15 +75,24 @@ export async function upsertSkillCategory(data: z.infer<typeof skillsFormSchema>
  * @param category - The name of the skill category to delete (can be null/empty).
  */
 export async function deleteSkillCategory(category: string | null) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error("Unauthorized");
+  try {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-  await prisma.skill.deleteMany({
-    where: {
-      userId: session.user.id,
-      category: category,
-    },
-  });
+    if (!category) {
+      // Deleting uncategorized skills
+      await prisma.skill.deleteMany({
+        where: { userId: session.user.id, OR: [{ category: "" }, { category: null }] },
+      });
+    } else {
+      await prisma.skill.deleteMany({
+        where: { userId: session.user.id, category },
+      });
+    }
 
-  revalidatePath("/dashboard");
+    revalidatePath("/dashboard");
+  } catch (error) {
+    console.error("Failed to delete skill category:", error);
+    throw new Error("Failed to delete skill category");
+  }
 }

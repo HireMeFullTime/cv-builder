@@ -1,10 +1,6 @@
-import { TailoredCVData, LanguageData } from '@/types';
 import { Language } from '@prisma/client';
 
-interface CVPreviewLanguagesProps {
-  languagesData?: TailoredCVData['languages'];
-  languages?: Language[];
-}
+import { CVPreviewLanguagesProps, LanguageData } from '@/types';
 
 export function CVPreviewLanguages({ languagesData, languages }: CVPreviewLanguagesProps) {
   const languageList = languagesData && languagesData.length > 0 ? languagesData : languages;

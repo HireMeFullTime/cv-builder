@@ -81,12 +81,17 @@ export async function upsertExperience(data: z.infer<typeof experienceSchema>) {
  * @param id - The ID of the experience to delete.
  */
 export async function deleteExperience(id: string) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error("Unauthorized");
+  try {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-  await prisma.experience.delete({
-    where: { id, userId: session.user.id },
-  });
+    await prisma.experience.delete({
+      where: { id, userId: session.user.id },
+    });
 
-  revalidatePath("/dashboard");
+    revalidatePath("/dashboard");
+  } catch (error) {
+    console.error("Failed to delete experience:", error);
+    throw new Error("Failed to delete experience");
+  }
 }

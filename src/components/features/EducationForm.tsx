@@ -1,6 +1,6 @@
 'use client';
 
-import {useForm} from 'react-hook-form';
+import {useForm, useWatch} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {educationSchema} from '@/lib/validations';
 import {upsertEducation} from '@/actions/education';
@@ -36,7 +36,8 @@ export function EducationForm({initialData, onClose}: {initialData?: Education; 
 		defaultValues
 	});
 
-	const isCurrent = form.watch('isCurrent');
+	const isCurrent = useWatch({ control: form.control, name: 'isCurrent' });
+	const startDate = useWatch({ control: form.control, name: 'startDate' });
 
 	async function onSubmit(data: EducationData) {
 		setIsSaving(true);
@@ -137,7 +138,7 @@ export function EducationForm({initialData, onClose}: {initialData?: Education; 
 											<MonthYearPicker
 												value={field.value}
 												onChange={field.onChange}
-												minDate={form.watch('startDate')}
+												minDate={startDate}
 											/>
 										</FormControl>
 										<FormMessage />

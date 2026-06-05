@@ -1,11 +1,7 @@
-import { TailoredCVData } from '@/types';
+
 import { formatPreviewDate } from '@/lib/utils';
 
-interface CVPreviewExperienceProps {
-  experiences?: TailoredCVData['selectedExperiences'];
-  hiddenExperienceIds?: string[];
-  itemSpace: string;
-}
+import { CVPreviewExperienceProps } from '@/types';
 
 export function CVPreviewExperience({ experiences, hiddenExperienceIds, itemSpace }: CVPreviewExperienceProps) {
   if (!experiences || experiences.length === 0) return null;

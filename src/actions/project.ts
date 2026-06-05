@@ -77,12 +77,17 @@ export async function upsertProject(data: z.infer<typeof projectSchema>) {
  * @param id - The ID of the project to delete.
  */
 export async function deleteProject(id: string) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error("Unauthorized");
+  try {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-  await prisma.project.delete({
-    where: { id, userId: session.user.id },
-  });
+    await prisma.project.delete({
+      where: { id, userId: session.user.id },
+    });
 
-  revalidatePath("/dashboard");
+    revalidatePath("/dashboard");
+  } catch (error) {
+    console.error("Failed to delete project:", error);
+    throw new Error("Failed to delete project");
+  }
 }

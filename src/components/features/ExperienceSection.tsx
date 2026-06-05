@@ -21,8 +21,8 @@ export function ExperienceSection({initialExperiences}: {initialExperiences: Exp
 					try {
 						await deleteExperience(id);
 						toast.success('Experience deleted');
-					} catch (error) {
-						toast.error('Failed to delete experience');
+					} catch {
+						toast.error('Failed to delete experience.');
 					}
 				}
 			},
