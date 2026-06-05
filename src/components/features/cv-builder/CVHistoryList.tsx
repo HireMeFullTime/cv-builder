@@ -1,13 +1,9 @@
-import { ParsedTailoredCV } from '@/types';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react';
 
-interface CVHistoryListProps {
-  cvs: ParsedTailoredCV[];
-  onSelectCv: (cv: ParsedTailoredCV) => void;
-  onDelete: (id: string) => void;
-}
+import { CVHistoryListProps } from '@/types';
 
 export function CVHistoryList({ cvs, onSelectCv, onDelete }: CVHistoryListProps) {
   return (

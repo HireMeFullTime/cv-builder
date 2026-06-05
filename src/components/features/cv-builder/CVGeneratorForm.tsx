@@ -1,6 +1,4 @@
-import { UseFormReturn } from 'react-hook-form';
-import { Profile } from '@prisma/client';
-import { CVBuilderFormData } from '@/types';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
@@ -9,12 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Loader2, Sparkles } from 'lucide-react';
 
-interface CVGeneratorFormProps {
-  form: UseFormReturn<CVBuilderFormData>;
-  onSubmit: (data: CVBuilderFormData) => void;
-  isGenerating: boolean;
-  profile: Profile | null;
-}
+import { CVGeneratorFormProps } from '@/types';
 
 export function CVGeneratorForm({ form, onSubmit, isGenerating, profile }: CVGeneratorFormProps) {
   const useDemoData = form.watch('useDemoData');

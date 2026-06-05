@@ -1,10 +1,6 @@
-import { TailoredCVData } from '@/types';
-import { Profile } from '@prisma/client';
 
-interface CVPreviewFooterProps {
-  personalInfo?: TailoredCVData['personalInfo'];
-  profile: Profile | null;
-}
+
+import { CVPreviewFooterProps } from '@/types';
 
 export function CVPreviewFooter({ personalInfo, profile }: CVPreviewFooterProps) {
   const gdprClause = personalInfo?.gdprClause || profile?.gdprClause;

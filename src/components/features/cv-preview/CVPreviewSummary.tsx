@@ -1,7 +1,4 @@
-interface CVPreviewSummaryProps {
-  summary?: string;
-  professionalSummary?: string;
-}
+import { CVPreviewSummaryProps } from '@/types';
 
 export function CVPreviewSummary({ summary, professionalSummary }: CVPreviewSummaryProps) {
   const summaryContent = summary || professionalSummary;

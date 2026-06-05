@@ -1,12 +1,7 @@
-import { ColumnLayout } from '@/types';
+
 import { Checkbox } from '@/components/ui/checkbox';
 
-interface CVVisibilityTabProps {
-  layout: ColumnLayout;
-  onChange: (newLayout: ColumnLayout) => void;
-  projects?: { id: string; title: string }[];
-  experiences?: { id: string; jobTitle: string; company: string }[];
-}
+import { CVVisibilityTabProps } from '@/types';
 
 export function CVVisibilityTab({ layout, onChange, projects, experiences }: CVVisibilityTabProps) {
   const toggleProjectVisibility = (projectId: string, isVisible: boolean) => {

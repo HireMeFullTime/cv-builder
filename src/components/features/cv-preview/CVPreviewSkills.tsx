@@ -1,6 +1,4 @@
-interface CVPreviewSkillsProps {
-  relevantSkills?: (string | null | undefined)[];
-}
+import { CVPreviewSkillsProps } from '@/types';
 
 export function CVPreviewSkills({ relevantSkills }: CVPreviewSkillsProps) {
   if (!relevantSkills || relevantSkills.length === 0) return null;

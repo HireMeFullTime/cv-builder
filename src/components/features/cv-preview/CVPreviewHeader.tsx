@@ -1,15 +1,8 @@
 import { Mail, Phone, MapPin, Link as LinkIcon } from 'lucide-react';
 import Link from 'next/link';
-import { Profile } from '@prisma/client';
-import { TailoredCVData } from '@/types';
 import { GithubIcon } from '@/components/ui/icons';
 
-interface CVPreviewHeaderProps {
-  personalInfo?: TailoredCVData['personalInfo'];
-  profile: Profile | null;
-  jobTitleOverride?: string;
-  jobTitle: string;
-}
+import { CVPreviewHeaderProps } from '@/types';
 
 export function CVPreviewHeader({ personalInfo, profile, jobTitleOverride, jobTitle }: CVPreviewHeaderProps) {
   const firstName = personalInfo?.firstName || profile?.firstName;
