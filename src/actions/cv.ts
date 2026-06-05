@@ -104,98 +104,99 @@ export async function generateTailoredCV(jobTitle: string, jobDescription: strin
 
   const userId = session.user.id;
 
-  // --- Rate Limiting (Database) ---
-  const oneMinuteAgo = new Date(Date.now() - 60000);
+  try {
+    // --- Rate Limiting (Database) ---
+    const oneMinuteAgo = new Date(Date.now() - 60000);
 
-  const recentGenerationsCount = await prisma.tailoredCV.count({
-    where: {
-      userId,
-      createdAt: {
-        gte: oneMinuteAgo
+    const recentGenerationsCount = await prisma.tailoredCV.count({
+      where: {
+        userId,
+        createdAt: {
+          gte: oneMinuteAgo
+        }
       }
+    });
+
+    if (recentGenerationsCount >= 1) {
+      throw new Error("rate limit exceeded");
     }
-  });
+    // ---------------------------------------------------------
 
-  if (recentGenerationsCount >= 1) {
-    throw new Error("Rate limit exceeded. Please wait a minute before generating again.");
-  }
-  // ---------------------------------------------------------
+    let candidateData;
 
-  let candidateData;
+    if (useDemoData) {
+      candidateData = DEMO_CANDIDATE_DATA;
+    } else {
+      // Fetch all candidate data from the database in parallel.
+      // We use Promise.all to optimize query time since all queries are independent.
+      const [profile, experiences, projects, skills, educations, languages] = await Promise.all([
+        prisma.profile.findUnique({ where: { userId } }),
+        prisma.experience.findMany({ where: { userId }, orderBy: { startDate: "desc" } }),
+        prisma.project.findMany({ where: { userId }, orderBy: { createdAt: "desc" } }),
+        prisma.skill.findMany({ where: { userId }, orderBy: { createdAt: "asc" } }),
+        prisma.education.findMany({ where: { userId }, orderBy: { startDate: "desc" } }),
+        prisma.language.findMany({ where: { userId }, orderBy: { createdAt: "asc" } }),
+      ]);
 
-  if (useDemoData) {
-    candidateData = DEMO_CANDIDATE_DATA;
-  } else {
-    // Fetch all candidate data from the database in parallel.
-    // We use Promise.all to optimize query time since all queries are independent.
-    const [profile, experiences, projects, skills, educations, languages] = await Promise.all([
-      prisma.profile.findUnique({ where: { userId } }),
-      prisma.experience.findMany({ where: { userId }, orderBy: { startDate: "desc" } }),
-      prisma.project.findMany({ where: { userId }, orderBy: { createdAt: "desc" } }),
-      prisma.skill.findMany({ where: { userId }, orderBy: { createdAt: "asc" } }),
-      prisma.education.findMany({ where: { userId }, orderBy: { startDate: "desc" } }),
-      prisma.language.findMany({ where: { userId }, orderBy: { createdAt: "asc" } }),
-    ]);
+      if (!profile) {
+        // Profile is required as an absolute minimum to generate a CV.
+        throw new Error("Profile must be completed before generating a CV.");
+      }
 
-    if (!profile) {
-      // Profile is required as an absolute minimum to generate a CV.
-      throw new Error("Profile must be completed before generating a CV.");
+      candidateData = {
+        profile: {
+          firstName: profile.firstName,
+          lastName: profile.lastName,
+          title: profile.title,
+          email: profile.email,
+          phone: profile.phone,
+          location: profile.location,
+          githubUrl: profile.githubUrl,
+          linkedinUrl: profile.linkedinUrl,
+          bio: profile.bio,
+          gdprClause: profile.gdprClause,
+        },
+        skills: skills.map(s => s.name),
+        experiences: experiences.map(exp => ({
+          id: exp.id,
+          jobTitle: exp.jobTitle,
+          company: exp.company,
+          location: exp.location,
+          startDate: exp.startDate.toISOString(),
+          endDate: exp.endDate?.toISOString() || null,
+          isCurrent: exp.isCurrent,
+          description: exp.description,
+          accomplishments: exp.accomplishments,
+        })),
+        projects: projects.map(proj => ({
+          id: proj.id,
+          title: proj.title,
+          role: proj.role,
+          shortDescription: proj.shortDescription,
+          linkUrl: proj.linkUrl,
+          githubUrl: proj.githubUrl,
+          techStack: proj.techStack,
+          accomplishments: proj.accomplishments,
+        })),
+        educations: educations.map(edu => ({
+          id: edu.id,
+          institution: edu.institution,
+          degree: edu.degree,
+          fieldOfStudy: edu.fieldOfStudy,
+          startDate: edu.startDate.toISOString(),
+          endDate: edu.endDate?.toISOString() || null,
+          isCurrent: edu.isCurrent,
+          description: edu.description,
+        })),
+        languages: languages.map(lang => ({
+          id: lang.id,
+          name: lang.name,
+          proficiency: lang.proficiency,
+        })),
+      };
     }
 
-    candidateData = {
-      profile: {
-        firstName: profile.firstName,
-        lastName: profile.lastName,
-        title: profile.title,
-        email: profile.email,
-        phone: profile.phone,
-        location: profile.location,
-        githubUrl: profile.githubUrl,
-        linkedinUrl: profile.linkedinUrl,
-        bio: profile.bio,
-        gdprClause: profile.gdprClause,
-      },
-      skills: skills.map(s => s.name),
-      experiences: experiences.map(exp => ({
-        id: exp.id,
-        jobTitle: exp.jobTitle,
-        company: exp.company,
-        location: exp.location,
-        startDate: exp.startDate.toISOString(),
-        endDate: exp.endDate?.toISOString() || null,
-        isCurrent: exp.isCurrent,
-        description: exp.description,
-        accomplishments: exp.accomplishments,
-      })),
-      projects: projects.map(proj => ({
-        id: proj.id,
-        title: proj.title,
-        role: proj.role,
-        shortDescription: proj.shortDescription,
-        linkUrl: proj.linkUrl,
-        githubUrl: proj.githubUrl,
-        techStack: proj.techStack,
-        accomplishments: proj.accomplishments,
-      })),
-      educations: educations.map(edu => ({
-        id: edu.id,
-        institution: edu.institution,
-        degree: edu.degree,
-        fieldOfStudy: edu.fieldOfStudy,
-        startDate: edu.startDate.toISOString(),
-        endDate: edu.endDate?.toISOString() || null,
-        isCurrent: edu.isCurrent,
-        description: edu.description,
-      })),
-      languages: languages.map(lang => ({
-        id: lang.id,
-        name: lang.name,
-        proficiency: lang.proficiency,
-      })),
-    };
-  }
-
-  const systemPrompt = `
+    const systemPrompt = `
 You are an expert IT Technical Recruiter and CV Writer. 
 Your task is to tailor a candidate's CV data to perfectly match a target Job Description.
 
@@ -262,7 +263,8 @@ INSTRUCTIONS:
 }
 `;
 
-  try {
+
+
     // Call the Gemini API using the Vercel AI SDK.
     // We use Output.object() with Zod validation, which forces the model to return data
     // in a strictly defined JSON structure that matches tailoredCVSchema.
@@ -316,8 +318,23 @@ INSTRUCTIONS:
   } catch (error) {
     console.error("AI Generation Error:", error);
 
-    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred during AI generation";
-    return { success: false, error: `Generation failed: ${errorMessage}` };
+    let friendlyMessage = "We encountered an unexpected issue while communicating with the AI service. Please try again later.";
+
+    if (error instanceof Error) {
+      const msg = error.message.toLowerCase();
+
+      if (msg.includes("rate limit exceeded")) {
+        friendlyMessage = "You're generating CVs too quickly! Please wait a minute before trying again.";
+      } else if (msg.includes("429") || msg.includes("quota") || msg.includes("exhausted")) {
+        friendlyMessage = "The AI service is currently overloaded or out of quota. Please try again in a few minutes.";
+      } else if (msg.includes("json") || msg.includes("parse") || error.name === 'ZodError') {
+        friendlyMessage = "The AI generated an invalid response format. Please try generating again.";
+      } else if (msg.includes("timeout") || msg.includes("abort") || msg.includes("fetch")) {
+        friendlyMessage = "The AI service took too long to respond or there is a network issue. Please try again.";
+      }
+    }
+
+    return { success: false, error: friendlyMessage };
   }
 }
 
