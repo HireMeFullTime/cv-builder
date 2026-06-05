@@ -13,7 +13,7 @@ import {CVGeneratorForm} from './cv-builder/CVGeneratorForm';
 import {CVHistoryList} from './cv-builder/CVHistoryList';
 import {toast} from 'sonner';
 import {ArrowLeft, Printer} from 'lucide-react';
-import {useForm} from 'react-hook-form';
+import {useForm, useWatch} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useRouter} from 'next/navigation';
 
@@ -60,7 +60,7 @@ export function CVBuilderSection({
 		}
 	});
 
-	const useDemoData = form.watch('useDemoData');
+	const useDemoData = useWatch({ control: form.control, name: 'useDemoData' });
 
 	useEffect(() => {
 		if (useDemoData) {
@@ -143,7 +143,7 @@ export function CVBuilderSection({
 						}
 						toast.success('CV Deleted');
 						router.refresh();
-					} catch (error) {
+					} catch {
 						toast.error('Failed to delete CV');
 					}
 				}
