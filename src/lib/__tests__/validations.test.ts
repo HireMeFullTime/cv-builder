@@ -330,9 +330,9 @@ describe('languageSchema', () => {
     expect(result.success).toBe(false);
   });
 
-  it('accepts name longer than 50 chars (no max constraint)', () => {
+  it('rejects name longer than 50 chars', () => {
     const result = languageSchema.safeParse({ name: 'x'.repeat(51), proficiency: 'B2' });
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(false);
   });
 
   it('accepts all valid proficiency levels', () => {
@@ -362,15 +362,15 @@ describe('loginSchema', () => {
     expect(result.success).toBe(false);
   });
 
-  it('accepts password longer than 100 chars (no max constraint)', () => {
+  it('rejects password longer than 100 chars', () => {
     const result = loginSchema.safeParse({ email: 'user@test.com', password: 'x'.repeat(101) });
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(false);
   });
 
-  it('accepts email longer than 255 chars (no max constraint)', () => {
+  it('rejects email longer than 255 chars', () => {
     const longEmail = 'a'.repeat(250) + '@b.com';
     const result = loginSchema.safeParse({ email: longEmail, password: 'secret123' });
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(false);
   });
 });
 
@@ -428,14 +428,14 @@ describe('registerSchema', () => {
     expect(result.success).toBe(false);
   });
 
-  it('accepts password longer than 100 chars (no max constraint)', () => {
+  it('rejects password longer than 100 chars', () => {
     const longPass = 'A1' + 'x'.repeat(99);
     const result = registerSchema.safeParse({
       ...validRegister,
       password: longPass,
       confirmPassword: longPass,
     });
-    expect(result.success).toBe(true);
+    expect(result.success).toBe(false);
   });
 });
 
