@@ -23,8 +23,8 @@ export function EducationSection({initialEducations}: {initialEducations: Educat
 					try {
 						await deleteEducation(id);
 						toast.success('Education deleted');
-					} catch (error) {
-						toast.error('Failed to delete education');
+					} catch {
+						toast.error('Failed to delete education.');
 					}
 				}
 			},

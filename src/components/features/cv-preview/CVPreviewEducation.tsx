@@ -1,12 +1,7 @@
-import { TailoredCVData } from '@/types';
-import { Education } from '@prisma/client';
+
 import { formatPreviewDate } from '@/lib/utils';
 
-interface CVPreviewEducationProps {
-  selectedEducations?: TailoredCVData['selectedEducations'];
-  educations?: Education[];
-  itemSpace: string;
-}
+import { CVPreviewEducationProps } from '@/types';
 
 export function CVPreviewEducation({ selectedEducations, educations, itemSpace }: CVPreviewEducationProps) {
   const educationList = selectedEducations && selectedEducations.length > 0 ? selectedEducations : educations;

@@ -61,7 +61,7 @@ export interface Accomplishment {
 }
 
 import { Control, UseFormReturn } from "react-hook-form";
-import { Profile, Education } from "@prisma/client";
+import { Profile, Education, Language } from "@prisma/client";
 
 export interface EditTailoredCVFormProps {
   cv: ParsedTailoredCV;
@@ -77,4 +77,79 @@ export interface EditSectionControlProps {
 
 export interface EditSectionFormProps {
   form: UseFormReturn<TailoredCVData>;
+}
+
+export interface CVDesignTabProps {
+  layout: ColumnLayout;
+  onChange: (newLayout: ColumnLayout) => void;
+}
+
+export interface CVLayoutTabProps {
+  layout: ColumnLayout;
+  onChange: (newLayout: ColumnLayout) => void;
+}
+
+export interface CVVisibilityTabProps {
+  layout: ColumnLayout;
+  onChange: (newLayout: ColumnLayout) => void;
+  projects?: { id: string; title: string }[];
+  experiences?: { id: string; jobTitle: string; company: string }[];
+}
+
+export interface CVGeneratorFormProps {
+  form: UseFormReturn<CVBuilderFormData>;
+  onSubmit: (data: CVBuilderFormData) => void;
+  isGenerating: boolean;
+  profile: Profile | null;
+}
+
+export interface CVHistoryListProps {
+  cvs: ParsedTailoredCV[];
+  onSelectCv: (cv: ParsedTailoredCV) => void;
+  onDelete: (id: string) => void;
+}
+
+export interface CVPreviewEducationProps {
+  selectedEducations?: TailoredCVData['selectedEducations'];
+  educations?: Education[];
+  itemSpace: string;
+}
+
+export interface CVPreviewExperienceProps {
+  experiences?: TailoredCVData['selectedExperiences'];
+  hiddenExperienceIds?: string[];
+  itemSpace: string;
+}
+
+export interface CVPreviewFooterProps {
+  personalInfo?: TailoredCVData['personalInfo'];
+  profile: Profile | null;
+}
+
+export interface CVPreviewHeaderProps {
+  personalInfo?: TailoredCVData['personalInfo'];
+  profile: Profile | null;
+  jobTitleOverride?: string;
+  jobTitle: string;
+}
+
+export interface CVPreviewLanguagesProps {
+  languagesData?: TailoredCVData['languages'];
+  languages?: Language[];
+}
+
+export interface CVPreviewProjectsProps {
+  projects?: TailoredCVData['projects'];
+  selectedProjects?: TailoredCVData['selectedProjects'];
+  hiddenProjectIds?: string[];
+  itemSpace: string;
+}
+
+export interface CVPreviewSkillsProps {
+  relevantSkills?: (string | null | undefined)[];
+}
+
+export interface CVPreviewSummaryProps {
+  summary?: string;
+  professionalSummary?: string;
 }

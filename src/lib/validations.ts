@@ -81,7 +81,7 @@ export const educationSchema = z.object({
 
 export const languageSchema = z.object({
     id: z.string().optional(),
-    name: z.string().min(2, "Language name is required"),
+    name: z.string().min(2, "Language name is required").max(50, "Language name is too long"),
     proficiency: z.enum(["A1", "A2", "B1", "B2", "C1", "C2", "Native"], {
         message: "Please select a valid proficiency level"
     }),
@@ -89,18 +89,19 @@ export const languageSchema = z.object({
 
 // --- AUTH SCHEMA ---
 export const loginSchema = z.object({
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(1, "Password is required"),
+    email: z.email("Invalid email address").max(255, "Email is too long"),
+    password: z.string().min(1, "Password is required").max(100, "Password is too long"),
 });
 
 export const registerSchema = z.object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.string().email("Invalid email address"),
+    name: z.string().min(2, "Name must be at least 2 characters").max(50, "Name is too long"),
+    email: z.email("Invalid email address").max(255, "Email is too long"),
     password: z.string()
         .min(8, "Password must be at least 8 characters")
+        .max(100, "Password is too long")
         .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
         .regex(/[0-9]/, "Password must contain at least one number"),
-    confirmPassword: z.string()
+    confirmPassword: z.string().max(100, "Password is too long")
 }).refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"]
@@ -137,8 +138,8 @@ export const generatedProjectSchema = z.object({
     title: z.string(),
     role: z.string().nullable().optional(),
     shortDescription: z.string(),
-    linkUrl: z.string().nullable().optional(),
-    githubUrl: z.string().nullable().optional(),
+    linkUrl: z.url().nullable().optional(),
+    githubUrl: z.url().nullable().optional(),
     accomplishments: z.array(generatedAccomplishmentSchema)
         .describe("Tailored project highlights relevant to the job."),
     techStack: z.array(z.string())
@@ -164,11 +165,11 @@ export const tailoredCVSchema = z.object({
         firstName: z.string().optional(),
         lastName: z.string().optional(),
         title: z.string().optional(),
-        email: z.string().optional(),
+        email: z.email().optional(),
         phone: z.string().optional(),
         location: z.string().optional(),
-        githubUrl: z.string().optional(),
-        linkedinUrl: z.string().optional(),
+        githubUrl: z.url().optional(),
+        linkedinUrl: z.url().optional(),
         gdprClause: z.string().optional(),
     }).optional(),
     summary: z.string().describe("A 3-4 sentence summary tailored specifically to the job role, emphasizing relevant strengths from the user's background."),

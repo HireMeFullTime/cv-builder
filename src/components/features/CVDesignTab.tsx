@@ -1,11 +1,8 @@
-import {ColumnLayout, ThemeSettings} from '@/types';
+import {ThemeSettings} from '@/types';
 import {Label} from '@/components/ui/label';
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
 
-interface CVDesignTabProps {
-	layout: ColumnLayout;
-	onChange: (newLayout: ColumnLayout) => void;
-}
+import { CVDesignTabProps } from '@/types';
 
 export function CVDesignTab({layout, onChange}: CVDesignTabProps) {
 	return (

@@ -73,12 +73,17 @@ export async function upsertLanguage(data: z.infer<typeof languageSchema>) {
  * @param id - The ID of the language record to delete.
  */
 export async function deleteLanguage(id: string) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error("Unauthorized");
+  try {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-  await prisma.language.delete({
-    where: { id, userId: session.user.id },
-  });
+    await prisma.language.delete({
+      where: { id, userId: session.user.id },
+    });
 
-  revalidatePath("/dashboard");
+    revalidatePath("/dashboard");
+  } catch (error) {
+    console.error("Failed to delete language:", error);
+    throw new Error("Failed to delete language");
+  }
 }

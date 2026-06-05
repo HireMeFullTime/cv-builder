@@ -1,6 +1,6 @@
 'use client';
 
-import {useForm} from 'react-hook-form';
+import {useForm, useWatch} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {experienceSchema} from '@/lib/validations';
 import {type ExperienceData} from '@/types';
@@ -35,7 +35,8 @@ export function ExperienceForm({initialData, onClose}: {initialData?: Partial<Ex
 		}
 	});
 
-	const isCurrent = form.watch('isCurrent');
+	const isCurrent = useWatch({ control: form.control, name: 'isCurrent' });
+	const startDate = useWatch({ control: form.control, name: 'startDate' });
 
 	async function onSubmit(data: ExperienceData) {
 		setIsSaving(true);
@@ -134,7 +135,7 @@ export function ExperienceForm({initialData, onClose}: {initialData?: Partial<Ex
 												<MonthYearPicker
 													value={field.value}
 													onChange={field.onChange}
-													minDate={form.watch('startDate')}
+													minDate={startDate}
 												/>
 											</FormControl>
 											<FormMessage />

@@ -1,6 +1,6 @@
 'use client';
 
-import {useForm} from 'react-hook-form';
+import {useForm, useWatch} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {tailoredCVSchema} from '@/lib/validations';
 import {useEffect} from 'react';
@@ -56,23 +56,22 @@ export function EditTailoredCVForm({cv, profile, educations, onClose, onUpdatePr
 		mode: 'onChange'
 	});
 
+	const values = useWatch({ control: form.control });
+
 	// Watch for real-time preview
 	useEffect(() => {
-		const subscription = form.watch(value => {
-			// Provide fallback defaults to avoid undefined errors in preview during edit
-			const safeValue = {
-				jobTitleOverride: value.jobTitleOverride,
-				personalInfo: value.personalInfo,
-				summary: value.summary || '',
-				relevantSkills: value.relevantSkills || [],
-				selectedExperiences: value.selectedExperiences || [],
-				selectedEducations: value.selectedEducations || [],
-				projects: value.projects || []
-			};
-			onUpdatePreview(safeValue as TailoredCVData);
-		});
-		return () => subscription.unsubscribe();
-	}, [form, onUpdatePreview]);
+		// Provide fallback defaults to avoid undefined errors in preview during edit
+		const safeValue = {
+			jobTitleOverride: values.jobTitleOverride,
+			personalInfo: values.personalInfo,
+			summary: values.summary || '',
+			relevantSkills: values.relevantSkills || [],
+			selectedExperiences: values.selectedExperiences || [],
+			selectedEducations: values.selectedEducations || [],
+			projects: values.projects || []
+		};
+		onUpdatePreview(safeValue as TailoredCVData);
+	}, [values, onUpdatePreview]);
 
 	async function onSubmit(data: TailoredCVData) {
 		try {

@@ -1,4 +1,4 @@
-import { ColumnLayout, CVSectionId } from '@/types';
+import { CVSectionId } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Columns2, LayoutTemplate, GripVertical } from 'lucide-react';
 import {
@@ -67,10 +67,7 @@ function DroppableColumn({ id, items, children }: { id: string; items: string[];
   );
 }
 
-interface CVLayoutTabProps {
-  layout: ColumnLayout;
-  onChange: (newLayout: ColumnLayout) => void;
-}
+import { CVLayoutTabProps } from '@/types';
 
 export function CVLayoutTab({ layout, onChange }: CVLayoutTabProps) {
   const [activeId, setActiveId] = useState<CVSectionId | null>(null);

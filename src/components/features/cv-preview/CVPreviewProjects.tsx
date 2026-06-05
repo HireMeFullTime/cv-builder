@@ -1,14 +1,9 @@
-import { TailoredCVData } from '@/types';
+
 import Link from 'next/link';
 import { Globe } from 'lucide-react';
 import { GithubIcon } from '@/components/ui/icons';
 
-interface CVPreviewProjectsProps {
-  projects?: TailoredCVData['projects'];
-  selectedProjects?: TailoredCVData['selectedProjects'];
-  hiddenProjectIds?: string[];
-  itemSpace: string;
-}
+import { CVPreviewProjectsProps } from '@/types';
 
 export function CVPreviewProjects({
   projects,
