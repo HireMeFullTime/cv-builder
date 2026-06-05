@@ -397,14 +397,19 @@ export async function getTailoredCVById(id: string): Promise<ParsedTailoredCV | 
  * @param id - The ID of the tailored CV to delete.
  */
 export async function deleteTailoredCV(id: string) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error("Unauthorized");
+  try {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-  await prisma.tailoredCV.delete({
-    where: { id, userId: session.user.id },
-  });
+    await prisma.tailoredCV.delete({
+      where: { id, userId: session.user.id },
+    });
 
-  revalidatePath("/dashboard");
+    revalidatePath("/dashboard");
+  } catch (error) {
+    console.error("Failed to delete tailored CV:", error);
+    throw new Error("Failed to delete tailored CV");
+  }
 }
 
 /**
@@ -416,18 +421,23 @@ export async function deleteTailoredCV(id: string) {
  * @param content - The new tailored CV data.
  */
 export async function updateTailoredCV(id: string, content: TailoredCVData) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error("Unauthorized");
+  try {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
 
-  // Validate the content against the schema
-  const parsedContent = tailoredCVSchema.parse(content);
+    // Validate the content against the schema
+    const parsedContent = tailoredCVSchema.parse(content);
 
-  await prisma.tailoredCV.update({
-    where: { id, userId: session.user.id },
-    data: {
-      generatedContent: parsedContent as Prisma.InputJsonValue,
-    },
-  });
+    await prisma.tailoredCV.update({
+      where: { id, userId: session.user.id },
+      data: {
+        generatedContent: parsedContent as Prisma.InputJsonValue,
+      },
+    });
 
-  revalidatePath("/dashboard");
+    revalidatePath("/dashboard");
+  } catch (error) {
+    console.error("Failed to update tailored CV:", error);
+    throw new Error("Failed to update tailored CV");
+  }
 }
