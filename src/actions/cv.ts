@@ -266,11 +266,12 @@ INSTRUCTIONS:
 
 
     // Call the Gemini API using the Vercel AI SDK.
-    // We use Output.object() with Zod validation, which forces the model to return data
-    // in a strictly defined JSON structure that matches tailoredCVSchema.
+    // We omit legacy duplicate fields to save tokens and prevent LLM confusion.
+    const aiPromptCVSchema = tailoredCVSchema.omit({ professionalSummary: true, selectedProjects: true });
+
     const { output: object } = await generateText({
       model: google('gemini-2.5-flash'),
-      output: Output.object({ schema: tailoredCVSchema }),
+      output: Output.object({ schema: aiPromptCVSchema }),
       prompt: systemPrompt,
     });
 
