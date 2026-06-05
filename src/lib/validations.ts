@@ -2,61 +2,61 @@ import { z } from "zod";
 
 // --- PROFILE SCHEMA ---
 export const profileSchema = z.object({
-    firstName: z.string().min(2, "First name must be at least 2 characters long"),
-    lastName: z.string().min(2, "Last name must be at least 2 characters long"),
-    title: z.string().optional(),
-    email: z.email("Invalid email address"),
-    phone: z.string().optional(),
-    location: z.string().optional(),
-    githubUrl: z.url("Invalid URL").optional().or(z.literal("")),
-    linkedinUrl: z.url("Invalid URL").optional().or(z.literal("")),
-    bio: z.string().optional(),
-    gdprClause: z.string().optional(),
+    firstName: z.string().min(2, "First name must be at least 2 characters long").max(50, "First name is too long"),
+    lastName: z.string().min(2, "Last name must be at least 2 characters long").max(50, "Last name is too long"),
+    title: z.string().max(100, "Title is too long").optional(),
+    email: z.email("Invalid email address").max(255, "Email is too long"),
+    phone: z.string().max(50, "Phone number is too long").optional(),
+    location: z.string().max(100, "Location is too long").optional(),
+    githubUrl: z.url("Invalid URL").max(255, "URL is too long").optional().or(z.literal("")),
+    linkedinUrl: z.url("Invalid URL").max(255, "URL is too long").optional().or(z.literal("")),
+    bio: z.string().max(2000, "Bio is too long (max 2000 characters)").optional(),
+    gdprClause: z.string().max(2000, "GDPR clause is too long (max 2000 characters)").optional(),
 });
 
 // --- SKILL SCHEMA ---
 export const skillSchema = z.object({
     id: z.string().optional(),
-    name: z.string().min(1, "Skill name is required"),
-    category: z.string().optional(),
+    name: z.string().min(1, "Skill name is required").max(50, "Skill name is too long"),
+    category: z.string().max(50, "Category name is too long").optional(),
 });
 
 export const skillsFormSchema = z.object({
-    oldCategory: z.string().optional(),
-    category: z.string().optional(),
-    skills: z.array(z.string()).min(1, "Add at least one skill"),
+    oldCategory: z.string().max(50).optional(),
+    category: z.string().max(50).optional(),
+    skills: z.array(z.string().max(50, "Skill name is too long")).min(1, "Add at least one skill"),
 });
 
 // --- PROJECT SCHEMA ---
 export const projectSchema = z.object({
     id: z.string().optional(),
-    title: z.string().min(2, "Project title is required"),
-    shortDescription: z.string().min(10, "Short description is required (min. 10 characters)"),
-    role: z.string().optional(),
-    techStack: z.array(z.string()).min(1, "Select at least one technology"),
+    title: z.string().min(2, "Project title is required").max(100, "Title is too long"),
+    shortDescription: z.string().min(10, "Short description is required (min. 10 characters)").max(500, "Description is too long (max 500 characters)"),
+    role: z.string().max(100, "Role name is too long").optional(),
+    techStack: z.array(z.string().max(50, "Technology name is too long")).min(1, "Select at least one technology"),
     accomplishments: z.array(
         z.object({
-            value: z.string().min(3, "Accomplishment must be at least 3 characters long"),
+            value: z.string().min(3, "Accomplishment must be at least 3 characters long").max(500, "Accomplishment is too long"),
         })
     ).optional(),
-    linkUrl: z.url("Invalid URL").optional().or(z.literal("")),
-    githubUrl: z.url("Invalid URL").optional().or(z.literal("")),
+    linkUrl: z.url("Invalid URL").max(255, "URL is too long").optional().or(z.literal("")),
+    githubUrl: z.url("Invalid URL").max(255, "URL is too long").optional().or(z.literal("")),
     isCurrent: z.boolean(),
 });
 
 // --- EXPERIENCE SCHEMA ---
 export const experienceSchema = z.object({
     id: z.string().optional(),
-    jobTitle: z.string().min(2, "Job title is required"),
-    company: z.string().min(2, "Company name is required"),
-    location: z.string().optional(),
+    jobTitle: z.string().min(2, "Job title is required").max(100, "Job title is too long"),
+    company: z.string().min(2, "Company name is required").max(100, "Company name is too long"),
+    location: z.string().max(100, "Location is too long").optional(),
     startDate: z.date({ message: "Start Date is required" }),
     endDate: z.date().optional(),
     isCurrent: z.boolean(),
-    description: z.string().optional(),
+    description: z.string().max(2000, "Description is too long").optional(),
     accomplishments: z.array(
         z.object({
-            value: z.string().min(3, "Accomplishment must be at least 3 characters long"),
+            value: z.string().min(3, "Accomplishment must be at least 3 characters long").max(500, "Accomplishment is too long"),
         })
     ).optional(),
 }).refine(data => !data.endDate || data.endDate >= data.startDate, {
@@ -66,14 +66,14 @@ export const experienceSchema = z.object({
 
 export const educationSchema = z.object({
     id: z.string().optional(),
-    institution: z.string().min(2, "Institution / Provider name is required"),
-    degree: z.string().min(2, "Degree or Course name is required"),
-    fieldOfStudy: z.string().optional(),
+    institution: z.string().min(2, "Institution / Provider name is required").max(100, "Name is too long"),
+    degree: z.string().min(2, "Degree or Course name is required").max(100, "Name is too long"),
+    fieldOfStudy: z.string().max(100, "Field of study is too long").optional(),
     startDate: z.date({ message: "Start Date is required" }),
     endDate: z.date().optional(),
     isCurrent: z.boolean(),
-    description: z.string().optional(),
-    url: z.url("Invalid URL").optional().or(z.literal("")),
+    description: z.string().max(1000, "Description is too long").optional(),
+    url: z.url("Invalid URL").max(255, "URL is too long").optional().or(z.literal("")),
 }).refine(data => !data.endDate || data.endDate >= data.startDate, {
     message: "End date cannot be earlier than start date",
     path: ["endDate"]
@@ -108,8 +108,8 @@ export const registerSchema = z.object({
 
 // --- CV BUILDER SCHEMAS ---
 export const cvBuilderFormSchema = z.object({
-    jobTitle: z.string().min(3, "Job title is required"),
-    jobDescription: z.string().min(20, "Please provide a detailed job description"),
+    jobTitle: z.string().min(3, "Job title is required").max(100, "Job title is too long"),
+    jobDescription: z.string().min(20, "Please provide a detailed job description").max(10000, "Job description is too long (max 10000 chars)"),
     useDemoData: z.boolean().optional(),
 });
 
