@@ -26,7 +26,7 @@ export function TechStackInput({
     if (!trimmed) return;
 
     const newTags = trimmed
-      .split(/[,\n]+/)
+      .split(/[,\n ]+/)
       .map(tag => tag.trim())
       .filter(tag => tag.length > 0 && !value.includes(tag));
 
