@@ -102,7 +102,7 @@ export function ProjectSection({initialProjects}: {initialProjects: Project[]}) 
 
 								<div className='flex flex-wrap gap-2 mb-4'>
 									{project.techStack.map(tech => (
-										<Badge key={tech} variant='secondary' className='px-2 py-0.5 text-xs font-normal'>
+										<Badge key={tech} variant='secondary' className='px-2 py-0.5 text-xs font-normal lowercase'>
 											{tech}
 										</Badge>
 									))}

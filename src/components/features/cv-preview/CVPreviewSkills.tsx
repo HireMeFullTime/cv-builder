@@ -9,7 +9,7 @@ export function CVPreviewSkills({ relevantSkills }: CVPreviewSkillsProps) {
       <h3 className='text-(length:--cv-text-lg) font-bold uppercase tracking-wider text-black mb-(--title-mb) break-after-avoid'>
         Key Skills
       </h3>
-      <div className='text-(length:--cv-text-sm) font-bold text-black leading-relaxed'>
+      <div className='text-(length:--cv-text-sm) font-bold text-black leading-relaxed lowercase'>
         {visibleSkills.join(' • ')}
       </div>
     </section>
