@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, KeyboardEvent, ClipboardEvent } from "react";
+import { useState, KeyboardEvent } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
@@ -15,7 +15,7 @@ export function TechStackInput({
   const [inputValue, setInputValue] = useState("");
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === ",") {
+    if (e.key === "Enter") {
       e.preventDefault();
       addTag();
     }
@@ -23,18 +23,9 @@ export function TechStackInput({
 
   const addTag = () => {
     const trimmed = inputValue.trim();
-    if (trimmed && !value.includes(trimmed)) {
-      onChange([...value, trimmed]);
-    }
-    setInputValue("");
-  };
+    if (!trimmed) return;
 
-  const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const pastedText = e.clipboardData.getData("text");
-    if (!pastedText) return;
-
-    const newTags = pastedText
+    const newTags = trimmed
       .split(/[,\n]+/)
       .map(tag => tag.trim())
       .filter(tag => tag.length > 0 && !value.includes(tag));
@@ -42,6 +33,7 @@ export function TechStackInput({
     if (newTags.length > 0) {
       onChange([...value, ...newTags]);
     }
+    setInputValue("");
   };
 
   const removeTag = (tagToRemove: string) => {
@@ -77,7 +69,6 @@ export function TechStackInput({
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={addTag}
-          onPaste={handlePaste}
         />
       </div>
       <p className="text-xs text-muted-foreground">

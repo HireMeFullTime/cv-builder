@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, KeyboardEvent, ClipboardEvent } from "react";
+import { useState, KeyboardEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { X, PlusCircle } from "lucide-react";
@@ -26,23 +26,11 @@ export function AccomplishmentsInput({
 
   const addAccomplishment = () => {
     const trimmed = inputValue.trim();
-    if (trimmed) {
-      // Prevent exact duplicates just in case
-      if (!value.some(acc => acc.value === trimmed)) {
-        onChange([...value, { value: trimmed }]);
-      }
-      setInputValue("");
-    }
-  };
-
-  const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    const pastedText = e.clipboardData.getData("text");
-    if (!pastedText) return;
+    if (!trimmed) return;
 
     // We split by newlines. We do NOT split by commas because an accomplishment can contain commas.
     // We also remove common bullet points or dashes at the start of each line.
-    const newItems = pastedText
+    const newItems = trimmed
       .split(/\n+/)
       .map(item => item.replace(/^[•\-\*]\s*/, "").trim())
       .filter(item => item.length > 0 && !value.some(acc => acc.value === item));
@@ -51,6 +39,7 @@ export function AccomplishmentsInput({
       const newAccomplishments = newItems.map(item => ({ value: item }));
       onChange([...value, ...newAccomplishments]);
     }
+    setInputValue("");
   };
 
   const removeAccomplishment = (indexToRemove: number) => {
@@ -91,7 +80,6 @@ export function AccomplishmentsInput({
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          onPaste={handlePaste}
         />
         <Button 
           type="button" 
