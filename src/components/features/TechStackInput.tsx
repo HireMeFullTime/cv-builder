@@ -15,7 +15,7 @@ export function TechStackInput({
   const [inputValue, setInputValue] = useState("");
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === ",") {
+    if (e.key === "Enter") {
       e.preventDefault();
       addTag();
     }
@@ -23,8 +23,15 @@ export function TechStackInput({
 
   const addTag = () => {
     const trimmed = inputValue.trim();
-    if (trimmed && !value.includes(trimmed)) {
-      onChange([...value, trimmed]);
+    if (!trimmed) return;
+
+    const newTags = trimmed
+      .split(/[,\n]+/)
+      .map(tag => tag.trim())
+      .filter(tag => tag.length > 0 && !value.includes(tag));
+
+    if (newTags.length > 0) {
+      onChange([...value, ...newTags]);
     }
     setInputValue("");
   };
@@ -64,6 +71,9 @@ export function TechStackInput({
           onBlur={addTag}
         />
       </div>
+      <p className="text-xs text-muted-foreground">
+        Tip: You can paste a comma-separated or multi-line list to add multiple skills at once.
+      </p>
     </div>
   );
 }

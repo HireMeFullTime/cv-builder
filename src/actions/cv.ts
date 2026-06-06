@@ -208,8 +208,8 @@ CANDIDATE RAW DATA (JSON):
 ${JSON.stringify(candidateData, null, 2)}
 
 INSTRUCTIONS:
-1. Write a compelling 3-4 sentence summary tailored to this specific job only in english.
-2. Select and order the most relevant skills from the candidate's list. Exclude completely irrelevant ones. Write the skills in english.
+1. Write a compelling 3-4 sentence summary tailored to this specific job only in english. If the candidate provided a 'bio' in their personalInfo, you MUST use it as the base and only slightly modify it to fit the job offer. If 'bio' is empty or missing, write a completely new one based on their experience.
+2. Select and order the most relevant skills from the candidate's list. You MUST ALSO extract and include any relevant technologies mentioned in the candidate's projects (techStack) or experiences, even if they are not explicitly listed in the skills list. Exclude completely irrelevant ones. Write the skills in english.
 3. Select the most relevant work experiences. Filter or rewrite accomplishments to highlight overlap with the job description. Do NOT hallucinate entirely new experiences, only adjust descriptions of existing ones. Use the exact same IDs.
 4. Select the most relevant projects. Filter out projects that do not match the tech stack or domain of the job description. Use the exact same IDs.
 5. Include ALL education entries and ALL languages from the candidate data as-is. Do not filter them out. Use the exact same IDs.
