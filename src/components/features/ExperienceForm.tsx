@@ -27,6 +27,8 @@ export function ExperienceForm({initialData, onClose}: {initialData?: Partial<Ex
 			jobTitle: initialData?.jobTitle || '',
 			company: initialData?.company || '',
 			location: initialData?.location || '',
+			linkUrl: initialData?.linkUrl || '',
+			linkLabel: initialData?.linkLabel || '',
 			startDate: initialData?.startDate ? new Date(initialData.startDate) : new Date(),
 			endDate: initialData?.endDate ? new Date(initialData.endDate) : undefined,
 			isCurrent: initialData?.isCurrent || false,
@@ -93,19 +95,49 @@ export function ExperienceForm({initialData, onClose}: {initialData?: Partial<Ex
 							/>
 						</div>
 
-						<FormField
-							control={form.control}
-							name='location'
-							render={({field}) => (
-								<FormItem>
-									<FormLabel>Location</FormLabel>
-									<FormControl>
-										<Input placeholder='Remote / New York' {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+						<div className='grid grid-cols-1 gap-6 sm:grid-cols-2'>
+							<FormField
+								control={form.control}
+								name='location'
+								render={({field}) => (
+									<FormItem>
+										<FormLabel>Location</FormLabel>
+										<FormControl>
+											<Input placeholder='Remote / New York' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<div className='grid grid-cols-1 gap-6 sm:grid-cols-2'>
+								<FormField
+									control={form.control}
+									name='linkUrl'
+									render={({field}) => (
+										<FormItem>
+											<FormLabel>Link URL</FormLabel>
+											<FormControl>
+												<Input placeholder='https://github.com/...' {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name='linkLabel'
+									render={({field}) => (
+										<FormItem>
+											<FormLabel>Link Label (e.g., GitHub, Company)</FormLabel>
+											<FormControl>
+												<Input placeholder='Company Website' {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
+						</div>
 
 						<div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2'>
 							<FormField

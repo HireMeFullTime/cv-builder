@@ -37,7 +37,9 @@ const DEMO_CANDIDATE_DATA = {
       startDate: "2020-03-01T00:00:00.000Z",
       endDate: null,
       isCurrent: true,
-      description: "Leading the frontend team in building a high-performance SaaS platform.",
+      description: "Leading the frontend team in developing modern web applications.",
+      linkUrl: "https://example.com/project",
+      linkLabel: "Company Website",
       accomplishments: [
         { value: "Architected and migrated legacy React codebase to Next.js App Router, improving load times by 40%." },
         { value: "Mentored 4 junior developers and established strict TypeScript and ESLint standards." },
@@ -52,7 +54,9 @@ const DEMO_CANDIDATE_DATA = {
       startDate: "2017-06-01T00:00:00.000Z",
       endDate: "2020-02-28T00:00:00.000Z",
       isCurrent: false,
-      description: "Developed custom web applications for enterprise clients.",
+      description: "Developed and maintained several React-based applications.",
+      linkUrl: null,
+      linkLabel: null,
       accomplishments: [
         { value: "Built 15+ responsive websites using React and Redux." },
         { value: "Integrated third-party APIs (Stripe, Twilio) reducing manual processing time by 30%." }
@@ -162,6 +166,8 @@ export async function generateTailoredCV(jobTitle: string, jobDescription: strin
           jobTitle: exp.jobTitle,
           company: exp.company,
           location: exp.location,
+          linkUrl: exp.linkUrl,
+          linkLabel: exp.linkLabel,
           startDate: exp.startDate.toISOString(),
           endDate: exp.endDate?.toISOString() || null,
           isCurrent: exp.isCurrent,
@@ -223,6 +229,7 @@ INSTRUCTIONS:
       "jobTitle": "string",
       "company": "string",
       "location": "string | null",
+      "linkUrl": "string | null",
       "startDate": "string (ISO)",
       "endDate": "string (ISO) | null",
       "isCurrent": boolean,

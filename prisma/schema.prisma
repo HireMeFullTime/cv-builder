@@ -133,6 +133,8 @@ model Experience {
   endDate         DateTime?
   isCurrent       Boolean  @default(false)
   description     String?  @db.Text
+  linkUrl         String?
+  linkLabel       String?
   
   accomplishments Json?    
   
