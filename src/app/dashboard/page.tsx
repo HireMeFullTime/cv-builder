@@ -39,6 +39,8 @@ export default async function DashboardPage() {
 		location: exp.location ?? undefined,
 		endDate: exp.endDate ?? undefined,
 		description: exp.description ?? undefined,
+		linkUrl: exp.linkUrl ?? undefined,
+		linkLabel: exp.linkLabel ?? undefined,
 		accomplishments: exp.accomplishments ? (exp.accomplishments as {value: string}[]) : undefined
 	}));
 
