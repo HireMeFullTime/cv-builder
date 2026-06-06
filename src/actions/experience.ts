@@ -47,6 +47,8 @@ export async function upsertExperience(data: z.infer<typeof experienceSchema>) {
       jobTitle: parsedData.jobTitle,
       company: parsedData.company,
       location: parsedData.location || null,
+      linkUrl: parsedData.linkUrl || null,
+      linkLabel: parsedData.linkLabel || null,
       startDate: parsedData.startDate,
       endDate: parsedData.endDate || null,
       isCurrent: parsedData.isCurrent,

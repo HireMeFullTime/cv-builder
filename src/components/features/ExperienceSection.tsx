@@ -5,7 +5,8 @@ import {ExperienceForm} from '@/components/features/ExperienceForm';
 import {deleteExperience} from '@/actions/experience';
 import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
-import {Briefcase, Calendar, MapPin, Edit, Trash2, PlusCircle} from 'lucide-react';
+import {Briefcase, Calendar, MapPin, Edit, Trash2, PlusCircle, Globe} from 'lucide-react';
+import Link from 'next/link';
 import {toast} from 'sonner';
 import {type ExperienceData} from '@/types';
 
@@ -103,6 +104,19 @@ export function ExperienceSection({initialExperiences}: {initialExperiences: Exp
 										<div className='flex items-center gap-1'>
 											<MapPin className='w-4 h-4' />
 											{exp.location}
+										</div>
+									)}
+									{exp.linkUrl && (
+										<div className='flex items-center gap-1'>
+											<Globe className='w-4 h-4' />
+											<Link
+												href={exp.linkUrl}
+												target='_blank'
+												rel='noreferrer'
+												className='hover:underline text-primary'
+											>
+												{exp.linkLabel || 'Link'}
+											</Link>
 										</div>
 									)}
 								</div>

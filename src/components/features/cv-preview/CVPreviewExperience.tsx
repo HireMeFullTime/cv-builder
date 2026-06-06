@@ -1,4 +1,5 @@
-
+import Link from 'next/link';
+import { Globe } from 'lucide-react';
 import { formatPreviewDate } from '@/lib/utils';
 
 import { CVPreviewExperienceProps } from '@/types';
@@ -26,9 +27,23 @@ export function CVPreviewExperience({ experiences, hiddenExperienceIds, itemSpac
                   .join(' - ')}
               </span>
             </div>
-            <div className='text-(length:--cv-text-sm) font-medium text-black mb-2'>
-              {exp.company}
-              {exp.location ? ` | ${exp.location}` : ''}
+            <div className='text-(length:--cv-text-sm) font-medium text-black mb-2 flex items-center gap-2 flex-wrap'>
+              <span>
+                {exp.company}
+                {exp.location ? ` | ${exp.location}` : ''}
+              </span>
+              {exp.linkUrl && (
+                <Link
+                  href={exp.linkUrl}
+                  target='_blank'
+                  rel='noreferrer'
+                  className='inline-flex items-center gap-1 text-[11px] font-normal text-black/60 hover:text-black hover:opacity-100 transition-opacity'
+                  title='Project/Company Link'
+                >
+                  <Globe className='w-3 h-3' />
+                  <span>{exp.linkLabel || 'Link'}</span>
+                </Link>
+              )}
             </div>
             {exp.accomplishments && exp.accomplishments.filter(acc => acc.value).length > 0 && (
               <ul className='list-disc list-outside ml-4 space-y-1 text-(length:--cv-text-sm) text-black'>
