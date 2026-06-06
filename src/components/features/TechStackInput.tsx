@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, KeyboardEvent } from "react";
+import { useState, KeyboardEvent, ClipboardEvent } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
@@ -27,6 +27,21 @@ export function TechStackInput({
       onChange([...value, trimmed]);
     }
     setInputValue("");
+  };
+
+  const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData("text");
+    if (!pastedText) return;
+
+    const newTags = pastedText
+      .split(/[,\n]+/)
+      .map(tag => tag.trim())
+      .filter(tag => tag.length > 0 && !value.includes(tag));
+
+    if (newTags.length > 0) {
+      onChange([...value, ...newTags]);
+    }
   };
 
   const removeTag = (tagToRemove: string) => {
@@ -62,8 +77,12 @@ export function TechStackInput({
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={addTag}
+          onPaste={handlePaste}
         />
       </div>
+      <p className="text-xs text-muted-foreground">
+        Tip: You can paste a comma-separated or multi-line list to add multiple skills at once.
+      </p>
     </div>
   );
 }

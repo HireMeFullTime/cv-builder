@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, KeyboardEvent } from "react";
+import { useState, KeyboardEvent, ClipboardEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { X, PlusCircle } from "lucide-react";
@@ -32,6 +32,24 @@ export function AccomplishmentsInput({
         onChange([...value, { value: trimmed }]);
       }
       setInputValue("");
+    }
+  };
+
+  const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData("text");
+    if (!pastedText) return;
+
+    // We split by newlines. We do NOT split by commas because an accomplishment can contain commas.
+    // We also remove common bullet points or dashes at the start of each line.
+    const newItems = pastedText
+      .split(/\n+/)
+      .map(item => item.replace(/^[•\-\*]\s*/, "").trim())
+      .filter(item => item.length > 0 && !value.some(acc => acc.value === item));
+
+    if (newItems.length > 0) {
+      const newAccomplishments = newItems.map(item => ({ value: item }));
+      onChange([...value, ...newAccomplishments]);
     }
   };
 
@@ -73,6 +91,7 @@ export function AccomplishmentsInput({
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
         />
         <Button 
           type="button" 
@@ -84,6 +103,9 @@ export function AccomplishmentsInput({
           Add
         </Button>
       </div>
+      <p className="text-xs text-muted-foreground mt-2">
+        Tip: You can paste a multi-line list (e.g., from LinkedIn) to add multiple accomplishments at once.
+      </p>
     </div>
   );
 }
