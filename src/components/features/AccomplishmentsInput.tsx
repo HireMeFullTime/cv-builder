@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, KeyboardEvent } from "react";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { X, PlusCircle } from "lucide-react";
 import { type Accomplishment } from "@/types";
@@ -16,9 +16,9 @@ export function AccomplishmentsInput({
 }) {
   const [inputValue, setInputValue] = useState("");
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    // Prevent form submission when pressing Enter
-    if (e.key === "Enter") {
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    // Prevent form submission when pressing Enter (without shift)
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       addAccomplishment();
     }
@@ -72,27 +72,27 @@ export function AccomplishmentsInput({
         </p>
       )}
       
-      <div className="flex gap-2 items-center">
-        <Input
-          type="text"
+      <div className="flex gap-2 items-start">
+        <Textarea
           placeholder={placeholder}
           aria-label="New accomplishment"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
+          className="min-h-15 resize-y"
         />
         <Button 
           type="button" 
           variant="secondary" 
           onClick={addAccomplishment}
-          className="shrink-0"
+          className="shrink-0 mt-1"
         >
           <PlusCircle className="w-4 h-4 mr-2" />
           Add
         </Button>
       </div>
       <p className="text-xs text-muted-foreground mt-2">
-        Tip: You can paste a multi-line list (e.g., from LinkedIn) to add multiple accomplishments at once.
+        Tip: Paste a multi-line list (or use Shift+Enter for new lines) and press Enter to add them all at once.
       </p>
     </div>
   );
