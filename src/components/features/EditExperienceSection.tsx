@@ -164,6 +164,7 @@ export function EditExperienceSection({form}: EditSectionFormProps) {
 							id: crypto.randomUUID(),
 							jobTitle: '',
 							company: '',
+							location: null,
 							startDate: '',
 							isCurrent: false,
 							accomplishments: []
