@@ -72,7 +72,7 @@ export function CVPreviewProjects({
             )}
 
             {proj.techStack && proj.techStack.filter(Boolean).length > 0 && (
-              <div className='text-(length:--cv-text-xs) font-bold text-black mt-2 leading-relaxed'>
+              <div className='text-(length:--cv-text-xs) font-bold text-black mt-2 leading-relaxed lowercase'>
                 {proj.techStack.filter(Boolean).join(' • ')}
               </div>
             )}

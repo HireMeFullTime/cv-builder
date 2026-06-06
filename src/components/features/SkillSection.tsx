@@ -122,7 +122,7 @@ export function SkillSection({initialSkills}: {initialSkills: Skill[]}) {
 							<CardContent>
 								<div className='flex flex-wrap gap-2'>
 									{skillsByCategory[cat].map(skill => (
-										<Badge key={skill} variant='secondary' className='px-3 py-1 text-sm font-medium'>
+										<Badge key={skill} variant='secondary' className='px-3 py-1 text-sm font-medium lowercase'>
 											{skill}
 										</Badge>
 									))}
