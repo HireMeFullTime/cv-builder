@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { EditCVProjectTechStack } from "@/components/features/EditCVProjectTechStack";
+import { EditCVProjectAccomplishments } from "@/components/features/EditCVProjectAccomplishments";
 import { ArrowUp, ArrowDown, Trash2, Plus } from "lucide-react";
 
 export function EditProjectsSection({ form }: EditSectionFormProps) {
@@ -50,6 +51,9 @@ export function EditProjectsSection({ form }: EditSectionFormProps) {
 
                 {/* Nested Tech Stack for this project */}
                 <EditCVProjectTechStack form={form} projIndex={projIndex} />
+
+                {/* Nested Accomplishments for this project */}
+                <EditCVProjectAccomplishments form={form} projIndex={projIndex} />
               </div>
 
               <div className="flex flex-col gap-1">
