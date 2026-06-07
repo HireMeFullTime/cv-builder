@@ -129,15 +129,16 @@ export function EditTailoredCVForm({cv, profile, educations, onClose, onUpdatePr
 							<EditEducationSection form={form} />
 							<EditProjectsSection form={form} />
 						</Accordion>
+						
+						<div className='pt-4'>
+							<Button type='submit' className='w-full'>
+								<Save className='w-4 h-4 mr-2' />
+								Save Changes
+							</Button>
+						</div>
 					</form>
 				</Form>
 			</CardContent>
-			<div className='p-4 border-t bg-muted/30'>
-				<Button type='submit' form='edit-cv-form' className='w-full'>
-					<Save className='w-4 h-4 mr-2' />
-					Save Changes
-				</Button>
-			</div>
 		</Card>
 	);
 }
