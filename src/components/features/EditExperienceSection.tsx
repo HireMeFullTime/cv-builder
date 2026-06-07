@@ -72,17 +72,17 @@ export function EditExperienceSection({form}: EditSectionFormProps) {
 										<FormField
 											control={form.control}
 											name={`selectedExperiences.${expIndex}.startDate`}
-										render={({field}) => (
-											<FormItem className='space-y-1'>
-												<FormLabel className='text-xs'>Start Date</FormLabel>
-												<FormControl>
-													<MonthYearPicker
-														value={parseDateString(field.value)}
-														onChange={date => field.onChange(formatDate(date))}
-													/>
-												</FormControl>
-											</FormItem>
-										)}
+											render={({field}) => (
+												<FormItem className='space-y-1'>
+													<FormLabel className='text-xs'>Start Date</FormLabel>
+													<FormControl>
+														<MonthYearPicker
+															value={parseDateString(field.value)}
+															onChange={date => field.onChange(formatDate(date))}
+														/>
+													</FormControl>
+												</FormItem>
+											)}
 										/>
 										{!form.watch(`selectedExperiences.${expIndex}.isCurrent`) && (
 											<FormField
