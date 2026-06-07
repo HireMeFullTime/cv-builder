@@ -6,8 +6,9 @@ import {Button} from '@/components/ui/button';
 import {Checkbox} from '@/components/ui/checkbox';
 import {MonthYearPicker} from '@/components/features/MonthYearPicker';
 import {EditCVExperienceAccomplishments} from '@/components/features/EditCVExperienceAccomplishments';
-import {ArrowUp, ArrowDown, Trash2, Plus} from 'lucide-react';
+import {Trash2, Plus} from 'lucide-react';
 import {parseDateString, formatDate} from '@/lib/utils';
+import {SortableList, SortableItem, DragHandle} from '@/components/ui/sortable-list';
 
 export function EditExperienceSection({form}: EditSectionFormProps) {
 	const {fields, append, remove, move} = useFieldArray({
@@ -19,8 +20,9 @@ export function EditExperienceSection({form}: EditSectionFormProps) {
 		<div className='space-y-4'>
 			<h3 className='text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2'>Experience</h3>
 			<div className='space-y-6'>
-				{fields.map((expField, expIndex) => (
-					<div key={expField.id} className='p-4 rounded-lg border bg-muted/10 space-y-4'>
+				<SortableList items={fields} onMove={move}>
+					{fields.map((expField, expIndex) => (
+						<SortableItem key={expField.id} id={expField.id} className='p-4 rounded-lg border bg-muted/10 space-y-4'>
 						<div className='flex justify-between items-start'>
 							<div className='flex-1 space-y-3 mr-4'>
 								<FormField
@@ -119,28 +121,7 @@ export function EditExperienceSection({form}: EditSectionFormProps) {
 							</div>
 
 							<div className='flex flex-col gap-1'>
-								<Button
-									type='button'
-									variant='secondary'
-									size='icon'
-									className='h-8 w-8'
-									aria-label='Move experience up'
-									onClick={() => move(expIndex, expIndex - 1)}
-									disabled={expIndex === 0}
-								>
-									<ArrowUp className='w-4 h-4' />
-								</Button>
-								<Button
-									type='button'
-									variant='secondary'
-									size='icon'
-									className='h-8 w-8'
-									aria-label='Move experience down'
-									onClick={() => move(expIndex, expIndex + 1)}
-									disabled={expIndex === fields.length - 1}
-								>
-									<ArrowDown className='w-4 h-4' />
-								</Button>
+								<DragHandle className='h-8 w-8' />
 								<Button
 									type='button'
 									variant='ghost'
@@ -153,8 +134,9 @@ export function EditExperienceSection({form}: EditSectionFormProps) {
 								</Button>
 							</div>
 						</div>
-					</div>
+					</SortableItem>
 				))}
+				</SortableList>
 				<Button
 					type='button'
 					variant='outline'
