@@ -9,6 +9,7 @@ import {MonthYearPicker} from '@/components/features/MonthYearPicker';
 import {Trash2, Plus} from 'lucide-react';
 import {parseDateString, formatDate} from '@/lib/utils';
 import {SortableList, SortableItem, DragHandle} from '@/components/ui/sortable-list';
+import {AccordionItem, AccordionTrigger, AccordionContent} from '@/components/ui/accordion';
 
 export function EditEducationSection({form}: EditSectionFormProps) {
 	const {fields, append, remove, move} = useFieldArray({
@@ -17,146 +18,148 @@ export function EditEducationSection({form}: EditSectionFormProps) {
 	});
 
 	return (
-		<div className='space-y-4'>
-			<h3 className='text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2'>Education</h3>
-			<div className='space-y-6'>
+		<AccordionItem value='education' className='border-b-0'>
+			<AccordionTrigger className='text-sm font-semibold uppercase tracking-wider text-muted-foreground hover:no-underline pb-2'>
+				Education
+			</AccordionTrigger>
+			<AccordionContent className='space-y-6 pt-4'>
 				<SortableList items={fields} onMove={move}>
 					{fields.map((eduField, eduIndex) => (
 						<SortableItem key={eduField.id} id={eduField.id} className='p-4 rounded-lg border bg-muted/10 space-y-4'>
-						<div className='flex justify-between items-start'>
-							<div className='flex-1 space-y-3 mr-4'>
-								<FormField
-									control={form.control}
-									name={`selectedEducations.${eduIndex}.institution`}
-									render={({field}) => (
-										<FormItem>
-											<FormLabel className='text-xs'>Institution</FormLabel>
-											<FormControl>
-												<Input {...field} className='h-8 text-sm' />
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-								<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+							<div className='flex justify-between items-start'>
+								<div className='flex-1 space-y-3 mr-4'>
 									<FormField
 										control={form.control}
-										name={`selectedEducations.${eduIndex}.degree`}
+										name={`selectedEducations.${eduIndex}.institution`}
 										render={({field}) => (
 											<FormItem>
-												<FormLabel className='text-xs'>Degree</FormLabel>
+												<FormLabel className='text-xs'>Institution</FormLabel>
 												<FormControl>
 													<Input {...field} className='h-8 text-sm' />
 												</FormControl>
 											</FormItem>
 										)}
 									/>
-									<FormField
-										control={form.control}
-										name={`selectedEducations.${eduIndex}.fieldOfStudy`}
-										render={({field}) => (
-											<FormItem>
-												<FormLabel className='text-xs'>Field of Study</FormLabel>
-												<FormControl>
-													<Input {...field} value={field.value || ''} className='h-8 text-sm' />
-												</FormControl>
-											</FormItem>
-										)}
-									/>
-								</div>
-								<FormField
-									control={form.control}
-									name={`selectedEducations.${eduIndex}.isCurrent`}
-									render={({field}) => (
-										<FormItem className='flex flex-row items-center space-x-2 space-y-0'>
-											<FormControl>
-												<Checkbox
-													checked={field.value}
-													onCheckedChange={checked => {
-														field.onChange(checked);
-														if (checked) {
-															form.setValue(`selectedEducations.${eduIndex}.endDate`, '');
-														}
-													}}
-												/>
-											</FormControl>
-											<FormLabel className='text-xs font-normal'>Present (I currently study here)</FormLabel>
-										</FormItem>
-									)}
-								/>
-								<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4'>
-									<FormField
-										control={form.control}
-										name={`selectedEducations.${eduIndex}.startDate`}
-										render={({field}) => (
-											<FormItem className='space-y-1'>
-												<FormLabel className='text-xs'>Start Date</FormLabel>
-												<FormControl>
-													<MonthYearPicker
-														value={parseDateString(field.value || '')}
-														onChange={date => field.onChange(formatDate(date))}
-													/>
-												</FormControl>
-											</FormItem>
-										)}
-									/>
-									{!form.watch(`selectedEducations.${eduIndex}.isCurrent`) && (
+									<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 										<FormField
 											control={form.control}
-											name={`selectedEducations.${eduIndex}.endDate`}
+											name={`selectedEducations.${eduIndex}.degree`}
+											render={({field}) => (
+												<FormItem>
+													<FormLabel className='text-xs'>Degree</FormLabel>
+													<FormControl>
+														<Input {...field} className='h-8 text-sm' />
+													</FormControl>
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
+											name={`selectedEducations.${eduIndex}.fieldOfStudy`}
+											render={({field}) => (
+												<FormItem>
+													<FormLabel className='text-xs'>Field of Study</FormLabel>
+													<FormControl>
+														<Input {...field} value={field.value || ''} className='h-8 text-sm' />
+													</FormControl>
+												</FormItem>
+											)}
+										/>
+									</div>
+									<FormField
+										control={form.control}
+										name={`selectedEducations.${eduIndex}.isCurrent`}
+										render={({field}) => (
+											<FormItem className='flex flex-row items-center space-x-2 space-y-0'>
+												<FormControl>
+													<Checkbox
+														checked={field.value}
+														onCheckedChange={checked => {
+															field.onChange(checked);
+															if (checked) {
+																form.setValue(`selectedEducations.${eduIndex}.endDate`, '');
+															}
+														}}
+													/>
+												</FormControl>
+												<FormLabel className='text-xs font-normal'>Present (I currently study here)</FormLabel>
+											</FormItem>
+										)}
+									/>
+									<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4'>
+										<FormField
+											control={form.control}
+											name={`selectedEducations.${eduIndex}.startDate`}
 											render={({field}) => (
 												<FormItem className='space-y-1'>
-													<FormLabel
-														className={
-															form.formState.errors.selectedEducations?.[eduIndex]?.endDate
-																? 'text-xs text-destructive'
-																: 'text-xs'
-														}
-													>
-														End Date
-													</FormLabel>
+													<FormLabel className='text-xs'>Start Date</FormLabel>
 													<FormControl>
 														<MonthYearPicker
 															value={parseDateString(field.value || '')}
 															onChange={date => field.onChange(formatDate(date))}
-															minDate={parseDateString(form.watch(`selectedEducations.${eduIndex}.startDate`))}
 														/>
 													</FormControl>
-													<FormMessage />
 												</FormItem>
 											)}
 										/>
-									)}
+										{!form.watch(`selectedEducations.${eduIndex}.isCurrent`) && (
+											<FormField
+												control={form.control}
+												name={`selectedEducations.${eduIndex}.endDate`}
+												render={({field}) => (
+													<FormItem className='space-y-1'>
+														<FormLabel
+															className={
+																form.formState.errors.selectedEducations?.[eduIndex]?.endDate
+																	? 'text-xs text-destructive'
+																	: 'text-xs'
+															}
+														>
+															End Date
+														</FormLabel>
+														<FormControl>
+															<MonthYearPicker
+																value={parseDateString(field.value || '')}
+																onChange={date => field.onChange(formatDate(date))}
+																minDate={parseDateString(form.watch(`selectedEducations.${eduIndex}.startDate`))}
+															/>
+														</FormControl>
+														<FormMessage />
+													</FormItem>
+												)}
+											/>
+										)}
+									</div>
+									<FormField
+										control={form.control}
+										name={`selectedEducations.${eduIndex}.description`}
+										render={({field}) => (
+											<FormItem>
+												<FormLabel className='text-xs'>Description (optional)</FormLabel>
+												<FormControl>
+													<Textarea {...field} value={field.value || ''} className='min-h-16 text-sm resize-y' />
+												</FormControl>
+											</FormItem>
+										)}
+									/>
 								</div>
-								<FormField
-									control={form.control}
-									name={`selectedEducations.${eduIndex}.description`}
-									render={({field}) => (
-										<FormItem>
-											<FormLabel className='text-xs'>Description (optional)</FormLabel>
-											<FormControl>
-												<Textarea {...field} value={field.value || ''} className='min-h-16 text-sm resize-y' />
-											</FormControl>
-										</FormItem>
-									)}
-								/>
-							</div>
 
-							<div className='flex flex-col gap-1'>
-								<DragHandle className='h-8 w-8' />
-								<Button
-									type='button'
-									variant='ghost'
-									size='icon'
-									className='h-8 w-8 text-destructive hover:bg-destructive/10'
-									aria-label='Remove education'
-									onClick={() => remove(eduIndex)}
-								>
-									<Trash2 className='w-4 h-4' />
-								</Button>
+								<div className='flex flex-col gap-1'>
+									<DragHandle className='h-8 w-8' />
+									<Button
+										type='button'
+										variant='ghost'
+										size='icon'
+										className='h-8 w-8 text-destructive hover:bg-destructive/10'
+										aria-label='Remove education'
+										onClick={() => remove(eduIndex)}
+									>
+										<Trash2 className='w-4 h-4' />
+									</Button>
+								</div>
 							</div>
-						</div>
-					</SortableItem>
-				))}
+						</SortableItem>
+					))}
 				</SortableList>
 				<Button
 					type='button'
@@ -177,7 +180,7 @@ export function EditEducationSection({form}: EditSectionFormProps) {
 				>
 					<Plus className='w-4 h-4 mr-2' /> Add Education
 				</Button>
-			</div>
-		</div>
+			</AccordionContent>
+		</AccordionItem>
 	);
 }

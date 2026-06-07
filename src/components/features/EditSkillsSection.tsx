@@ -5,6 +5,7 @@ import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import {Trash2, Plus} from 'lucide-react';
 import {SortableList, SortableItem, DragHandle} from '@/components/ui/sortable-list';
+import {AccordionItem, AccordionTrigger, AccordionContent} from '@/components/ui/accordion';
 
 export function EditSkillsSection({control}: EditSectionControlProps) {
 	const {fields, append, remove, move} = useFieldArray({
@@ -13,9 +14,11 @@ export function EditSkillsSection({control}: EditSectionControlProps) {
 	});
 
 	return (
-		<div className='space-y-4'>
-			<h3 className='text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2'>Key Skills</h3>
-			<div className='space-y-2'>
+		<AccordionItem value='skills' className='border-b-0'>
+			<AccordionTrigger className='text-sm font-semibold uppercase tracking-wider text-muted-foreground hover:no-underline pb-2'>
+				Key Skills
+			</AccordionTrigger>
+			<AccordionContent className='space-y-2 pt-4'>
 				<SortableList items={fields} onMove={move}>
 					{fields.map((field, index) => (
 						<SortableItem key={field.id} id={field.id} className='flex items-center gap-2'>
@@ -49,7 +52,7 @@ export function EditSkillsSection({control}: EditSectionControlProps) {
 				<Button type='button' variant='outline' size='sm' onClick={() => append('')} className='mt-2 text-xs h-8'>
 					<Plus className='w-3 h-3 mr-1' /> Add Skill
 				</Button>
-			</div>
-		</div>
+			</AccordionContent>
+		</AccordionItem>
 	);
 }
