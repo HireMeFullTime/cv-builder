@@ -18,6 +18,7 @@ import {EditSkillsSection} from './EditSkillsSection';
 import {EditExperienceSection} from './EditExperienceSection';
 import {EditEducationSection} from './EditEducationSection';
 import {EditProjectsSection} from './EditProjectsSection';
+import {Accordion, AccordionItem, AccordionTrigger, AccordionContent} from '@/components/ui/accordion';
 
 import {TailoredCVData, EditTailoredCVFormProps} from '@/types';
 
@@ -56,7 +57,7 @@ export function EditTailoredCVForm({cv, profile, educations, onClose, onUpdatePr
 		mode: 'onChange'
 	});
 
-	const values = useWatch({ control: form.control });
+	const values = useWatch({control: form.control});
 
 	// Watch for real-time preview
 	useEffect(() => {
@@ -100,39 +101,44 @@ export function EditTailoredCVForm({cv, profile, educations, onClose, onUpdatePr
 			<CardContent className='flex-1 overflow-y-auto p-4 space-y-6'>
 				<Form {...form}>
 					<form id='edit-cv-form' onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-						<EditPersonalInfoSection control={form.control} />
+						<Accordion type='single' collapsible defaultValue='personal-info' className='w-full'>
+							<EditPersonalInfoSection control={form.control} />
 
-						<div className='space-y-4'>
-							<h3 className='text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2'>
-								Summary
-							</h3>
-							<FormField
-								control={form.control}
-								name='summary'
-								render={({field}) => (
-									<FormItem>
-										<FormControl>
-											<Textarea {...field} className='min-h-30 text-sm' />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
+							<AccordionItem value='summary' className='border-b-0'>
+								<AccordionTrigger className='text-sm font-semibold uppercase tracking-wider text-muted-foreground hover:no-underline pb-2'>
+									Summary
+								</AccordionTrigger>
+								<AccordionContent className='pt-4'>
+									<FormField
+										control={form.control}
+										name='summary'
+										render={({field}) => (
+											<FormItem>
+												<FormControl>
+													<Textarea {...field} className='min-h-30 text-sm' />
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+								</AccordionContent>
+							</AccordionItem>
+
+							<EditSkillsSection control={form.control} />
+							<EditExperienceSection form={form} />
+							<EditEducationSection form={form} />
+							<EditProjectsSection form={form} />
+						</Accordion>
+						
+						<div className='pt-4'>
+							<Button type='submit' className='w-full'>
+								<Save className='w-4 h-4 mr-2' />
+								Save Changes
+							</Button>
 						</div>
-
-						<EditSkillsSection control={form.control} />
-						<EditExperienceSection form={form} />
-						<EditEducationSection form={form} />
-						<EditProjectsSection form={form} />
 					</form>
 				</Form>
 			</CardContent>
-			<div className='p-4 border-t bg-muted/30'>
-				<Button type='submit' form='edit-cv-form' className='w-full'>
-					<Save className='w-4 h-4 mr-2' />
-					Save Changes
-				</Button>
-			</div>
 		</Card>
 	);
 }

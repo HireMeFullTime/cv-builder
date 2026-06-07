@@ -5,7 +5,8 @@ import {TailoredCVData} from '@/types';
 import {FormField, FormItem, FormControl, FormLabel} from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
-import {ArrowUp, ArrowDown, Trash2, Plus} from 'lucide-react';
+import {Trash2, Plus} from 'lucide-react';
+import {SortableList, SortableItem, DragHandle} from '@/components/ui/sortable-list';
 
 export function EditCVProjectTechStack({form, projIndex}: {form: UseFormReturn<TailoredCVData>; projIndex: number}) {
 	const {fields, append, remove, move} = useFieldArray({
@@ -17,8 +18,10 @@ export function EditCVProjectTechStack({form, projIndex}: {form: UseFormReturn<T
 		<div className='space-y-2 mt-2'>
 			<FormLabel className='text-xs'>Tech Stack</FormLabel>
 			<div className='flex flex-col gap-2'>
+				<SortableList items={fields} onMove={move}>
 				{fields.map((field, idx) => (
-					<div key={field.id} className='flex items-center gap-1'>
+					<SortableItem key={field.id} id={field.id} className='flex items-center gap-1'>
+						<DragHandle className='h-7 w-7' />
 						<FormField
 							control={form.control}
 							name={`projects.${projIndex}.techStack.${idx}`}
@@ -35,28 +38,6 @@ export function EditCVProjectTechStack({form, projIndex}: {form: UseFormReturn<T
 								type='button'
 								variant='ghost'
 								size='icon'
-								className='h-7 w-7'
-								aria-label='Move tech up'
-								onClick={() => move(idx, idx - 1)}
-								disabled={idx === 0}
-							>
-								<ArrowUp className='w-3 h-3' />
-							</Button>
-							<Button
-								type='button'
-								variant='ghost'
-								size='icon'
-								className='h-7 w-7'
-								aria-label='Move tech down'
-								onClick={() => move(idx, idx + 1)}
-								disabled={idx === fields.length - 1}
-							>
-								<ArrowDown className='w-3 h-3' />
-							</Button>
-							<Button
-								type='button'
-								variant='ghost'
-								size='icon'
 								className='h-7 w-7 text-destructive'
 								aria-label='Remove tech'
 								onClick={() => remove(idx)}
@@ -64,8 +45,9 @@ export function EditCVProjectTechStack({form, projIndex}: {form: UseFormReturn<T
 								<Trash2 className='w-3 h-3' />
 							</Button>
 						</div>
-					</div>
+					</SortableItem>
 				))}
+				</SortableList>
 				<Button
 					type='button'
 					variant='ghost'
