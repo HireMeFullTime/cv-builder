@@ -6,8 +6,9 @@ import {Textarea} from '@/components/ui/textarea';
 import {Button} from '@/components/ui/button';
 import {Checkbox} from '@/components/ui/checkbox';
 import {MonthYearPicker} from '@/components/features/MonthYearPicker';
-import {ArrowUp, ArrowDown, Trash2, Plus} from 'lucide-react';
+import {Trash2, Plus} from 'lucide-react';
 import {parseDateString, formatDate} from '@/lib/utils';
+import {SortableList, SortableItem, DragHandle} from '@/components/ui/sortable-list';
 
 export function EditEducationSection({form}: EditSectionFormProps) {
 	const {fields, append, remove, move} = useFieldArray({
@@ -19,8 +20,9 @@ export function EditEducationSection({form}: EditSectionFormProps) {
 		<div className='space-y-4'>
 			<h3 className='text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2'>Education</h3>
 			<div className='space-y-6'>
-				{fields.map((eduField, eduIndex) => (
-					<div key={eduField.id} className='p-4 rounded-lg border bg-muted/10 space-y-4'>
+				<SortableList items={fields} onMove={move}>
+					{fields.map((eduField, eduIndex) => (
+						<SortableItem key={eduField.id} id={eduField.id} className='p-4 rounded-lg border bg-muted/10 space-y-4'>
 						<div className='flex justify-between items-start'>
 							<div className='flex-1 space-y-3 mr-4'>
 								<FormField
@@ -140,28 +142,7 @@ export function EditEducationSection({form}: EditSectionFormProps) {
 							</div>
 
 							<div className='flex flex-col gap-1'>
-								<Button
-									type='button'
-									variant='secondary'
-									size='icon'
-									className='h-8 w-8'
-									aria-label='Move education up'
-									onClick={() => move(eduIndex, eduIndex - 1)}
-									disabled={eduIndex === 0}
-								>
-									<ArrowUp className='w-4 h-4' />
-								</Button>
-								<Button
-									type='button'
-									variant='secondary'
-									size='icon'
-									className='h-8 w-8'
-									aria-label='Move education down'
-									onClick={() => move(eduIndex, eduIndex + 1)}
-									disabled={eduIndex === fields.length - 1}
-								>
-									<ArrowDown className='w-4 h-4' />
-								</Button>
+								<DragHandle className='h-8 w-8' />
 								<Button
 									type='button'
 									variant='ghost'
@@ -174,8 +155,9 @@ export function EditEducationSection({form}: EditSectionFormProps) {
 								</Button>
 							</div>
 						</div>
-					</div>
+					</SortableItem>
 				))}
+				</SortableList>
 				<Button
 					type='button'
 					variant='outline'
