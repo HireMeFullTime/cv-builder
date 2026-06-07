@@ -6,7 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { EditCVProjectTechStack } from "@/components/features/EditCVProjectTechStack";
 import { EditCVProjectAccomplishments } from "@/components/features/EditCVProjectAccomplishments";
-import { ArrowUp, ArrowDown, Trash2, Plus } from "lucide-react";
+import { Trash2, Plus } from "lucide-react";
+import { SortableList, SortableItem, DragHandle } from "@/components/ui/sortable-list";
 
 export function EditProjectsSection({ form }: EditSectionFormProps) {
   const { fields, append, remove, move } = useFieldArray({
@@ -20,8 +21,9 @@ export function EditProjectsSection({ form }: EditSectionFormProps) {
         Projects
       </h3>
       <div className="space-y-6">
+        <SortableList items={fields} onMove={move}>
         {fields.map((projField, projIndex) => (
-          <div key={projField.id} className="p-4 rounded-lg border bg-muted/10 space-y-4">
+          <SortableItem key={projField.id} id={projField.id} className="p-4 rounded-lg border bg-muted/10 space-y-4">
             <div className="flex justify-between items-start">
               <div className="flex-1 space-y-3 mr-4">
                 <FormField
@@ -57,28 +59,7 @@ export function EditProjectsSection({ form }: EditSectionFormProps) {
               </div>
 
               <div className="flex flex-col gap-1">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="icon"
-                  className="h-8 w-8"
-                  aria-label="Move project up"
-                  onClick={() => move(projIndex, projIndex - 1)}
-                  disabled={projIndex === 0}
-                >
-                  <ArrowUp className="w-4 h-4" />
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="icon"
-                  className="h-8 w-8"
-                  aria-label="Move project down"
-                  onClick={() => move(projIndex, projIndex + 1)}
-                  disabled={projIndex === fields.length - 1}
-                >
-                  <ArrowDown className="w-4 h-4" />
-                </Button>
+                <DragHandle className="h-8 w-8" />
                 <Button
                   type="button"
                   variant="ghost"
@@ -91,8 +72,9 @@ export function EditProjectsSection({ form }: EditSectionFormProps) {
                 </Button>
               </div>
             </div>
-          </div>
+          </SortableItem>
         ))}
+        </SortableList>
         <Button
           type="button"
           variant="outline"
