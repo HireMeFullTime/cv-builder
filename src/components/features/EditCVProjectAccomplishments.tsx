@@ -7,16 +7,16 @@ import {Textarea} from '@/components/ui/textarea';
 import {Button} from '@/components/ui/button';
 import {ArrowUp, ArrowDown, Trash2, Plus} from 'lucide-react';
 
-export function EditCVExperienceAccomplishments({
+export function EditCVProjectAccomplishments({
 	form,
-	expIndex
+	projIndex
 }: {
 	form: UseFormReturn<TailoredCVData>;
-	expIndex: number;
+	projIndex: number;
 }) {
 	const {fields, append, remove, move} = useFieldArray({
 		control: form.control,
-		name: `selectedExperiences.${expIndex}.accomplishments`
+		name: `projects.${projIndex}.accomplishments`
 	});
 
 	return (
@@ -27,7 +27,7 @@ export function EditCVExperienceAccomplishments({
 					<div key={field.id} className='flex items-start gap-1'>
 						<FormField
 							control={form.control}
-							name={`selectedExperiences.${expIndex}.accomplishments.${idx}.value`}
+							name={`projects.${projIndex}.accomplishments.${idx}.value`}
 							render={({field: inputField}) => (
 								<FormItem className='flex-1 mb-0 space-y-0'>
 									<FormControl>
