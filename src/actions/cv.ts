@@ -1,14 +1,14 @@
 "use server";
 
-import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { revalidatePath } from "next/cache";
-import { tailoredCVSchema } from "@/lib/validations";
+import { Output, generateText } from "ai";
 import { ParsedTailoredCV } from "@/types";
-import { generateText, Output } from "ai";
 import { Prisma } from "@prisma/client";
 import { TailoredCVData } from "@/types";
+import { auth } from "@/auth";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+import { tailoredCVSchema } from "@/lib/validations";
 
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY,
@@ -202,22 +202,20 @@ export async function generateTailoredCV(jobTitle: string, jobDescription: strin
       };
     }
 
-    const systemPrompt = `
+
+const systemPrompt = `
 You are an expert IT Technical Recruiter and CV Writer. 
 Your task is to tailor a candidate's CV data to perfectly match a target Job Description.
-
 TARGET JOB TITLE: ${jobTitle}
 TARGET JOB DESCRIPTION:
 ${jobDescription}
-
 CANDIDATE RAW DATA (JSON):
 ${JSON.stringify(candidateData, null, 2)}
-
 INSTRUCTIONS:
-1. Write a compelling 3-4 sentence summary tailored to this specific job only in english. If the candidate provided a 'bio' in their personalInfo, you MUST use it as the base and only slightly modify it to fit the job offer. If 'bio' is empty or missing, write a completely new one based on their experience.
+1. If the candidate provided a 'bio' in their personalInfo, you MUST use it as the base. You are ONLY allowed to: (a) reorder the technologies mentioned to prioritize ones relevant to the job description, (b) add ONE short clause connecting to the job's specific focus (e.g. "with a focus on testing" if the job emphasizes testing). You are NOT allowed to: rewrite sentence structure, add adjectives describing personality or character, add phrases like "strong candidate" or "eager to", or change the overall length. The result must be recognizably the same text as the original bio, not a rewritten version. If 'bio' is empty or missing, write a completely new one based on their experience, MAXIMUM 2 sentences, in English. Do not use the words or phrases: "passionate", "eager to", "strong candidate", "creative and curious", "dynamic". Do not restate skills that are already listed elsewhere — focus only on level of experience and direction.
 2. Select and order the most relevant skills from the candidate's list. You MUST ALSO extract and include any relevant technologies mentioned in the candidate's projects (techStack) or experiences, even if they are not explicitly listed in the skills list. Exclude completely irrelevant ones. Write the skills in english.
-3. Select the most relevant work experiences. Filter or rewrite accomplishments to highlight overlap with the job description. Do NOT hallucinate entirely new experiences, only adjust descriptions of existing ones. Use the exact same IDs.
-4. Select the most relevant projects. Filter out projects that do not match the tech stack or domain of the job description. Use the exact same IDs.
+3. Select the most relevant work experiences. For each experience entry, select MAXIMUM 3 accomplishments — the ones most relevant to the job description. Do not include more than 3 even if more exist in the raw data. Filter or rewrite accomplishments to highlight overlap with the job description. Do NOT hallucinate entirely new experiences, only adjust descriptions of existing ones. Use the exact same IDs. Never omit, alter, or leave blank the startDate/endDate fields — copy them exactly as provided in the raw data, even when rewriting accomplishments.
+4. Select the most relevant projects. Filter out projects that do not match the tech stack or domain of the job description. For each project's 'shortDescription', write MAXIMUM 1 sentence (under 20 words) — do not describe the project's purpose across multiple sentences; save detail for accomplishments. Use the exact same IDs.
 5. Include ALL education entries and ALL languages from the candidate data as-is. Do not filter them out. Use the exact same IDs.
 6. Return the result strictly in valid JSON format matching the following structure. Do not include markdown code blocks.
 {
@@ -269,7 +267,6 @@ INSTRUCTIONS:
   ]
 }
 `;
-
 
 
     // Call the Gemini API using the Vercel AI SDK.
