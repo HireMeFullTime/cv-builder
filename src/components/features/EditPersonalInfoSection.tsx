@@ -1,6 +1,7 @@
 import {EditSectionControlProps} from '@/types';
 import {FormField, FormItem, FormLabel, FormControl} from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
+import {Textarea} from '@/components/ui/textarea';
 import {AccordionItem, AccordionTrigger, AccordionContent} from '@/components/ui/accordion';
 
 export function EditPersonalInfoSection({control}: EditSectionControlProps) {
@@ -103,6 +104,18 @@ export function EditPersonalInfoSection({control}: EditSectionControlProps) {
 								<FormLabel className='text-xs'>GitHub URL</FormLabel>
 								<FormControl>
 									<Input {...field} className='h-8 text-sm' />
+								</FormControl>
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={control}
+						name='personalInfo.gdprClause'
+						render={({field}) => (
+							<FormItem className='col-span-1 sm:col-span-2'>
+								<FormLabel className='text-xs'>GDPR / Privacy Clause (Footer)</FormLabel>
+								<FormControl>
+									<Textarea {...field} className='min-h-16 text-sm resize-y' />
 								</FormControl>
 							</FormItem>
 						)}

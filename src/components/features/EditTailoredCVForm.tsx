@@ -34,7 +34,8 @@ export function EditTailoredCVForm({cv, profile, educations, onClose, onUpdatePr
 				phone: profile?.phone || '',
 				location: profile?.location || '',
 				linkedinUrl: profile?.linkedinUrl || '',
-				githubUrl: profile?.githubUrl || ''
+				githubUrl: profile?.githubUrl || '',
+				gdprClause: profile?.gdprClause || ''
 			},
 			summary: cv.generatedContent.summary || '',
 			relevantSkills: cv.generatedContent.relevantSkills || [],

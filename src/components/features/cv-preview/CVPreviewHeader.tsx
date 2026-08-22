@@ -7,12 +7,12 @@ import { CVPreviewHeaderProps } from '@/types';
 export function CVPreviewHeader({ personalInfo, profile, jobTitleOverride, jobTitle }: CVPreviewHeaderProps) {
   const firstName = personalInfo?.firstName || profile?.firstName;
   const lastName = personalInfo?.lastName || profile?.lastName;
-  const title = jobTitleOverride || jobTitle || personalInfo?.title || profile?.title || 'Professional';
+  const title = jobTitleOverride || jobTitle || (personalInfo?.title ?? profile?.title ?? 'Professional');
   const email = personalInfo?.email || profile?.email;
-  const phone = personalInfo?.phone || profile?.phone;
-  const location = personalInfo?.location || profile?.location;
-  const linkedinUrl = personalInfo?.linkedinUrl || profile?.linkedinUrl;
-  const githubUrl = personalInfo?.githubUrl || profile?.githubUrl;
+  const phone = personalInfo?.phone ?? profile?.phone;
+  const location = personalInfo?.location ?? profile?.location;
+  const linkedinUrl = personalInfo?.linkedinUrl ?? profile?.linkedinUrl;
+  const githubUrl = personalInfo?.githubUrl ?? profile?.githubUrl;
 
   return (
     <header className='border-b-2 border-black pb-4 mb-(--sec-spacing)'>
